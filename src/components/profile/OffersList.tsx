@@ -104,17 +104,7 @@ const OffersList = ({ offers, onUpdateStatus, formatDate }: OffersListProps) => 
                         Активировать
                       </Button>
                     )}
-                    {offer.status !== 'completed' && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => onUpdateStatus(offer.id, 'completed')}
-                        className="border-muted-foreground text-muted-foreground hover:bg-muted-foreground/10"
-                      >
-                        <Icon name="Check" size={16} className="mr-1" />
-                        Завершить
-                      </Button>
-                    )}
+
                   </div>
                 </div>
               </div>
