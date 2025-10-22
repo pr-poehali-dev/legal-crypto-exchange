@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -7,6 +8,42 @@ import Icon from '@/components/ui/icon';
 import { Textarea } from '@/components/ui/textarea';
 
 const ContactSection = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      const response = await fetch('https://functions.poehali.dev/c17d8ba8-84ab-4563-98d1-53c3a38aeae2', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        setFormData({ name: '', email: '', phone: '', message: '' });
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <section id="contact" className="py-20">
       <div className="container mx-auto px-6">
@@ -66,27 +103,71 @@ const ContactSection = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <Label htmlFor="contact-name">Имя</Label>
-                  <Input id="contact-name" placeholder="Ваше имя" className="bg-background border-border" />
+                  <Input 
+                    id="contact-name" 
+                    placeholder="Ваше имя" 
+                    className="bg-background border-border"
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    required
+                  />
                 </div>
                 <div>
                   <Label htmlFor="contact-email">Email</Label>
-                  <Input id="contact-email" type="email" placeholder="your@email.com" className="bg-background border-border" />
+                  <Input 
+                    id="contact-email" 
+                    type="email" 
+                    placeholder="your@email.com" 
+                    className="bg-background border-border"
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    required
+                  />
                 </div>
                 <div>
                   <Label htmlFor="contact-phone">Телефон</Label>
-                  <Input id="contact-phone" placeholder="+7 (999) 123-45-67" className="bg-background border-border" />
+                  <Input 
+                    id="contact-phone" 
+                    placeholder="+7 (999) 123-45-67" 
+                    className="bg-background border-border"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    required
+                  />
                 </div>
                 <div>
                   <Label htmlFor="contact-message">Сообщение</Label>
-                  <Textarea id="contact-message" placeholder="Ваш вопрос..." rows={4} className="bg-background border-border" />
+                  <Textarea 
+                    id="contact-message" 
+                    placeholder="Ваш вопрос..." 
+                    rows={4} 
+                    className="bg-background border-border"
+                    value={formData.message}
+                    onChange={(e) => setFormData({...formData, message: e.target.value})}
+                    required
+                  />
                 </div>
-                <Button className="w-full bg-secondary text-primary hover:bg-secondary/90">
-                  Отправить сообщение
+                {submitStatus === 'success' && (
+                  <div className="text-accent text-sm">
+                    ✅ Сообщение успешно отправлено!
+                  </div>
+                )}
+                {submitStatus === 'error' && (
+                  <div className="text-red-500 text-sm">
+                    ❌ Ошибка отправки. Попробуйте позже.
+                  </div>
+                )}
+                <Button 
+                  type="submit" 
+                  className="w-full bg-secondary text-primary hover:bg-secondary/90"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Отправка...' : 'Отправить сообщение'}
                 </Button>
-              </div>
+              </form>
             </CardContent>
           </Card>
         </div>
