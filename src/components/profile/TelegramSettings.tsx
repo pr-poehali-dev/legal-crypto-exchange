@@ -17,6 +17,8 @@ const TelegramSettings = ({ userId, currentTelegramId, onUpdate }: TelegramSetti
   const [telegramId, setTelegramId] = useState(currentTelegramId || '');
   const [isLoading, setIsLoading] = useState(false);
 
+  console.log('TelegramSettings userId:', userId, 'type:', typeof userId);
+
   const handleSave = async () => {
     if (!telegramId.trim()) {
       toast({

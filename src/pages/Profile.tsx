@@ -56,6 +56,18 @@ const Profile = () => {
     }
     
     const userData = JSON.parse(savedUser);
+    
+    if (!userData.id) {
+      toast({
+        title: 'Ошибка',
+        description: 'Пожалуйста, войдите заново',
+        variant: 'destructive',
+      });
+      localStorage.removeItem('user');
+      navigate('/');
+      return;
+    }
+    
     setUser(userData);
     
     loadUserData(userData.id);
