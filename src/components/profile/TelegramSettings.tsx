@@ -27,6 +27,15 @@ const TelegramSettings = ({ userId, currentTelegramId, onUpdate }: TelegramSetti
       return;
     }
 
+    if (!userId) {
+      toast({
+        title: 'Ошибка',
+        description: 'User ID не найден',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsLoading(true);
     try {
       const response = await fetch('https://functions.poehali.dev/32fbe1d7-cfb3-446f-84b5-011ff57dc0cf', {
@@ -91,6 +100,7 @@ const TelegramSettings = ({ userId, currentTelegramId, onUpdate }: TelegramSetti
           />
         </div>
         <Button
+          type="button"
           onClick={handleSave}
           disabled={isLoading}
           className="bg-secondary text-primary hover:bg-secondary/90"
