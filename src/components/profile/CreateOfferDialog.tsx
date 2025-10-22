@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,6 +37,37 @@ const CreateOfferDialog = ({
   setMeetingMinute,
   onSubmit
 }: CreateOfferDialogProps) => {
+  const [currentRate, setCurrentRate] = useState<number | null>(null);
+  const [isLoadingRate, setIsLoadingRate] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchCurrentRate();
+    }
+  }, [isOpen]);
+
+  const fetchCurrentRate = async () => {
+    setIsLoadingRate(true);
+    try {
+      const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=rub');
+      const data = await response.json();
+      
+      if (data.tether?.rub) {
+        setCurrentRate(data.tether.rub);
+      }
+    } catch (error) {
+      console.error('Failed to fetch rate:', error);
+    } finally {
+      setIsLoadingRate(false);
+    }
+  };
+
+  const useCurrentRate = () => {
+    if (currentRate) {
+      setRate(currentRate.toFixed(2));
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
@@ -76,7 +108,28 @@ const CreateOfferDialog = ({
             />
           </div>
           <div>
-            <Label htmlFor="rate">Курс (₽ за 1 USDT)</Label>
+            <div className="flex items-center justify-between mb-2">
+              <Label htmlFor="rate">Курс (₽ за 1 USDT)</Label>
+              {currentRate && (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">
+                    Рыночный: <span className="font-semibold text-secondary">{currentRate.toFixed(2)} ₽</span>
+                  </span>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    onClick={useCurrentRate}
+                    className="h-7 px-2 text-xs"
+                  >
+                    Использовать
+                  </Button>
+                </div>
+              )}
+              {isLoadingRate && (
+                <span className="text-sm text-muted-foreground">Загрузка...</span>
+              )}
+            </div>
             <Input
               id="rate"
               type="number"
