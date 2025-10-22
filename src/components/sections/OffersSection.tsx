@@ -37,10 +37,20 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
       fetchCurrentRate();
     }, 30000);
     
-    return () => clearInterval(rateInterval);
+    const offersInterval = setInterval(() => {
+      loadOffers(true);
+    }, 30000);
+    
+    return () => {
+      clearInterval(rateInterval);
+      clearInterval(offersInterval);
+    };
   }, []);
 
-  const loadOffers = async () => {
+  const loadOffers = async (silent = false) => {
+    if (!silent) {
+      setIsLoading(true);
+    }
     try {
       const response = await fetch('https://functions.poehali.dev/85034798-463f-4b9f-b879-43364e8c40ff');
       const data = await response.json();
@@ -51,7 +61,9 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
     } catch (error) {
       console.error('Failed to load offers:', error);
     } finally {
-      setIsLoading(false);
+      if (!silent) {
+        setIsLoading(false);
+      }
     }
   };
 
