@@ -106,23 +106,27 @@ const OffersList = ({ offers, onUpdateStatus, onEditOffer, onDeleteOffer, format
                         Активировать
                       </Button>
                     )}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onEditOffer(offer)}
-                    >
-                      <Icon name="Pencil" size={16} className="mr-1" />
-                      Изменить
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => onDeleteOffer(offer.id)}
-                      className="border-destructive text-destructive hover:bg-destructive/10"
-                    >
-                      <Icon name="Trash2" size={16} className="mr-1" />
-                      Удалить
-                    </Button>
+                    {offer.status !== 'completed' && (
+                      <>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => onEditOffer(offer)}
+                        >
+                          <Icon name="Pencil" size={16} className="mr-1" />
+                          Изменить
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => onDeleteOffer(offer.id)}
+                          className="border-destructive text-destructive hover:bg-destructive/10"
+                        >
+                          <Icon name="Trash2" size={16} className="mr-1" />
+                          Удалить
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
