@@ -30,6 +30,9 @@ interface Offer {
   reserved_by?: number;
   reserved_at?: string;
   reserved_by_username?: string;
+  owner_id?: number;
+  owner_username?: string;
+  relation_type?: 'created' | 'reserved';
 }
 
 const Profile = () => {

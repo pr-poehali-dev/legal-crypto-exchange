@@ -16,6 +16,9 @@ interface Offer {
   reserved_by?: number;
   reserved_at?: string;
   reserved_by_username?: string;
+  owner_id?: number;
+  owner_username?: string;
+  relation_type?: 'created' | 'reserved';
 }
 
 interface Deal {
@@ -51,7 +54,7 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
 
   if (filterStatus === 'reserved') {
     combinedItems = combinedItems.filter(item => 
-      item.itemType === 'offer' && 'reserved_by' in item && item.reserved_by !== undefined && item.reserved_by !== null
+      item.itemType === 'offer' && 'relation_type' in item && item.relation_type === 'reserved'
     );
   } else if (filterStatus !== 'all') {
     combinedItems = combinedItems.filter(item => item.status === filterStatus);
@@ -172,7 +175,12 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                       <p className="text-sm text-muted-foreground">
                         Курс: {offer.rate.toFixed(2)} ₽ • {offer.meeting_time}
                       </p>
-                      {offer.reserved_by && offer.reserved_by_username && (
+                      {offer.relation_type === 'reserved' && offer.owner_username && (
+                        <p className="text-sm text-blue-500 mt-1">
+                          Владелец: {offer.owner_username}
+                        </p>
+                      )}
+                      {offer.relation_type === 'created' && offer.reserved_by && offer.reserved_by_username && (
                         <p className="text-sm text-orange-500 mt-1">
                           Забронировал: {offer.reserved_by_username}
                         </p>
@@ -183,7 +191,17 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {offer.reserved_by ? (
+                    {offer.relation_type === 'reserved' ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => onCancelReservation(offer.id)}
+                        className="border-blue-500 text-blue-500 hover:bg-blue-500/10"
+                      >
+                        <Icon name="X" size={16} className="mr-1" />
+                        Отказаться
+                      </Button>
+                    ) : offer.reserved_by ? (
                       <Button
                         variant="outline"
                         size="sm"
