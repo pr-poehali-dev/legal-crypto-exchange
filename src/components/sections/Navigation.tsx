@@ -106,12 +106,12 @@ const Navigation = () => {
     <nav className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
+          <a href="/" className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity">
             <div className="w-10 h-10 bg-gradient-to-br from-secondary to-accent rounded-lg flex items-center justify-center">
               <Icon name="Shield" size={24} className="text-primary" />
             </div>
             <h1 className="text-2xl font-bold text-foreground">Legal Crypto Change</h1>
-          </div>
+          </a>
           <div className="flex items-center space-x-8">
             <a href="#services" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Услуги</a>
             <a href="#guarantees" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Гарантии</a>
