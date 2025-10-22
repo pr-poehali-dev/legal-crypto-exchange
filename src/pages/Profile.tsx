@@ -84,9 +84,11 @@ const Profile = () => {
       const data = await response.json();
       
       if (data.success && data.user) {
-        const updatedUser = { ...user, telegram_id: data.user.telegram_id };
-        setUser(updatedUser);
-        localStorage.setItem('user', JSON.stringify(updatedUser));
+        setUser((prevUser: any) => {
+          const updatedUser = { ...prevUser, telegram_id: data.user.telegram_id };
+          localStorage.setItem('user', JSON.stringify(updatedUser));
+          return updatedUser;
+        });
       }
     } catch (error) {
       console.error('Failed to load user data:', error);
