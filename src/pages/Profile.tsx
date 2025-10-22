@@ -181,11 +181,6 @@ const Profile = () => {
     navigate('/');
   };
 
-  const completedDeals = deals.filter(d => d.status === 'completed').length;
-  const totalVolume = deals
-    .filter(d => d.status === 'completed')
-    .reduce((sum, d) => sum + d.total, 0);
-
   if (!user) return null;
 
   return (
@@ -214,11 +209,10 @@ const Profile = () => {
           </div>
 
           <ProfileStats
-            totalDeals={deals.length}
-            completedDeals={completedDeals}
-            totalVolume={totalVolume}
             username={user.username}
             phone={user.phone}
+            deals={deals}
+            offers={offers}
           />
 
           <OffersList
