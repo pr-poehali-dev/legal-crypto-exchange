@@ -20,6 +20,7 @@ interface CreateOfferDialogProps {
   meetingMinute: string;
   setMeetingMinute: (value: string) => void;
   onSubmit: () => void;
+  isEditing?: boolean;
 }
 
 const CreateOfferDialog = ({
@@ -35,7 +36,8 @@ const CreateOfferDialog = ({
   setMeetingHour,
   meetingMinute,
   setMeetingMinute,
-  onSubmit
+  onSubmit,
+  isEditing = false
 }: CreateOfferDialogProps) => {
   const [currentRate, setCurrentRate] = useState<number | null>(null);
   const [isLoadingRate, setIsLoadingRate] = useState(false);
@@ -78,9 +80,9 @@ const CreateOfferDialog = ({
       </DialogTrigger>
       <DialogContent className="bg-card">
         <DialogHeader>
-          <DialogTitle className="text-2xl">Новое объявление</DialogTitle>
+          <DialogTitle className="text-2xl">{isEditing ? 'Редактировать объявление' : 'Новое объявление'}</DialogTitle>
           <DialogDescription>
-            Заполните данные для создания объявления
+            {isEditing ? 'Измените данные объявления' : 'Заполните данные для создания объявления'}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
@@ -175,7 +177,7 @@ const CreateOfferDialog = ({
               onClick={onSubmit}
               className="flex-1 bg-secondary text-primary hover:bg-secondary/90"
             >
-              Создать
+              {isEditing ? 'Сохранить' : 'Создать'}
             </Button>
             <Button
               onClick={() => onOpenChange(false)}

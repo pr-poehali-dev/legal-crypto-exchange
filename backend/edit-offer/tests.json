@@ -1,0 +1,34 @@
+{
+  "tests": [
+    {
+      "name": "Edit offer successfully",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "offer_id": 1,
+        "offer_type": "buy",
+        "amount": 1000,
+        "rate": 95.5,
+        "meeting_time": "14:00"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Missing required fields",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "offer_id": 1
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

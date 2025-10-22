@@ -42,6 +42,7 @@ const Profile = () => {
   const [rate, setRate] = useState('');
   const [meetingHour, setMeetingHour] = useState('');
   const [meetingMinute, setMeetingMinute] = useState('');
+  const [editingOffer, setEditingOffer] = useState<Offer | null>(null);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -109,16 +110,105 @@ const Profile = () => {
     const fullMeetingTime = `${meetingHour}:${meetingMinute}`;
 
     try {
-      const response = await fetch('https://functions.poehali.dev/cc03f400-dfb5-45bc-a27d-f18787a96d3e', {
+      if (editingOffer) {
+        const response = await fetch('https://functions.poehali.dev/706432f5-5c24-4beb-9327-0ce9f187c02f', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            offer_id: editingOffer.id,
+            offer_type: offerType,
+            amount: parseFloat(amount),
+            rate: parseFloat(rate),
+            meeting_time: fullMeetingTime,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          toast({
+            title: 'Успешно!',
+            description: 'Объявление обновлено',
+          });
+          setIsCreateDialogOpen(false);
+          resetForm();
+          loadOffers(user.id);
+        } else {
+          toast({
+            title: 'Ошибка',
+            description: data.error || 'Не удалось обновить объявление',
+            variant: 'destructive',
+          });
+        }
+      } else {
+        const response = await fetch('https://functions.poehali.dev/cc03f400-dfb5-45bc-a27d-f18787a96d3e', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: user.id,
+            offer_type: offerType,
+            amount: parseFloat(amount),
+            rate: parseFloat(rate),
+            meeting_time: fullMeetingTime,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          toast({
+            title: 'Успешно!',
+            description: 'Объявление создано',
+          });
+          setIsCreateDialogOpen(false);
+          resetForm();
+          loadOffers(user.id);
+        } else {
+          toast({
+            title: 'Ошибка',
+            description: data.error || 'Не удалось создать объявление',
+            variant: 'destructive',
+          });
+        }
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: editingOffer ? 'Не удалось обновить объявление' : 'Не удалось создать объявление',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const resetForm = () => {
+    setAmount('');
+    setRate('');
+    setMeetingHour('');
+    setMeetingMinute('');
+    setEditingOffer(null);
+  };
+
+  const handleEditOffer = (offer: Offer) => {
+    setEditingOffer(offer);
+    setOfferType(offer.offer_type as 'buy' | 'sell');
+    setAmount(offer.amount.toString());
+    setRate(offer.rate.toString());
+    const [hour, minute] = offer.meeting_time.split(':');
+    setMeetingHour(hour);
+    setMeetingMinute(minute);
+    setIsCreateDialogOpen(true);
+  };
+
+  const handleDeleteOffer = async (offerId: number) => {
+    if (!confirm('Вы уверены, что хотите удалить это объявление?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch('https://functions.poehali.dev/d7e2a78c-387a-4964-93af-6f6956d1cdd7', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user_id: user.id,
-          offer_type: offerType,
-          amount: parseFloat(amount),
-          rate: parseFloat(rate),
-          meeting_time: fullMeetingTime,
-        }),
+        body: JSON.stringify({ offer_id: offerId }),
       });
 
       const data = await response.json();
@@ -126,25 +216,20 @@ const Profile = () => {
       if (data.success) {
         toast({
           title: 'Успешно!',
-          description: 'Объявление создано',
+          description: 'Объявление удалено',
         });
-        setIsCreateDialogOpen(false);
-        setAmount('');
-        setRate('');
-        setMeetingHour('');
-        setMeetingMinute('');
         loadOffers(user.id);
       } else {
         toast({
           title: 'Ошибка',
-          description: data.error || 'Не удалось создать объявление',
+          description: data.error || 'Не удалось удалить объявление',
           variant: 'destructive',
         });
       }
     } catch (error) {
       toast({
         title: 'Ошибка',
-        description: 'Не удалось создать объявление',
+        description: 'Не удалось удалить объявление',
         variant: 'destructive',
       });
     }
@@ -193,7 +278,10 @@ const Profile = () => {
             <ProfileHeader onLogout={handleLogout} />
             <CreateOfferDialog
               isOpen={isCreateDialogOpen}
-              onOpenChange={setIsCreateDialogOpen}
+              onOpenChange={(open) => {
+                setIsCreateDialogOpen(open);
+                if (!open) resetForm();
+              }}
               offerType={offerType}
               setOfferType={setOfferType}
               amount={amount}
@@ -205,6 +293,7 @@ const Profile = () => {
               meetingMinute={meetingMinute}
               setMeetingMinute={setMeetingMinute}
               onSubmit={handleCreateOffer}
+              isEditing={!!editingOffer}
             />
           </div>
 
@@ -218,6 +307,8 @@ const Profile = () => {
           <OffersList
             offers={offers}
             onUpdateStatus={handleUpdateOfferStatus}
+            onEditOffer={handleEditOffer}
+            onDeleteOffer={handleDeleteOffer}
             formatDate={formatDate}
           />
 

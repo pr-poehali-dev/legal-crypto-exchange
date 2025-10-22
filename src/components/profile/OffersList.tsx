@@ -16,10 +16,12 @@ interface Offer {
 interface OffersListProps {
   offers: Offer[];
   onUpdateStatus: (offerId: number, status: string) => void;
+  onEditOffer: (offer: Offer) => void;
+  onDeleteOffer: (offerId: number) => void;
   formatDate: (dateString: string) => string;
 }
 
-const OffersList = ({ offers, onUpdateStatus, formatDate }: OffersListProps) => {
+const OffersList = ({ offers, onUpdateStatus, onEditOffer, onDeleteOffer, formatDate }: OffersListProps) => {
   const getOfferStatusBadge = (status: string) => {
     const statusConfig: Record<string, { label: string; className: string }> = {
       active: { label: 'Активно', className: 'bg-accent/20 text-accent border-accent/30' },
@@ -81,7 +83,7 @@ const OffersList = ({ offers, onUpdateStatus, formatDate }: OffersListProps) => 
                       </p>
                     </div>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {offer.status === 'active' && (
                       <Button
                         variant="outline"
@@ -104,7 +106,23 @@ const OffersList = ({ offers, onUpdateStatus, formatDate }: OffersListProps) => 
                         Активировать
                       </Button>
                     )}
-
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onEditOffer(offer)}
+                    >
+                      <Icon name="Pencil" size={16} className="mr-1" />
+                      Изменить
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onDeleteOffer(offer.id)}
+                      className="border-destructive text-destructive hover:bg-destructive/10"
+                    >
+                      <Icon name="Trash2" size={16} className="mr-1" />
+                      Удалить
+                    </Button>
                   </div>
                 </div>
               </div>
