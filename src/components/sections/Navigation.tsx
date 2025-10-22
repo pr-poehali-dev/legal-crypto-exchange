@@ -121,6 +121,16 @@ const Navigation = () => {
             {user ? (
               <div className="flex items-center gap-3">
                 <span className="text-sm text-muted-foreground hidden md:inline">Привет, {user.name}!</span>
+                {user.email === 'admin@kuzbassexchange.ru' && (
+                  <Button 
+                    onClick={() => window.location.href = '/admin'} 
+                    variant="outline"
+                    className="border-secondary"
+                  >
+                    <Icon name="Shield" className="mr-2" size={16} />
+                    Админ
+                  </Button>
+                )}
                 <Button 
                   onClick={() => window.location.href = '/profile'} 
                   className="bg-secondary text-primary hover:bg-secondary/90"
