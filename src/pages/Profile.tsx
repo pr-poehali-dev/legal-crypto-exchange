@@ -41,6 +41,8 @@ const Profile = () => {
   const [amount, setAmount] = useState('');
   const [rate, setRate] = useState('');
   const [meetingTime, setMeetingTime] = useState('');
+  const [meetingHour, setMeetingHour] = useState('');
+  const [meetingMinute, setMeetingMinute] = useState('');
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -96,7 +98,7 @@ const Profile = () => {
   };
 
   const handleCreateOffer = async () => {
-    if (!amount || !rate || !meetingTime) {
+    if (!amount || !rate || !meetingTime || !meetingHour || !meetingMinute) {
       toast({
         title: 'Ошибка',
         description: 'Заполните все поля',
@@ -104,6 +106,8 @@ const Profile = () => {
       });
       return;
     }
+
+    const fullMeetingTime = `${meetingTime}, ${meetingHour}:${meetingMinute}`;
 
     try {
       const response = await fetch('https://functions.poehali.dev/cc03f400-dfb5-45bc-a27d-f18787a96d3e', {
@@ -114,7 +118,7 @@ const Profile = () => {
           offer_type: offerType,
           amount: parseFloat(amount),
           rate: parseFloat(rate),
-          meeting_time: meetingTime,
+          meeting_time: fullMeetingTime,
         }),
       });
 
@@ -129,6 +133,8 @@ const Profile = () => {
         setAmount('');
         setRate('');
         setMeetingTime('');
+        setMeetingHour('');
+        setMeetingMinute('');
         loadOffers(user.id);
       } else {
         toast({
@@ -203,6 +209,10 @@ const Profile = () => {
               setRate={setRate}
               meetingTime={meetingTime}
               setMeetingTime={setMeetingTime}
+              meetingHour={meetingHour}
+              setMeetingHour={setMeetingHour}
+              meetingMinute={meetingMinute}
+              setMeetingMinute={setMeetingMinute}
               onSubmit={handleCreateOffer}
             />
           </div>

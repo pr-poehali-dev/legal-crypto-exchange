@@ -16,6 +16,10 @@ interface CreateOfferDialogProps {
   setRate: (value: string) => void;
   meetingTime: string;
   setMeetingTime: (value: string) => void;
+  meetingHour: string;
+  setMeetingHour: (value: string) => void;
+  meetingMinute: string;
+  setMeetingMinute: (value: string) => void;
   onSubmit: () => void;
 }
 
@@ -30,6 +34,10 @@ const CreateOfferDialog = ({
   setRate,
   meetingTime,
   setMeetingTime,
+  meetingHour,
+  setMeetingHour,
+  meetingMinute,
+  setMeetingMinute,
   onSubmit
 }: CreateOfferDialogProps) => {
   return (
@@ -84,15 +92,45 @@ const CreateOfferDialog = ({
             />
           </div>
           <div>
-            <Label htmlFor="meeting-time">Удобное время для встречи</Label>
+            <Label htmlFor="meeting-time">Дата встречи</Label>
             <Input
               id="meeting-time"
               type="text"
-              placeholder="Например: Сегодня, 18:00"
+              placeholder="Например: Сегодня, Завтра, 25 октября"
               value={meetingTime}
               onChange={(e) => setMeetingTime(e.target.value)}
               className="bg-background"
             />
+          </div>
+          <div>
+            <Label>Время встречи</Label>
+            <div className="flex gap-2">
+              <Select value={meetingHour} onValueChange={setMeetingHour}>
+                <SelectTrigger className="flex-1 bg-background">
+                  <SelectValue placeholder="Час" />
+                </SelectTrigger>
+                <SelectContent className="max-h-[200px]">
+                  {Array.from({ length: 24 }, (_, i) => i).map(hour => (
+                    <SelectItem key={hour} value={String(hour).padStart(2, '0')}>
+                      {String(hour).padStart(2, '0')}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <span className="flex items-center text-2xl font-bold">:</span>
+              <Select value={meetingMinute} onValueChange={setMeetingMinute}>
+                <SelectTrigger className="flex-1 bg-background">
+                  <SelectValue placeholder="Минуты" />
+                </SelectTrigger>
+                <SelectContent className="max-h-[200px]">
+                  {['00', '15', '30', '45'].map(minute => (
+                    <SelectItem key={minute} value={minute}>
+                      {minute}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <div className="flex gap-3 pt-4">
             <Button
