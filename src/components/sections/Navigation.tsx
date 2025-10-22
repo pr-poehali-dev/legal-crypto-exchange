@@ -146,7 +146,7 @@ const Navigation = () => {
               <>
                 <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
                   <DialogTrigger asChild>
-                    <Button variant="outline" className="border-secondary hidden sm:flex">
+                    <Button variant="outline" className="border-secondary">
                       Войти
                     </Button>
                   </DialogTrigger>
