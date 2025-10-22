@@ -131,7 +131,7 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
         body: JSON.stringify({
           offer_id: offer.id,
           user_id: currentUser.id,
-          username: currentUser.username,
+          username: currentUser.name || currentUser.username || 'Пользователь',
         }),
       });
 
