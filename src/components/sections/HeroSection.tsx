@@ -9,17 +9,17 @@ import { Textarea } from '@/components/ui/textarea';
 
 const HeroSection = () => {
   return (
-    <section className="relative py-20 md:py-32 overflow-hidden">
+    <section className="relative py-12 md:py-32 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary via-background to-primary opacity-50"></div>
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 md:px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center animate-fade-in">
-          <Badge className="mb-6 bg-secondary/20 text-secondary border-secondary/30">
+          <Badge className="mb-4 md:mb-6 bg-secondary/20 text-secondary border-secondary/30 text-xs md:text-sm">
             Безопасные сделки с гарантией
           </Badge>
-          <h2 className="text-5xl md:text-7xl font-bold mb-6 text-foreground leading-tight">
+          <h2 className="text-3xl md:text-7xl font-bold mb-4 md:mb-6 text-foreground leading-tight">
             Обмен USDT<br />с юридической<br />защитой
           </h2>
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+          <p className="text-base md:text-2xl text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto px-2">
             Профессиональная площадка для безопасного обмена криптовалюты с полным юридическим сопровождением
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

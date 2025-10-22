@@ -104,28 +104,29 @@ const Navigation = () => {
 
   return (
     <nav className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-      <div className="container mx-auto px-6 py-4">
-        <div className="flex items-center justify-between">
-          <a href="/" className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity">
-            <div className="w-10 h-10 bg-gradient-to-br from-secondary to-accent rounded-lg flex items-center justify-center">
-              <Icon name="Shield" size={24} className="text-primary" />
+      <div className="container mx-auto px-3 md:px-6 py-3 md:py-4">
+        <div className="flex items-center justify-between gap-2">
+          <a href="/" className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity min-w-0">
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-secondary to-accent rounded-lg flex items-center justify-center flex-shrink-0">
+              <Icon name="Shield" size={20} className="text-primary md:w-6 md:h-6" />
             </div>
-            <h1 className="text-2xl font-bold text-foreground">Legal Crypto Change</h1>
+            <h1 className="text-base md:text-2xl font-bold text-foreground truncate">Legal Crypto Change</h1>
           </a>
-          <div className="flex items-center space-x-8">
+          <div className="flex items-center space-x-2 md:space-x-8 flex-shrink-0">
             <a href="/#services" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Услуги</a>
             <a href="/#guarantees" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Гарантии</a>
             <a href="/#offers" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Объявления</a>
             <a href="/#contact" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Контакты</a>
             
             {user ? (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1 md:gap-3">
                 <span className="text-sm text-muted-foreground hidden md:inline">Привет, {user.name}!</span>
                 {user.email === 'admin@kuzbassexchange.ru' && (
                   <Button 
                     onClick={() => window.location.href = '/admin'} 
                     variant="outline"
-                    className="border-secondary"
+                    size="sm"
+                    className="border-secondary hidden md:flex"
                   >
                     <Icon name="Shield" className="mr-2" size={16} />
                     Админ
@@ -133,12 +134,13 @@ const Navigation = () => {
                 )}
                 <Button 
                   onClick={() => window.location.href = '/profile'} 
+                  size="sm"
                   className="bg-secondary text-primary hover:bg-secondary/90"
                 >
-                  <Icon name="User" className="mr-2" size={16} />
-                  Кабинет
+                  <Icon name="User" className="mr-0 md:mr-2" size={16} />
+                  <span className="hidden md:inline">Кабинет</span>
                 </Button>
-                <Button onClick={handleLogout} variant="outline" className="border-secondary">
+                <Button onClick={handleLogout} variant="outline" size="sm" className="border-secondary hidden md:flex">
                   Выйти
                 </Button>
               </div>
@@ -146,7 +148,7 @@ const Navigation = () => {
               <>
                 <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
                   <DialogTrigger asChild>
-                    <Button variant="outline" className="border-secondary">
+                    <Button variant="outline" size="sm" className="border-secondary">
                       Войти
                     </Button>
                   </DialogTrigger>
@@ -204,7 +206,7 @@ const Navigation = () => {
 
                 <Dialog open={isRegisterOpen} onOpenChange={setIsRegisterOpen}>
                   <DialogTrigger asChild>
-                    <Button className="bg-secondary text-primary hover:bg-secondary/90">
+                    <Button size="sm" className="bg-secondary text-primary hover:bg-secondary/90">
                       Регистрация
                     </Button>
                   </DialogTrigger>

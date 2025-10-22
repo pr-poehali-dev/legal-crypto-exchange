@@ -142,35 +142,35 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
   );
 
   return (
-    <section id="offers" className="py-20 bg-card/30">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-16">
-          <h3 className="text-4xl md:text-5xl font-bold mb-4">Объявления</h3>
-          <p className="text-xl text-muted-foreground">Актуальные предложения от проверенных пользователей</p>
-          <div className="mt-4 flex flex-col items-center gap-2">
+    <section id="offers" className="py-12 md:py-20 bg-card/30">
+      <div className="container mx-auto px-4 md:px-6">
+        <div className="text-center mb-8 md:mb-16">
+          <h3 className="text-3xl md:text-5xl font-bold mb-3 md:mb-4">Объявления</h3>
+          <p className="text-base md:text-xl text-muted-foreground px-2">Актуальные предложения от проверенных пользователей</p>
+          <div className="mt-3 md:mt-4 flex flex-col items-center gap-2">
             {currentRate && (
-              <div className="inline-flex items-center gap-2 bg-card border border-border rounded-lg px-4 py-2">
-                <Icon name="TrendingUp" size={18} className="text-secondary" />
-                <span className="text-sm text-muted-foreground">Рыночный курс USDT:</span>
-                <span className="text-lg font-bold text-secondary">{currentRate.toFixed(2)} ₽</span>
+              <div className="inline-flex items-center gap-2 bg-card border border-border rounded-lg px-3 md:px-4 py-2">
+                <Icon name="TrendingUp" size={16} className="text-secondary md:w-[18px] md:h-[18px]" />
+                <span className="text-xs md:text-sm text-muted-foreground">Рыночный курс USDT:</span>
+                <span className="text-base md:text-lg font-bold text-secondary">{currentRate.toFixed(2)} ₽</span>
               </div>
             )}
             {lastUpdate && (
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <Icon name="RefreshCw" size={14} />
+                <Icon name="RefreshCw" size={12} />
                 <span>Обновлено: {lastUpdate.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
               </div>
             )}
           </div>
         </div>
         <div className="max-w-5xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 md:mb-6 gap-3">
             <div className="flex items-center gap-2">
-              <Icon name="ArrowUpDown" size={20} className="text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">Сортировать:</span>
+              <Icon name="ArrowUpDown" size={18} className="text-muted-foreground" />
+              <span className="text-xs md:text-sm text-muted-foreground">Сортировать:</span>
             </div>
             <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
-              <SelectTrigger className="w-[220px] bg-card border-border">
+              <SelectTrigger className="w-full md:w-[220px] bg-card border-border text-sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

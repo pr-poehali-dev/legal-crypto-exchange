@@ -4,15 +4,15 @@ import Icon from '@/components/ui/icon';
 
 const GuaranteesSection = () => {
   return (
-    <section id="guarantees" className="py-20">
-      <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+    <section id="guarantees" className="py-12 md:py-20">
+      <div className="container mx-auto px-4 md:px-6">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           <div>
-            <Badge className="mb-4 bg-accent/20 text-accent border-accent/30">
+            <Badge className="mb-3 md:mb-4 bg-accent/20 text-accent border-accent/30 text-xs md:text-sm">
               Гарантии безопасности
             </Badge>
-            <h3 className="text-4xl md:text-5xl font-bold mb-6">Полная юридическая поддержка</h3>
-            <p className="text-xl text-muted-foreground mb-8">
+            <h3 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6">Полная юридическая поддержка</h3>
+            <p className="text-base md:text-xl text-muted-foreground mb-6 md:mb-8">
               Мы обеспечиваем максимальную безопасность каждой сделки через комплексное юридическое сопровождение
             </p>
             <div className="space-y-6">

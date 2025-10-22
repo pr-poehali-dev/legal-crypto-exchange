@@ -45,15 +45,15 @@ const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="py-20">
-      <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-2 gap-12">
+    <section id="contact" className="py-12 md:py-20">
+      <div className="container mx-auto px-4 md:px-6">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12">
           <div>
-            <Badge className="mb-4 bg-secondary/20 text-secondary border-secondary/30">
+            <Badge className="mb-3 md:mb-4 bg-secondary/20 text-secondary border-secondary/30 text-xs md:text-sm">
               Свяжитесь с нами
             </Badge>
-            <h3 className="text-4xl md:text-5xl font-bold mb-6">Наш офис</h3>
-            <p className="text-xl text-muted-foreground mb-8">
+            <h3 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6">Наш офис</h3>
+            <p className="text-base md:text-xl text-muted-foreground mb-6 md:mb-8">
               Приглашаем вас на личную встречу в наш офис для безопасного проведения сделки
             </p>
             <div className="space-y-6">
