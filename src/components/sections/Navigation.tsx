@@ -113,10 +113,10 @@ const Navigation = () => {
             <h1 className="text-2xl font-bold text-foreground">Legal Crypto Change</h1>
           </a>
           <div className="flex items-center space-x-8">
-            <a href="#services" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Услуги</a>
-            <a href="#guarantees" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Гарантии</a>
-            <a href="#offers" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Объявления</a>
-            <a href="#contact" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Контакты</a>
+            <a href="/#services" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Услуги</a>
+            <a href="/#guarantees" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Гарантии</a>
+            <a href="/#offers" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Объявления</a>
+            <a href="/#contact" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Контакты</a>
             
             {user ? (
               <div className="flex items-center gap-3">
