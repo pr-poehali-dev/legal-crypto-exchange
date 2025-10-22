@@ -10,15 +10,23 @@ interface AdminStatsProps {
 
 const AdminStats = ({ users, offers, deals }: AdminStatsProps) => {
   const completedDeals = deals.filter(d => d.status === 'completed');
-  const totalVolume = completedDeals.reduce((sum, d) => sum + d.total, 0);
+  const completedOffers = offers.filter(o => o.status === 'completed');
+  const totalCompletedCount = completedDeals.length + completedOffers.length;
+  
+  const dealsVolume = completedDeals.reduce((sum, d) => sum + d.total, 0);
+  const offersVolume = completedOffers.reduce((sum, o) => sum + (o.amount * o.rate), 0);
+  const totalVolume = dealsVolume + offersVolume;
+  
   const activeOffers = offers.filter(o => o.status === 'active');
   const blockedUsers = users.filter(u => u.blocked);
   
   const buyDeals = completedDeals.filter(d => d.deal_type === 'buy');
   const sellDeals = completedDeals.filter(d => d.deal_type === 'sell');
+  const buyOffers = completedOffers.filter(o => o.offer_type === 'buy');
+  const sellOffers = completedOffers.filter(o => o.offer_type === 'sell');
   
-  const avgDealAmount = completedDeals.length > 0 
-    ? totalVolume / completedDeals.length 
+  const avgDealAmount = totalCompletedCount > 0 
+    ? totalVolume / totalCompletedCount 
     : 0;
 
   return (
@@ -63,10 +71,10 @@ const AdminStats = ({ users, offers, deals }: AdminStatsProps) => {
           </CardHeader>
           <CardContent>
             <p className="text-4xl font-bold text-green-500">
-              {completedDeals.length}
+              {totalCompletedCount}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
-              Всего: {deals.length}
+              Всего операций: {deals.length + offers.length}
             </p>
           </CardContent>
         </Card>
@@ -100,12 +108,12 @@ const AdminStats = ({ users, offers, deals }: AdminStatsProps) => {
           <CardContent className="space-y-2">
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">Завершённых сделок:</span>
-              <span className="text-2xl font-bold">{buyDeals.length}</span>
+              <span className="text-2xl font-bold">{buyDeals.length + buyOffers.length}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">Общий объём:</span>
               <span className="text-2xl font-bold text-green-500">
-                {buyDeals.reduce((sum, d) => sum + d.total, 0).toLocaleString('ru-RU')} ₽
+                {(buyDeals.reduce((sum, d) => sum + d.total, 0) + buyOffers.reduce((sum, o) => sum + (o.amount * o.rate), 0)).toLocaleString('ru-RU')} ₽
               </span>
             </div>
             <div className="flex justify-between items-center">
@@ -127,12 +135,12 @@ const AdminStats = ({ users, offers, deals }: AdminStatsProps) => {
           <CardContent className="space-y-2">
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">Завершённых сделок:</span>
-              <span className="text-2xl font-bold">{sellDeals.length}</span>
+              <span className="text-2xl font-bold">{sellDeals.length + sellOffers.length}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-muted-foreground">Общий объём:</span>
               <span className="text-2xl font-bold text-red-500">
-                {sellDeals.reduce((sum, d) => sum + d.total, 0).toLocaleString('ru-RU')} ₽
+                {(sellDeals.reduce((sum, d) => sum + d.total, 0) + sellOffers.reduce((sum, o) => sum + (o.amount * o.rate), 0)).toLocaleString('ru-RU')} ₽
               </span>
             </div>
             <div className="flex justify-between items-center">
