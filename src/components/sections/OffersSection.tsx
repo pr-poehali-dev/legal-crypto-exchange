@@ -32,6 +32,12 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
   useEffect(() => {
     loadOffers();
     fetchCurrentRate();
+    
+    const rateInterval = setInterval(() => {
+      fetchCurrentRate();
+    }, 30000);
+    
+    return () => clearInterval(rateInterval);
   }, []);
 
   const loadOffers = async () => {
