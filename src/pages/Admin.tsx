@@ -45,16 +45,18 @@ const Admin = () => {
     if (adminAuth === 'authenticated') {
       setIsAuthenticated(true);
       loadData();
+    } else {
+      setIsLoading(false);
     }
   }, []);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (loginInput === ADMIN_LOGIN && passwordInput === ADMIN_PASSWORD) {
+    if (loginInput.trim() === ADMIN_LOGIN && passwordInput.trim() === ADMIN_PASSWORD) {
       sessionStorage.setItem('adminAuth', 'authenticated');
       setIsAuthenticated(true);
-      loadData();
       toast.success('Добро пожаловать в админ-панель');
+      loadData();
     } else {
       toast.error('Неверный логин или пароль');
     }
