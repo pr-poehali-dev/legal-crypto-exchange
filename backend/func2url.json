@@ -1,4 +1,7 @@
 {
+  "update-telegram": "https://functions.poehali.dev/32fbe1d7-cfb3-446f-84b5-011ff57dc0cf",
+  "get-user-data": "https://functions.poehali.dev/89a1066f-b5ab-4ce5-bc62-94bfd60d600b",
+  "reserve-offer": "https://functions.poehali.dev/9c031941-05ab-46ce-9781-3bd0b4c6974f",
   "delete-offer": "https://functions.poehali.dev/d7e2a78c-387a-4964-93af-6f6956d1cdd7",
   "edit-offer": "https://functions.poehali.dev/706432f5-5c24-4beb-9327-0ce9f187c02f",
   "admin-toggle-user-block": "https://functions.poehali.dev/62daff60-6649-4ae2-84a1-d891fa4799bc",

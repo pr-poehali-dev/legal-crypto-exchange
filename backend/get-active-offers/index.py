@@ -33,12 +33,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     if offer_type:
         cur.execute(
-            "SELECT o.id, o.offer_type, o.amount, o.rate, o.meeting_time, o.created_at, u.username, u.phone FROM offers o JOIN users u ON o.user_id = u.id WHERE o.status = 'active' AND o.offer_type = %s ORDER BY o.created_at DESC",
+            "SELECT o.id, o.user_id, o.offer_type, o.amount, o.rate, o.meeting_time, o.created_at, u.username, u.phone FROM offers o JOIN users u ON o.user_id = u.id WHERE o.status = 'active' AND o.offer_type = %s ORDER BY o.created_at DESC",
             (offer_type,)
         )
     else:
         cur.execute(
-            "SELECT o.id, o.offer_type, o.amount, o.rate, o.meeting_time, o.created_at, u.username, u.phone FROM offers o JOIN users u ON o.user_id = u.id WHERE o.status = 'active' ORDER BY o.created_at DESC"
+            "SELECT o.id, o.user_id, o.offer_type, o.amount, o.rate, o.meeting_time, o.created_at, u.username, u.phone FROM offers o JOIN users u ON o.user_id = u.id WHERE o.status = 'active' ORDER BY o.created_at DESC"
         )
     
     rows = cur.fetchall()
@@ -47,13 +47,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     for row in rows:
         offers.append({
             'id': row[0],
-            'offer_type': row[1],
-            'amount': float(row[2]),
-            'rate': float(row[3]),
-            'meeting_time': row[4],
-            'created_at': row[5].isoformat() if row[5] else None,
-            'username': row[6],
-            'phone': row[7],
+            'user_id': row[1],
+            'offer_type': row[2],
+            'amount': float(row[3]),
+            'rate': float(row[4]),
+            'meeting_time': row[5],
+            'created_at': row[6].isoformat() if row[6] else None,
+            'username': row[7],
+            'phone': row[8],
             'deals_count': 0
         })
     

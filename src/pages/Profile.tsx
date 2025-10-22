@@ -7,6 +7,7 @@ import ProfileStats from '@/components/profile/ProfileStats';
 import CreateOfferDialog from '@/components/profile/CreateOfferDialog';
 import OffersList from '@/components/profile/OffersList';
 import DealsList from '@/components/profile/DealsList';
+import TelegramSettings from '@/components/profile/TelegramSettings';
 
 interface Deal {
   id: number;
@@ -54,6 +55,7 @@ const Profile = () => {
     const userData = JSON.parse(savedUser);
     setUser(userData);
     
+    loadUserData(userData.id);
     loadDeals(userData.id);
     loadOffers(userData.id);
   }, [navigate]);
@@ -70,6 +72,21 @@ const Profile = () => {
       console.error('Failed to load deals:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const loadUserData = async (userId: number) => {
+    try {
+      const response = await fetch(`https://functions.poehali.dev/89a1066f-b5ab-4ce5-bc62-94bfd60d600b?user_id=${userId}`);
+      const data = await response.json();
+      
+      if (data.success && data.user) {
+        const updatedUser = { ...user, telegram_id: data.user.telegram_id };
+        setUser(updatedUser);
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+      }
+    } catch (error) {
+      console.error('Failed to load user data:', error);
     }
   };
 
@@ -302,6 +319,12 @@ const Profile = () => {
             phone={user.phone}
             deals={deals}
             offers={offers}
+          />
+
+          <TelegramSettings
+            userId={user.id}
+            currentTelegramId={user.telegram_id}
+            onUpdate={() => loadUserData(user.id)}
           />
 
           <OffersList

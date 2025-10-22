@@ -6,9 +6,11 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import Icon from '@/components/ui/icon';
+import { useToast } from '@/hooks/use-toast';
 
 interface Offer {
   id: number;
+  user_id: number;
   offer_type: string;
   amount: number;
   rate: number;
@@ -25,11 +27,20 @@ interface OffersSectionProps {
 }
 
 const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
+  const { toast } = useToast();
   const [offers, setOffers] = useState<Offer[]>([]);
   const [sortBy, setSortBy] = useState<'rate' | 'amount-min' | 'amount-max' | 'time'>('rate');
   const [isLoading, setIsLoading] = useState(true);
   const [currentRate, setCurrentRate] = useState<number | null>(null);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (user) {
+      setCurrentUser(JSON.parse(user));
+    }
+  }, []);
 
   useEffect(() => {
     loadOffers();
@@ -103,6 +114,54 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
   const buyOffers = getSortedOffers(offers.filter(o => o.offer_type === 'buy'));
   const sellOffers = getSortedOffers(offers.filter(o => o.offer_type === 'sell'));
 
+  const handleContact = async (offer: Offer) => {
+    if (!currentUser) {
+      toast({
+        title: 'Требуется авторизация',
+        description: 'Войдите в систему, чтобы связаться с продавцом',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch('https://functions.poehali.dev/9c031941-05ab-46ce-9781-3bd0b4c6974f', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          offer_id: offer.id,
+          user_id: currentUser.id,
+          username: currentUser.username,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast({
+          title: 'Успешно!',
+          description: 'Владелец объявления получил уведомление о вашем интересе',
+        });
+      } else {
+        toast({
+          title: 'Ошибка',
+          description: data.error || 'Не удалось отправить уведомление',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось отправить уведомление',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const isOwnOffer = (offer: Offer) => {
+    return currentUser && currentUser.id === offer.user_id;
+  };
+
   const renderOfferCard = (offer: Offer) => (
     <Card key={offer.id} className="bg-card border-border hover:border-secondary transition-all">
       <CardContent className="p-4 md:p-6">
@@ -132,10 +191,20 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
             </div>
           </div>
           
-          <Button className="bg-secondary text-primary hover:bg-secondary/90 w-full">
-            <Icon name="MessageCircle" className="mr-2" size={16} />
-            Связаться
-          </Button>
+          {!isOwnOffer(offer) && (
+            <Button 
+              onClick={() => handleContact(offer)}
+              className="bg-secondary text-primary hover:bg-secondary/90 w-full"
+            >
+              <Icon name="MessageCircle" className="mr-2" size={16} />
+              Связаться
+            </Button>
+          )}
+          {isOwnOffer(offer) && (
+            <div className="text-center py-2 text-sm text-muted-foreground">
+              Ваше объявление
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>

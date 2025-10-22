@@ -1,0 +1,33 @@
+{
+  "tests": [
+    {
+      "name": "Reserve offer successfully",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "offer_id": 1,
+        "user_id": 2,
+        "username": "TestUser"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Missing required fields",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "offer_id": 1
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "success": false,
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
