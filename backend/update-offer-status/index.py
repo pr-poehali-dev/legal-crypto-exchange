@@ -55,6 +55,34 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     conn = psycopg2.connect(dsn)
     cur = conn.cursor()
     
+    # If completing the offer, create a deal record
+    if status == 'completed':
+        # Get offer details
+        cur.execute(
+            "SELECT user_id, offer_type, amount, rate, reserved_by FROM offers WHERE id = %s",
+            (offer_id,)
+        )
+        offer_row = cur.fetchone()
+        
+        if offer_row:
+            user_id, offer_type, amount, rate, reserved_by = offer_row
+            total = float(amount) * float(rate)
+            
+            # Get partner username if reserved
+            partner_name = None
+            if reserved_by:
+                cur.execute("SELECT username FROM users WHERE id = %s", (reserved_by,))
+                partner_row = cur.fetchone()
+                if partner_row:
+                    partner_name = partner_row[0]
+            
+            # Create deal record
+            cur.execute(
+                """INSERT INTO deals (user_id, deal_type, amount, rate, total, status, partner_name, created_at, updated_at)
+                   VALUES (%s, %s, %s, %s, %s, 'completed', %s, NOW(), NOW())""",
+                (user_id, offer_type, amount, rate, total, partner_name)
+            )
+    
     cur.execute(
         "UPDATE offers SET status = %s WHERE id = %s",
         (status, offer_id)
