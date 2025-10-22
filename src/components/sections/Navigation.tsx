@@ -120,7 +120,14 @@ const Navigation = () => {
             
             {user ? (
               <div className="flex items-center gap-3">
-                <span className="text-sm text-muted-foreground">Привет, {user.name}!</span>
+                <span className="text-sm text-muted-foreground hidden md:inline">Привет, {user.name}!</span>
+                <Button 
+                  onClick={() => window.location.href = '/profile'} 
+                  className="bg-secondary text-primary hover:bg-secondary/90"
+                >
+                  <Icon name="User" className="mr-2" size={16} />
+                  Кабинет
+                </Button>
                 <Button onClick={handleLogout} variant="outline" className="border-secondary">
                   Выйти
                 </Button>
