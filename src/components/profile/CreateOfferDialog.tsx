@@ -49,11 +49,11 @@ const CreateOfferDialog = ({
   const fetchCurrentRate = async () => {
     setIsLoadingRate(true);
     try {
-      const response = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=USDTRUB');
+      const response = await fetch('https://functions.poehali.dev/f429c90b-c275-4b5d-bcd3-d3a69a15dea9');
       const data = await response.json();
       
-      if (data.price) {
-        setCurrentRate(parseFloat(data.price));
+      if (data.success && data.rate) {
+        setCurrentRate(data.rate);
       }
     } catch (error) {
       console.error('Failed to fetch rate:', error);

@@ -1,4 +1,5 @@
 {
+  "get-exchange-rate": "https://functions.poehali.dev/f429c90b-c275-4b5d-bcd3-d3a69a15dea9",
   "get-active-offers": "https://functions.poehali.dev/85034798-463f-4b9f-b879-43364e8c40ff",
   "update-offer-status": "https://functions.poehali.dev/716426cb-1d05-4858-a5f1-4d46123b5470",
   "get-user-offers": "https://functions.poehali.dev/ad8e0859-d6b1-4dde-8da7-2b137a4c9abb",

@@ -1,0 +1,10 @@
+{
+  "tests": [
+    {
+      "name": "Get USDT/RUB exchange rate",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200
+    }
+  ]
+}
