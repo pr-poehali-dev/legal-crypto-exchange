@@ -1,0 +1,10 @@
+{
+  "tests": [
+    {
+      "name": "Get all offers",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200
+    }
+  ]
+}

@@ -1,4 +1,6 @@
 {
+  "get-all-users": "https://functions.poehali.dev/d95b473e-1b4b-4f75-82aa-7e0211e55839",
+  "get-all-offers": "https://functions.poehali.dev/24cbcabc-c4e4-496b-a820-0315a576e32e",
   "get-exchange-rate": "https://functions.poehali.dev/f429c90b-c275-4b5d-bcd3-d3a69a15dea9",
   "get-active-offers": "https://functions.poehali.dev/85034798-463f-4b9f-b879-43364e8c40ff",
   "update-offer-status": "https://functions.poehali.dev/716426cb-1d05-4858-a5f1-4d46123b5470",
