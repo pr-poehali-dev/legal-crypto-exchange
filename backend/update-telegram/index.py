@@ -40,7 +40,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     user_id = body_data.get('user_id')
     telegram_id = body_data.get('telegram_id')
     
-    if not user_id or not telegram_id:
+    if user_id is None or telegram_id is None or telegram_id == '':
         return {
             'statusCode': 400,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
