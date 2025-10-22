@@ -76,13 +76,7 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
               <span className="text-primary font-bold">{offer.username?.[0] || 'U'}</span>
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <p className="font-semibold text-lg">{offer.username}</p>
-                <Badge className="bg-accent/20 text-accent border-accent/30">
-                  <Icon name="CheckCircle" size={12} className="mr-1" />
-                  Verified
-                </Badge>
-              </div>
+              <p className="font-semibold text-lg">{offer.username || 'Пользователь'}</p>
               <p className="text-sm text-muted-foreground">{offer.deals_count} успешных сделок</p>
             </div>
           </div>
