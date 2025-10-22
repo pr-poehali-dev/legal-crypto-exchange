@@ -73,6 +73,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             result = json.loads(response.read().decode('utf-8'))
             
         if result.get('ok'):
+            print(f"Successfully sent message to telegram_id: {telegram_id}")
             return {
                 'statusCode': 200,
                 'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
@@ -80,14 +81,30 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'success': True})
             }
         else:
+            error_msg = result.get('description', 'Unknown error')
+            print(f"Telegram API returned error for telegram_id {telegram_id}: {error_msg}")
             return {
                 'statusCode': 500,
                 'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
                 'isBase64Encoded': False,
-                'body': json.dumps({'success': False, 'error': result.get('description', 'Unknown error')})
+                'body': json.dumps({'success': False, 'error': error_msg})
             }
+    except urllib.error.HTTPError as e:
+        error_body = e.read().decode('utf-8')
+        print(f"Telegram API HTTP error for telegram_id {telegram_id}: {e.code} - {error_body}")
+        try:
+            error_json = json.loads(error_body)
+            error_msg = error_json.get('description', str(e))
+        except:
+            error_msg = str(e)
+        return {
+            'statusCode': 500,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
+            'body': json.dumps({'success': False, 'error': f'Telegram error: {error_msg}'})
+        }
     except Exception as e:
-        print(f"Telegram API error: {str(e)}")
+        print(f"Telegram API error for telegram_id {telegram_id}: {str(e)}")
         return {
             'statusCode': 500,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
