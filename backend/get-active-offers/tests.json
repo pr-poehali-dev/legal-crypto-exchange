@@ -1,0 +1,26 @@
+{
+  "tests": [
+    {
+      "name": "Get all active offers",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "offers": "array"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Filter by offer_type",
+      "method": "GET",
+      "path": "/?offer_type=buy",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "offers": "array"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
