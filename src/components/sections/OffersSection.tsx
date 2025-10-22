@@ -28,6 +28,7 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
   const [sortBy, setSortBy] = useState<'rate' | 'amount-min' | 'amount-max' | 'time'>('rate');
   const [isLoading, setIsLoading] = useState(true);
   const [currentRate, setCurrentRate] = useState<number | null>(null);
+  const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
 
   useEffect(() => {
     loadOffers();
@@ -57,6 +58,7 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
       
       if (data.success) {
         setOffers(data.offers);
+        setLastUpdate(new Date());
       }
     } catch (error) {
       console.error('Failed to load offers:', error);
@@ -141,13 +143,21 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
         <div className="text-center mb-16">
           <h3 className="text-4xl md:text-5xl font-bold mb-4">Объявления</h3>
           <p className="text-xl text-muted-foreground">Актуальные предложения от проверенных пользователей</p>
-          {currentRate && (
-            <div className="mt-4 inline-flex items-center gap-2 bg-card border border-border rounded-lg px-4 py-2">
-              <Icon name="TrendingUp" size={18} className="text-secondary" />
-              <span className="text-sm text-muted-foreground">Рыночный курс USDT:</span>
-              <span className="text-lg font-bold text-secondary">{currentRate.toFixed(2)} ₽</span>
-            </div>
-          )}
+          <div className="mt-4 flex flex-col items-center gap-2">
+            {currentRate && (
+              <div className="inline-flex items-center gap-2 bg-card border border-border rounded-lg px-4 py-2">
+                <Icon name="TrendingUp" size={18} className="text-secondary" />
+                <span className="text-sm text-muted-foreground">Рыночный курс USDT:</span>
+                <span className="text-lg font-bold text-secondary">{currentRate.toFixed(2)} ₽</span>
+              </div>
+            )}
+            {lastUpdate && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <Icon name="RefreshCw" size={14} />
+                <span>Обновлено: {lastUpdate.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
+              </div>
+            )}
+          </div>
         </div>
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center justify-between mb-6">
