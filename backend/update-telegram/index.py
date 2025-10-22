@@ -40,6 +40,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     user_id = body_data.get('user_id')
     telegram_id = body_data.get('telegram_id')
     
+    print(f"DEBUG: user_id={user_id}, type={type(user_id)}, telegram_id={telegram_id}, type={type(telegram_id)}")
+    print(f"DEBUG: body_data={body_data}")
+    
     if user_id is None or telegram_id is None or telegram_id == '':
         return {
             'statusCode': 400,
