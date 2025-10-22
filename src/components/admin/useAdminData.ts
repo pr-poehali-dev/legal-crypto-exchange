@@ -72,18 +72,19 @@ export const useAdminData = () => {
     if (!confirm('Удалить это объявление?')) return;
 
     try {
-      const response = await fetch('https://functions.poehali.dev/c6a4e4a7-6edb-4a9e-a4d7-c8fb0a5e8a4f', {
+      const response = await fetch('https://functions.poehali.dev/d7e2a78c-387a-4964-93af-6f6956d1cdd7', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ offer_id: offerId, status: 'deleted' })
+        body: JSON.stringify({ offer_id: offerId })
       });
 
       const data = await response.json();
       if (data.success) {
         toast.success('Объявление удалено');
-        loadOffers();
+        await loadOffers();
+        await loadDeals();
       } else {
-        toast.error('Ошибка при удалении');
+        toast.error(data.error || 'Ошибка при удалении');
       }
     } catch (error) {
       toast.error('Ошибка при удалении');

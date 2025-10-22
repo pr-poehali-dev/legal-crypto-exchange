@@ -6,7 +6,6 @@ import ProfileHeader from '@/components/profile/ProfileHeader';
 import ProfileStats from '@/components/profile/ProfileStats';
 import CreateOfferDialog from '@/components/profile/CreateOfferDialog';
 import OffersList from '@/components/profile/OffersList';
-import DealsList from '@/components/profile/DealsList';
 import TelegramSettings from '@/components/profile/TelegramSettings';
 
 interface Deal {
@@ -382,16 +381,11 @@ const Profile = () => {
 
           <OffersList
             offers={offers}
+            deals={deals}
             onUpdateStatus={handleUpdateOfferStatus}
             onEditOffer={handleEditOffer}
             onDeleteOffer={handleDeleteOffer}
             onCancelReservation={handleCancelReservation}
-            formatDate={formatDate}
-          />
-
-          <DealsList
-            deals={deals}
-            isLoading={isLoading}
             formatDate={formatDate}
           />
         </div>

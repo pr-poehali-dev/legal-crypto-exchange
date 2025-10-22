@@ -18,8 +18,20 @@ interface Offer {
   reserved_by_username?: string;
 }
 
+interface Deal {
+  id: number;
+  deal_type: string;
+  amount: number;
+  rate: number;
+  total: number;
+  status: string;
+  partner_name: string | null;
+  created_at: string;
+}
+
 interface OffersListProps {
   offers: Offer[];
+  deals: Deal[];
   onUpdateStatus: (offerId: number, status: string) => void;
   onEditOffer: (offer: Offer) => void;
   onDeleteOffer: (offerId: number) => void;
@@ -27,14 +39,23 @@ interface OffersListProps {
   formatDate: (dateString: string) => string;
 }
 
-const OffersList = ({ offers, onUpdateStatus, onEditOffer, onDeleteOffer, onCancelReservation, formatDate }: OffersListProps) => {
+const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer, onCancelReservation, formatDate }: OffersListProps) => {
   const [filterStatus, setFilterStatus] = useState<string>('all');
 
-  const filteredOffers = offers.filter(offer => {
-    if (filterStatus === 'all') return true;
-    if (filterStatus === 'reserved') return offer.reserved_by !== undefined && offer.reserved_by !== null;
-    return offer.status === filterStatus;
-  });
+  type CombinedItem = (Offer & { itemType: 'offer' }) | (Deal & { itemType: 'deal' });
+  
+  let combinedItems: CombinedItem[] = [
+    ...offers.map(o => ({ ...o, itemType: 'offer' as const })),
+    ...deals.map(d => ({ ...d, itemType: 'deal' as const }))
+  ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+  if (filterStatus === 'reserved') {
+    combinedItems = combinedItems.filter(item => 
+      item.itemType === 'offer' && 'reserved_by' in item && item.reserved_by !== undefined && item.reserved_by !== null
+    );
+  } else if (filterStatus !== 'all') {
+    combinedItems = combinedItems.filter(item => item.status === filterStatus);
+  }
 
   const getOfferStatusBadge = (status: string) => {
     const statusConfig: Record<string, { label: string; className: string }> = {
@@ -65,7 +86,7 @@ const OffersList = ({ offers, onUpdateStatus, onEditOffer, onDeleteOffer, onCanc
         </Tabs>
       </CardHeader>
       <CardContent>
-        {filteredOffers.length === 0 ? (
+        {combinedItems.length === 0 ? (
           <div className="text-center py-12">
             <Icon name="FileText" size={48} className="mx-auto mb-4 text-muted-foreground" />
             <p className="text-muted-foreground">{filterStatus === 'all' ? 'Пока нет объявлений' : 'Нет объявлений с таким статусом'}</p>
@@ -73,7 +94,52 @@ const OffersList = ({ offers, onUpdateStatus, onEditOffer, onDeleteOffer, onCanc
           </div>
         ) : (
           <div className="space-y-4">
-            {filteredOffers.map((offer) => (
+            {combinedItems.map((item) => {
+              if (item.itemType === 'deal') {
+                const deal = item as Deal & { itemType: 'deal' };
+                return (
+                  <div
+                    key={`deal-${deal.id}`}
+                    className="border border-border rounded-lg p-4 bg-green-500/5"
+                  >
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="flex items-center gap-4 flex-1">
+                        <div className="w-12 h-12 rounded-lg flex items-center justify-center bg-green-500/20">
+                          <Icon
+                            name="CheckCircle"
+                            size={24}
+                            className="text-green-500"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <p className="font-semibold text-lg">
+                              {deal.deal_type === 'buy' ? 'Куплю' : 'Продам'} {deal.amount.toLocaleString('ru-RU')} USDT
+                            </p>
+                            <Badge className="bg-green-500/20 text-green-500 border-green-500/30">
+                              Завершено
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground">
+                            Курс: {deal.rate.toFixed(2)} ₽ • Итого: {deal.total.toLocaleString('ru-RU')} ₽
+                          </p>
+                          {deal.partner_name && (
+                            <p className="text-sm text-muted-foreground mt-1">
+                              Партнёр: {deal.partner_name}
+                            </p>
+                          )}
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Создано: {formatDate(deal.created_at)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+              
+              const offer = item as Offer & { itemType: 'offer' };
+              return (
               <div 
                 key={offer.id} 
                 className="border border-border rounded-lg p-4 hover:border-secondary transition-all"
@@ -177,7 +243,8 @@ const OffersList = ({ offers, onUpdateStatus, onEditOffer, onDeleteOffer, onCanc
                   </div>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </CardContent>

@@ -49,8 +49,8 @@ const Admin = () => {
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-2 bg-card border border-border mb-6">
               <TabsTrigger value="deals-offers" className="data-[state=active]:bg-secondary data-[state=active]:text-primary">
-                <Icon name="Handshake" className="mr-2" size={20} />
-                Объявления и сделки
+                <Icon name="FileText" className="mr-2" size={20} />
+                Объявления
               </TabsTrigger>
               <TabsTrigger value="users" className="data-[state=active]:bg-secondary data-[state=active]:text-primary">
                 <Icon name="Users" className="mr-2" size={20} />

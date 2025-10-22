@@ -16,7 +16,6 @@ interface DealsOffersTabProps {
 }
 
 const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDeal, onCompleteOffer }: DealsOffersTabProps) => {
-  const [filterType, setFilterType] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
 
   type CombinedItem = (Offer & { itemType: 'offer' }) | (Deal & { itemType: 'deal' });
@@ -25,13 +24,6 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
     ...offers.map(o => ({ ...o, itemType: 'offer' as const })),
     ...deals.map(d => ({ ...d, itemType: 'deal' as const }))
   ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
-
-  // Filter by type (offers/deals)
-  if (filterType === 'offers') {
-    combinedItems = combinedItems.filter(item => item.itemType === 'offer');
-  } else if (filterType === 'deals') {
-    combinedItems = combinedItems.filter(item => item.itemType === 'deal');
-  }
 
   // Filter by status
   if (filterStatus === 'reserved') {
@@ -46,30 +38,16 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
     <div className="space-y-6">
       <Card className="bg-card border-border">
         <CardContent className="p-6">
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-sm font-medium mb-2">Тип</h3>
-              <Tabs value={filterType} onValueChange={setFilterType}>
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="all">Все</TabsTrigger>
-                  <TabsTrigger value="offers">Объявления</TabsTrigger>
-                  <TabsTrigger value="deals">Сделки</TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </div>
-            <div>
-              <h3 className="text-sm font-medium mb-2">Статус</h3>
-              <Tabs value={filterStatus} onValueChange={setFilterStatus}>
-                <TabsList className="grid w-full grid-cols-5">
-                  <TabsTrigger value="all">Все</TabsTrigger>
-                  <TabsTrigger value="active">Активные</TabsTrigger>
-                  <TabsTrigger value="reserved">Зарезервированные</TabsTrigger>
-                  <TabsTrigger value="inactive">Приостановленные</TabsTrigger>
-                  <TabsTrigger value="completed">Завершенные</TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </div>
-          </div>
+          <h3 className="text-sm font-medium mb-3">Фильтр по статусу</h3>
+          <Tabs value={filterStatus} onValueChange={setFilterStatus}>
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="all">Все</TabsTrigger>
+              <TabsTrigger value="active">Активные</TabsTrigger>
+              <TabsTrigger value="reserved">Зарезервированные</TabsTrigger>
+              <TabsTrigger value="inactive">Приостановленные</TabsTrigger>
+              <TabsTrigger value="completed">Завершенные</TabsTrigger>
+            </TabsList>
+          </Tabs>
         </CardContent>
       </Card>
       
@@ -91,15 +69,17 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-3">
-                      <Badge className="bg-blue-500/20 text-blue-500 border-blue-500/30">
-                        Объявление
-                      </Badge>
                       <Badge variant={offer.offer_type === 'buy' ? 'default' : 'secondary'}>
                         {offer.offer_type === 'buy' ? 'Покупка' : 'Продажа'}
                       </Badge>
-                      <Badge variant={offer.status === 'active' ? 'default' : 'outline'}>
-                        {offer.status === 'active' ? 'Активно' : 'Неактивно'}
+                      <Badge variant={offer.status === 'active' ? 'default' : offer.status === 'completed' ? 'outline' : 'secondary'}>
+                        {offer.status === 'active' ? 'Активно' : offer.status === 'completed' ? 'Завершено' : 'Приостановлено'}
                       </Badge>
+                      {offer.reserved_by && (
+                        <Badge className="bg-orange-500/20 text-orange-500 border-orange-500/30">
+                          Зарезервировано
+                        </Badge>
+                      )}
                     </div>
                     <p className="text-xl font-bold mb-2">
                       {offer.amount.toLocaleString()} USDT по {offer.rate.toLocaleString()} ₽
@@ -164,14 +144,11 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-3">
-                      <Badge className="bg-green-500/20 text-green-500 border-green-500/30">
-                        Сделка
-                      </Badge>
                       <Badge variant={deal.deal_type === 'buy' ? 'default' : 'secondary'}>
                         {deal.deal_type === 'buy' ? 'Покупка' : 'Продажа'}
                       </Badge>
-                      <Badge variant={deal.status === 'completed' ? 'default' : 'outline'}>
-                        {deal.status === 'completed' ? 'Завершена' : deal.status === 'pending' ? 'В процессе' : 'Отменена'}
+                      <Badge className="bg-green-500/20 text-green-500 border-green-500/30">
+                        Завершено
                       </Badge>
                     </div>
                     <p className="text-2xl font-bold mb-2">
