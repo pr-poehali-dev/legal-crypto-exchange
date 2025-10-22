@@ -27,9 +27,11 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
   const [offers, setOffers] = useState<Offer[]>([]);
   const [sortBy, setSortBy] = useState<'rate' | 'amount-min' | 'amount-max' | 'time'>('rate');
   const [isLoading, setIsLoading] = useState(true);
+  const [currentRate, setCurrentRate] = useState<number | null>(null);
 
   useEffect(() => {
     loadOffers();
+    fetchCurrentRate();
   }, []);
 
   const loadOffers = async () => {
@@ -44,6 +46,19 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
       console.error('Failed to load offers:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchCurrentRate = async () => {
+    try {
+      const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=rub');
+      const data = await response.json();
+      
+      if (data.tether?.rub) {
+        setCurrentRate(data.tether.rub);
+      }
+    } catch (error) {
+      console.error('Failed to fetch rate:', error);
     }
   };
 
@@ -108,6 +123,13 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
         <div className="text-center mb-16">
           <h3 className="text-4xl md:text-5xl font-bold mb-4">Объявления</h3>
           <p className="text-xl text-muted-foreground">Актуальные предложения от проверенных пользователей</p>
+          {currentRate && (
+            <div className="mt-4 inline-flex items-center gap-2 bg-card border border-border rounded-lg px-4 py-2">
+              <Icon name="TrendingUp" size={18} className="text-secondary" />
+              <span className="text-sm text-muted-foreground">Рыночный курс USDT:</span>
+              <span className="text-lg font-bold text-secondary">{currentRate.toFixed(2)} ₽</span>
+            </div>
+          )}
         </div>
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center justify-between mb-6">
