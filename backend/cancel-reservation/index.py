@@ -1,13 +1,12 @@
 import json
 import os
 import psycopg2
-import requests
 from typing import Dict, Any
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Reserve offer and notify owner via Telegram
-    Args: event with httpMethod, body containing offer_id, user_id, username
+    Business: Cancel offer reservation (owner only)
+    Args: event with httpMethod, body containing offer_id, user_id
           context with request_id
     Returns: HTTP response with success status
     '''
@@ -40,9 +39,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     offer_id = body_data.get('offer_id')
     user_id = body_data.get('user_id')
-    username = body_data.get('username')
     
-    if not all([offer_id, user_id, username]):
+    if not all([offer_id, user_id]):
         return {
             'statusCode': 400,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
@@ -55,13 +53,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     conn = psycopg2.connect(dsn)
     cur = conn.cursor()
     
-    cur.execute("""
-        SELECT o.user_id, o.amount, o.rate, o.meeting_time, o.offer_type, 
-               u.telegram_id, u.username as owner_username, o.reserved_by
-        FROM offers o
-        JOIN users u ON o.user_id = u.id
-        WHERE o.id = %s AND o.status = 'active'
-    """, (offer_id,))
+    cur.execute(
+        "SELECT user_id, reserved_by FROM offers WHERE id = %s",
+        (offer_id,)
+    )
     
     result = cur.fetchone()
     
@@ -72,61 +67,37 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'statusCode': 404,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'isBase64Encoded': False,
-            'body': json.dumps({'success': False, 'error': 'Offer not found or not active'})
+            'body': json.dumps({'success': False, 'error': 'Offer not found'})
         }
     
-    owner_id, amount, rate, meeting_time, offer_type, telegram_id, owner_username, reserved_by = result
+    owner_id, reserved_by = result
     
-    if owner_id == user_id:
+    if owner_id != user_id:
+        cur.close()
+        conn.close()
+        return {
+            'statusCode': 403,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
+            'body': json.dumps({'success': False, 'error': 'Not authorized'})
+        }
+    
+    if not reserved_by:
         cur.close()
         conn.close()
         return {
             'statusCode': 400,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'isBase64Encoded': False,
-            'body': json.dumps({'success': False, 'error': 'Cannot reserve own offer'})
-        }
-    
-    if reserved_by:
-        cur.close()
-        conn.close()
-        return {
-            'statusCode': 400,
-            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-            'isBase64Encoded': False,
-            'body': json.dumps({'success': False, 'error': 'Offer already reserved'})
+            'body': json.dumps({'success': False, 'error': 'Offer is not reserved'})
         }
     
     cur.execute(
-        "UPDATE offers SET reserved_by = %s, reserved_at = NOW() WHERE id = %s",
-        (user_id, offer_id)
+        "UPDATE offers SET reserved_by = NULL, reserved_at = NULL WHERE id = %s",
+        (offer_id,)
     )
+    
     conn.commit()
-    
-    if telegram_id:
-        offer_type_text = 'Покупка' if offer_type == 'buy' else 'Продажа'
-        message = f"""🔔 Ваше объявление зарезервировано!
-
-Пользователь {username} хочет связаться по объявлению:
-📝 Тип: {offer_type_text}
-💰 Сумма: {amount} USDT
-💱 Курс: {rate} ₽
-⏰ Время встречи: {meeting_time}
-
-Пожалуйста, приходите в офис в указанное время."""
-        
-        try:
-            requests.post(
-                'https://functions.poehali.dev/c17d8ba8-84ab-4563-98d1-53c3a38aeae2',
-                json={
-                    'telegram_id': telegram_id,
-                    'message': message
-                },
-                timeout=5
-            )
-        except Exception as e:
-            print(f"Failed to send Telegram notification: {e}")
-    
     cur.close()
     conn.close()
     

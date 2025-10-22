@@ -42,10 +42,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     conn = psycopg2.connect(dsn)
     cur = conn.cursor()
     
-    cur.execute(
-        "SELECT id, offer_type, amount, rate, meeting_time, status, created_at FROM offers WHERE user_id = %s ORDER BY created_at DESC",
-        (user_id,)
-    )
+    cur.execute("""
+        SELECT o.id, o.offer_type, o.amount, o.rate, o.meeting_time, o.status, o.created_at, 
+               o.reserved_by, o.reserved_at, u.username as reserved_by_username
+        FROM offers o
+        LEFT JOIN users u ON o.reserved_by = u.id
+        WHERE o.user_id = %s 
+        ORDER BY o.created_at DESC
+    """, (user_id,))
     
     rows = cur.fetchall()
     
@@ -58,7 +62,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'rate': float(row[3]),
             'meeting_time': row[4],
             'status': row[5],
-            'created_at': row[6].isoformat() if row[6] else None
+            'created_at': row[6].isoformat() if row[6] else None,
+            'reserved_by': row[7],
+            'reserved_at': row[8].isoformat() if row[8] else None,
+            'reserved_by_username': row[9]
         })
     
     cur.close()

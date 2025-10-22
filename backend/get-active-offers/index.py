@@ -33,12 +33,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     if offer_type:
         cur.execute(
-            "SELECT o.id, o.user_id, o.offer_type, o.amount, o.rate, o.meeting_time, o.created_at, u.username, u.phone FROM offers o JOIN users u ON o.user_id = u.id WHERE o.status = 'active' AND o.offer_type = %s ORDER BY o.created_at DESC",
+            "SELECT o.id, o.user_id, o.offer_type, o.amount, o.rate, o.meeting_time, o.created_at, u.username, u.phone FROM offers o JOIN users u ON o.user_id = u.id WHERE o.status = 'active' AND o.reserved_by IS NULL AND o.offer_type = %s ORDER BY o.created_at DESC",
             (offer_type,)
         )
     else:
         cur.execute(
-            "SELECT o.id, o.user_id, o.offer_type, o.amount, o.rate, o.meeting_time, o.created_at, u.username, u.phone FROM offers o JOIN users u ON o.user_id = u.id WHERE o.status = 'active' ORDER BY o.created_at DESC"
+            "SELECT o.id, o.user_id, o.offer_type, o.amount, o.rate, o.meeting_time, o.created_at, u.username, u.phone FROM offers o JOIN users u ON o.user_id = u.id WHERE o.status = 'active' AND o.reserved_by IS NULL ORDER BY o.created_at DESC"
         )
     
     rows = cur.fetchall()

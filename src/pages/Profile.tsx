@@ -28,6 +28,9 @@ interface Offer {
   meeting_time: string;
   status: string;
   created_at: string;
+  reserved_by?: number;
+  reserved_at?: string;
+  reserved_by_username?: string;
 }
 
 const Profile = () => {
@@ -278,6 +281,40 @@ const Profile = () => {
     }
   };
 
+  const handleCancelReservation = async (offerId: number) => {
+    if (!confirm('Вы уверены, что хотите отменить резервацию?')) return;
+
+    try {
+      const response = await fetch('https://functions.poehali.dev/d3db438e-da8f-4c6a-a366-764038cf12c3', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ offer_id: offerId, user_id: user.id }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast({
+          title: 'Успешно!',
+          description: 'Резервация отменена',
+        });
+        loadOffers(user.id);
+      } else {
+        toast({
+          title: 'Ошибка',
+          description: data.error || 'Не удалось отменить резервацию',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось отменить резервацию',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('user');
     navigate('/');
@@ -332,6 +369,7 @@ const Profile = () => {
             onUpdateStatus={handleUpdateOfferStatus}
             onEditOffer={handleEditOffer}
             onDeleteOffer={handleDeleteOffer}
+            onCancelReservation={handleCancelReservation}
             formatDate={formatDate}
           />
 

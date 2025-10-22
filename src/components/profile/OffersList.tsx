@@ -11,6 +11,9 @@ interface Offer {
   meeting_time: string;
   status: string;
   created_at: string;
+  reserved_by?: number;
+  reserved_at?: string;
+  reserved_by_username?: string;
 }
 
 interface OffersListProps {
@@ -18,10 +21,11 @@ interface OffersListProps {
   onUpdateStatus: (offerId: number, status: string) => void;
   onEditOffer: (offer: Offer) => void;
   onDeleteOffer: (offerId: number) => void;
+  onCancelReservation: (offerId: number) => void;
   formatDate: (dateString: string) => string;
 }
 
-const OffersList = ({ offers, onUpdateStatus, onEditOffer, onDeleteOffer, formatDate }: OffersListProps) => {
+const OffersList = ({ offers, onUpdateStatus, onEditOffer, onDeleteOffer, onCancelReservation, formatDate }: OffersListProps) => {
   const getOfferStatusBadge = (status: string) => {
     const statusConfig: Record<string, { label: string; className: string }> = {
       active: { label: 'Активно', className: 'bg-accent/20 text-accent border-accent/30' },
@@ -74,57 +78,81 @@ const OffersList = ({ offers, onUpdateStatus, onEditOffer, onDeleteOffer, format
                           {offer.offer_type === 'buy' ? 'Куплю' : 'Продам'} {offer.amount.toLocaleString('ru-RU')} USDT
                         </p>
                         {getOfferStatusBadge(offer.status)}
+                        {offer.reserved_by && (
+                          <Badge className="bg-orange-500/20 text-orange-500 border-orange-500/30">
+                            Зарезервировано
+                          </Badge>
+                        )}
                       </div>
                       <p className="text-sm text-muted-foreground">
                         Курс: {offer.rate.toFixed(2)} ₽ • {offer.meeting_time}
                       </p>
+                      {offer.reserved_by && offer.reserved_by_username && (
+                        <p className="text-sm text-orange-500 mt-1">
+                          Забронировал: {offer.reserved_by_username}
+                        </p>
+                      )}
                       <p className="text-xs text-muted-foreground mt-1">
                         Создано: {formatDate(offer.created_at)}
                       </p>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {offer.status === 'active' && (
+                    {offer.reserved_by ? (
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => onUpdateStatus(offer.id, 'inactive')}
-                        className="border-secondary text-secondary hover:bg-secondary/10"
+                        onClick={() => onCancelReservation(offer.id)}
+                        className="border-orange-500 text-orange-500 hover:bg-orange-500/10"
                       >
-                        <Icon name="Pause" size={16} className="mr-1" />
-                        Деактивировать
+                        <Icon name="X" size={16} className="mr-1" />
+                        Отменить резервацию
                       </Button>
-                    )}
-                    {offer.status === 'inactive' && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => onUpdateStatus(offer.id, 'active')}
-                        className="border-accent text-accent hover:bg-accent/10"
-                      >
-                        <Icon name="Play" size={16} className="mr-1" />
-                        Активировать
-                      </Button>
-                    )}
-                    {offer.status !== 'completed' && (
+                    ) : (
                       <>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => onEditOffer(offer)}
-                        >
-                          <Icon name="Pencil" size={16} className="mr-1" />
-                          Изменить
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => onDeleteOffer(offer.id)}
-                          className="border-destructive text-destructive hover:bg-destructive/10"
-                        >
-                          <Icon name="Trash2" size={16} className="mr-1" />
-                          Удалить
-                        </Button>
+                        {offer.status === 'active' && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => onUpdateStatus(offer.id, 'inactive')}
+                            className="border-secondary text-secondary hover:bg-secondary/10"
+                          >
+                            <Icon name="Pause" size={16} className="mr-1" />
+                            Деактивировать
+                          </Button>
+                        )}
+                        {offer.status === 'inactive' && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => onUpdateStatus(offer.id, 'active')}
+                            className="border-accent text-accent hover:bg-accent/10"
+                          >
+                            <Icon name="Play" size={16} className="mr-1" />
+                            Активировать
+                          </Button>
+                        )}
+                        {offer.status !== 'completed' && (
+                          <>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => onEditOffer(offer)}
+                            >
+                              <Icon name="Pencil" size={16} className="mr-1" />
+                              Изменить
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => onDeleteOffer(offer.id)}
+                              className="border-destructive text-destructive hover:bg-destructive/10"
+                            >
+                              <Icon name="Trash2" size={16} className="mr-1" />
+                              Удалить
+                            </Button>
+                          </>
+                        )}
                       </>
                     )}
                   </div>
