@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Offer, Deal } from './types';
 
 interface DealsOffersTabProps {
@@ -14,26 +16,67 @@ interface DealsOffersTabProps {
 }
 
 const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDeal, onCompleteOffer }: DealsOffersTabProps) => {
+  const [filterType, setFilterType] = useState<string>('all');
+  const [filterStatus, setFilterStatus] = useState<string>('all');
+
   type CombinedItem = (Offer & { itemType: 'offer' }) | (Deal & { itemType: 'deal' });
   
-  const combinedItems: CombinedItem[] = [
+  let combinedItems: CombinedItem[] = [
     ...offers.map(o => ({ ...o, itemType: 'offer' as const })),
     ...deals.map(d => ({ ...d, itemType: 'deal' as const }))
   ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
-  if (combinedItems.length === 0) {
-    return (
-      <Card className="bg-card border-border">
-        <CardContent className="p-12 text-center">
-          <Icon name="Inbox" size={48} className="mx-auto mb-4 text-muted-foreground" />
-          <p className="text-muted-foreground">Объявлений и сделок пока нет</p>
-        </CardContent>
-      </Card>
-    );
+  // Filter by type (offers/deals)
+  if (filterType === 'offers') {
+    combinedItems = combinedItems.filter(item => item.itemType === 'offer');
+  } else if (filterType === 'deals') {
+    combinedItems = combinedItems.filter(item => item.itemType === 'deal');
+  }
+
+  // Filter by status
+  if (filterStatus !== 'all') {
+    combinedItems = combinedItems.filter(item => item.status === filterStatus);
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      <Card className="bg-card border-border">
+        <CardContent className="p-6">
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-sm font-medium mb-2">Тип</h3>
+              <Tabs value={filterType} onValueChange={setFilterType}>
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="all">Все</TabsTrigger>
+                  <TabsTrigger value="offers">Объявления</TabsTrigger>
+                  <TabsTrigger value="deals">Сделки</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+            <div>
+              <h3 className="text-sm font-medium mb-2">Статус</h3>
+              <Tabs value={filterStatus} onValueChange={setFilterStatus}>
+                <TabsList className="grid w-full grid-cols-4">
+                  <TabsTrigger value="all">Все</TabsTrigger>
+                  <TabsTrigger value="active">Активные</TabsTrigger>
+                  <TabsTrigger value="inactive">Приостановленные</TabsTrigger>
+                  <TabsTrigger value="completed">Завершенные</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      
+      {combinedItems.length === 0 ? (
+        <Card className="bg-card border-border">
+          <CardContent className="p-12 text-center">
+            <Icon name="Inbox" size={48} className="mx-auto mb-4 text-muted-foreground" />
+            <p className="text-muted-foreground">Нет данных с выбранными фильтрами</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-4">
       {combinedItems.map((item) => {
         if (item.itemType === 'offer') {
           const offer = item as Offer & { itemType: 'offer' };
@@ -163,6 +206,8 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
           );
         }
       })}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface Offer {
   id: number;
@@ -26,6 +28,14 @@ interface OffersListProps {
 }
 
 const OffersList = ({ offers, onUpdateStatus, onEditOffer, onDeleteOffer, onCancelReservation, formatDate }: OffersListProps) => {
+  const [filterStatus, setFilterStatus] = useState<string>('all');
+
+  const filteredOffers = offers.filter(offer => {
+    if (filterStatus === 'all') return true;
+    if (filterStatus === 'reserved') return offer.reserved_by !== undefined && offer.reserved_by !== null;
+    return offer.status === filterStatus;
+  });
+
   const getOfferStatusBadge = (status: string) => {
     const statusConfig: Record<string, { label: string; className: string }> = {
       active: { label: 'Активно', className: 'bg-accent/20 text-accent border-accent/30' },
@@ -44,17 +54,26 @@ const OffersList = ({ offers, onUpdateStatus, onEditOffer, onDeleteOffer, onCanc
         <CardDescription>
           Управление вашими объявлениями
         </CardDescription>
+        <Tabs value={filterStatus} onValueChange={setFilterStatus} className="mt-4">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="all">Все</TabsTrigger>
+            <TabsTrigger value="active">Активные</TabsTrigger>
+            <TabsTrigger value="reserved">Зарезервированные</TabsTrigger>
+            <TabsTrigger value="inactive">Приостановленные</TabsTrigger>
+            <TabsTrigger value="completed">Завершенные</TabsTrigger>
+          </TabsList>
+        </Tabs>
       </CardHeader>
       <CardContent>
-        {offers.length === 0 ? (
+        {filteredOffers.length === 0 ? (
           <div className="text-center py-12">
             <Icon name="FileText" size={48} className="mx-auto mb-4 text-muted-foreground" />
-            <p className="text-muted-foreground">Пока нет объявлений</p>
+            <p className="text-muted-foreground">{filterStatus === 'all' ? 'Пока нет объявлений' : 'Нет объявлений с таким статусом'}</p>
             <p className="text-sm text-muted-foreground mt-2">Создайте первое объявление</p>
           </div>
         ) : (
           <div className="space-y-4">
-            {offers.map((offer) => (
+            {filteredOffers.map((offer) => (
               <div 
                 key={offer.id} 
                 className="border border-border rounded-lg p-4 hover:border-secondary transition-all"

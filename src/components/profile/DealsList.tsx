@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 import { useNavigate } from 'react-router-dom';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface Deal {
   id: number;
@@ -23,6 +25,12 @@ interface DealsListProps {
 
 const DealsList = ({ deals, isLoading, formatDate }: DealsListProps) => {
   const navigate = useNavigate();
+  const [filterStatus, setFilterStatus] = useState<string>('all');
+
+  const filteredDeals = deals.filter(deal => {
+    if (filterStatus === 'all') return true;
+    return deal.status === filterStatus;
+  });
 
   const getStatusBadge = (status: string) => {
     const statusConfig: Record<string, { label: string; className: string }> = {
@@ -42,16 +50,23 @@ const DealsList = ({ deals, isLoading, formatDate }: DealsListProps) => {
         <CardDescription>
           Все ваши операции на платформе
         </CardDescription>
+        <Tabs value={filterStatus} onValueChange={setFilterStatus} className="mt-4">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="all">Все</TabsTrigger>
+            <TabsTrigger value="pending">Активные</TabsTrigger>
+            <TabsTrigger value="completed">Завершенные</TabsTrigger>
+          </TabsList>
+        </Tabs>
       </CardHeader>
       <CardContent>
         {isLoading ? (
           <div className="text-center py-12 text-muted-foreground">
             Загрузка...
           </div>
-        ) : deals.length === 0 ? (
+        ) : filteredDeals.length === 0 ? (
           <div className="text-center py-12">
             <Icon name="Inbox" size={48} className="mx-auto mb-4 text-muted-foreground" />
-            <p className="text-muted-foreground">Пока нет сделок</p>
+            <p className="text-muted-foreground">{filterStatus === 'all' ? 'Пока нет сделок' : 'Нет сделок с таким статусом'}</p>
             <Button 
               onClick={() => navigate('/#offers')} 
               className="mt-4 bg-secondary text-primary hover:bg-secondary/90"
@@ -61,7 +76,7 @@ const DealsList = ({ deals, isLoading, formatDate }: DealsListProps) => {
           </div>
         ) : (
           <div className="space-y-4">
-            {deals.map((deal) => (
+            {filteredDeals.map((deal) => (
               <div 
                 key={deal.id} 
                 className="border border-border rounded-lg p-4 hover:border-secondary transition-all"
