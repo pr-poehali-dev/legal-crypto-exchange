@@ -74,7 +74,12 @@ const HeroSection = () => {
                 </div>
               </DialogContent>
             </Dialog>
-            <Button size="lg" variant="outline" className="border-secondary text-foreground hover:bg-secondary/10 text-lg px-8 py-6">
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="border-secondary text-foreground hover:bg-secondary/10 text-lg px-8 py-6"
+              onClick={() => document.getElementById('offers')?.scrollIntoView({ behavior: 'smooth' })}
+            >
               <Icon name="ArrowRight" className="mr-2" size={20} />
               Узнать больше
             </Button>
