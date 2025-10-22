@@ -27,26 +27,48 @@ interface Offer {
   phone: string;
 }
 
+const ADMIN_LOGIN = 'admin_kuzbassexchange';
+const ADMIN_PASSWORD = 'Kzb2025!Secure#';
+
 const Admin = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('offers');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loginInput, setLoginInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
 
   useEffect(() => {
-    const user = localStorage.getItem('user');
-    if (!user) {
-      navigate('/');
-      return;
+    const adminAuth = sessionStorage.getItem('adminAuth');
+    if (adminAuth === 'authenticated') {
+      setIsAuthenticated(true);
+      loadData();
     }
+  }, []);
 
-    const userData = JSON.parse(user);
-    if (userData.email !== 'admin@admin.com') {
-      navigate('/');
-      return;
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (loginInput === ADMIN_LOGIN && passwordInput === ADMIN_PASSWORD) {
+      sessionStorage.setItem('adminAuth', 'authenticated');
+      setIsAuthenticated(true);
+      loadData();
+      toast.success('Добро пожаловать в админ-панель');
+    } else {
+      toast.error('Неверный логин или пароль');
     }
+  };
 
+  const handleLogout = () => {
+    sessionStorage.removeItem('adminAuth');
+    setIsAuthenticated(false);
+    setLoginInput('');
+    setPasswordInput('');
+  };
+
+  useEffect(() => {
+    if (!isAuthenticated) return;
     loadData();
   }, [navigate]);
 
@@ -124,6 +146,51 @@ const Admin = () => {
     }
   };
 
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-4">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <div className="flex items-center justify-center mb-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-secondary to-accent rounded-lg flex items-center justify-center">
+                <Icon name="Shield" size={32} className="text-primary" />
+              </div>
+            </div>
+            <CardTitle className="text-2xl text-center">Вход в админ-панель</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">Логин</label>
+                <input
+                  type="text"
+                  value={loginInput}
+                  onChange={(e) => setLoginInput(e.target.value)}
+                  className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-secondary"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-2">Пароль</label>
+                <input
+                  type="password"
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-secondary"
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full bg-secondary text-primary hover:bg-secondary/90">
+                <Icon name="LogIn" className="mr-2" size={16} />
+                Войти
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -144,13 +211,13 @@ const Admin = () => {
               <h1 className="text-2xl font-bold text-foreground">Админ-панель</h1>
             </div>
             <div className="flex items-center gap-3">
+              <Button onClick={handleLogout} variant="outline" className="border-red-500 text-red-500 hover:bg-red-500 hover:text-white">
+                <Icon name="LogOut" className="mr-2" size={16} />
+                Выйти из админки
+              </Button>
               <Button onClick={() => navigate('/')} variant="outline">
                 <Icon name="Home" className="mr-2" size={16} />
                 На главную
-              </Button>
-              <Button onClick={() => navigate('/profile')} variant="outline">
-                <Icon name="User" className="mr-2" size={16} />
-                Кабинет
               </Button>
             </div>
           </div>
