@@ -34,7 +34,11 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
   }
 
   // Filter by status
-  if (filterStatus !== 'all') {
+  if (filterStatus === 'reserved') {
+    combinedItems = combinedItems.filter(item => 
+      item.itemType === 'offer' && 'reserved_by' in item && item.reserved_by !== undefined && item.reserved_by !== null
+    );
+  } else if (filterStatus !== 'all') {
     combinedItems = combinedItems.filter(item => item.status === filterStatus);
   }
 
@@ -56,9 +60,10 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
             <div>
               <h3 className="text-sm font-medium mb-2">Статус</h3>
               <Tabs value={filterStatus} onValueChange={setFilterStatus}>
-                <TabsList className="grid w-full grid-cols-4">
+                <TabsList className="grid w-full grid-cols-5">
                   <TabsTrigger value="all">Все</TabsTrigger>
                   <TabsTrigger value="active">Активные</TabsTrigger>
+                  <TabsTrigger value="reserved">Зарезервированные</TabsTrigger>
                   <TabsTrigger value="inactive">Приостановленные</TabsTrigger>
                   <TabsTrigger value="completed">Завершенные</TabsTrigger>
                 </TabsList>

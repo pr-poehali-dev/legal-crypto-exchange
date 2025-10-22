@@ -103,7 +103,9 @@ export const useAdminData = () => {
       const data = await response.json();
       if (data.success) {
         toast.success('Сделка завершена');
-        loadDeals();
+        await loadDeals();
+        await loadOffers();
+        await loadUsers();
       } else {
         toast.error('Ошибка при завершении сделки');
       }
@@ -170,7 +172,9 @@ export const useAdminData = () => {
       const data = await response.json();
       if (data.success) {
         toast.success('Сделка подтверждена');
-        loadOffers();
+        await loadOffers();
+        await loadDeals();
+        await loadUsers();
       } else {
         toast.error('Ошибка при подтверждении сделки');
       }

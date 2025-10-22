@@ -285,6 +285,7 @@ const Profile = () => {
           description: status === 'active' ? 'Объявление активировано' : status === 'inactive' ? 'Объявление деактивировано' : 'Объявление завершено',
         });
         loadOffers(user.id);
+        loadDeals(user.id);
       }
     } catch (error) {
       toast({
@@ -313,6 +314,7 @@ const Profile = () => {
           description: 'Резервация отменена',
         });
         loadOffers(user.id);
+        loadDeals(user.id);
       } else {
         toast({
           title: 'Ошибка',
