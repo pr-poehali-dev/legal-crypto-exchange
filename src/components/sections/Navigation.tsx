@@ -106,11 +106,11 @@ const Navigation = () => {
     <nav className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto px-3 md:px-6 py-3 md:py-4">
         <div className="flex items-center justify-between gap-2">
-          <a href="/" className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity min-w-0">
-            <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-secondary to-accent rounded-lg flex items-center justify-center flex-shrink-0">
-              <Icon name="Shield" size={20} className="text-primary md:w-6 md:h-6" />
+          <a href="/" className="flex items-center space-x-1.5 md:space-x-2 cursor-pointer hover:opacity-80 transition-opacity">
+            <div className="w-7 h-7 md:w-10 md:h-10 bg-gradient-to-br from-secondary to-accent rounded-lg flex items-center justify-center flex-shrink-0">
+              <Icon name="Shield" size={16} className="text-primary md:w-6 md:h-6" />
             </div>
-            <h1 className="md:text-2xl font-bold text-foreground truncate text-sm">Legal Crypto Change</h1>
+            <h1 className="text-xs md:text-2xl font-bold text-foreground whitespace-nowrap">Legal Crypto Change</h1>
           </a>
           <div className="flex items-center space-x-2 md:space-x-8 flex-shrink-0">
             <a href="/#services" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Услуги</a>
