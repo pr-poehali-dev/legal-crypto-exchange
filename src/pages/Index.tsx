@@ -33,11 +33,11 @@ const Index = () => {
               </div>
               <h1 className="text-2xl font-bold text-foreground">Legal Crypto Change</h1>
             </div>
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#services" className="text-muted-foreground hover:text-foreground transition-colors">Услуги</a>
-              <a href="#guarantees" className="text-muted-foreground hover:text-foreground transition-colors">Гарантии</a>
-              <a href="#offers" className="text-muted-foreground hover:text-foreground transition-colors">Объявления</a>
-              <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors">Контакты</a>
+            <div className="flex items-center space-x-8">
+              <a href="#services" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Услуги</a>
+              <a href="#guarantees" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Гарантии</a>
+              <a href="#offers" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Объявления</a>
+              <a href="#contact" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Контакты</a>
               <Dialog>
                 <DialogTrigger asChild>
                   <Button className="bg-secondary text-primary hover:bg-secondary/90">
