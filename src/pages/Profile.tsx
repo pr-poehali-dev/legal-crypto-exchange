@@ -22,11 +22,22 @@ interface Deal {
   created_at: string;
 }
 
+interface Offer {
+  id: number;
+  offer_type: string;
+  amount: number;
+  rate: number;
+  meeting_time: string;
+  status: string;
+  created_at: string;
+}
+
 const Profile = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
   const [deals, setDeals] = useState<Deal[]>([]);
+  const [offers, setOffers] = useState<Offer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [offerType, setOfferType] = useState<'buy' | 'sell'>('buy');
@@ -45,6 +56,7 @@ const Profile = () => {
     setUser(userData);
     
     loadDeals(userData.id);
+    loadOffers(userData.id);
   }, [navigate]);
 
   const loadDeals = async (userId: number) => {
@@ -59,6 +71,19 @@ const Profile = () => {
       console.error('Failed to load deals:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const loadOffers = async (userId: number) => {
+    try {
+      const response = await fetch(`https://functions.poehali.dev/ad8e0859-d6b1-4dde-8da7-2b137a4c9abb?user_id=${userId}`);
+      const data = await response.json();
+      
+      if (data.success) {
+        setOffers(data.offers);
+      }
+    } catch (error) {
+      console.error('Failed to load offers:', error);
     }
   };
 
@@ -118,6 +143,7 @@ const Profile = () => {
         setAmount('');
         setRate('');
         setMeetingTime('');
+        loadOffers(user.id);
       } else {
         toast({
           title: 'Ошибка',
@@ -134,10 +160,47 @@ const Profile = () => {
     }
   };
 
+  const handleUpdateOfferStatus = async (offerId: number, status: string) => {
+    try {
+      const response = await fetch('https://functions.poehali.dev/716426cb-1d05-4858-a5f1-4d46123b5470', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ offer_id: offerId, status }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast({
+          title: 'Успешно!',
+          description: status === 'active' ? 'Объявление активировано' : status === 'inactive' ? 'Объявление деактивировано' : 'Объявление завершено',
+        });
+        loadOffers(user.id);
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обновить статус',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const completedDeals = deals.filter(d => d.status === 'completed').length;
   const totalVolume = deals
     .filter(d => d.status === 'completed')
     .reduce((sum, d) => sum + d.total, 0);
+
+  const getOfferStatusBadge = (status: string) => {
+    const statusConfig: Record<string, { label: string; className: string }> = {
+      active: { label: 'Активно', className: 'bg-accent/20 text-accent border-accent/30' },
+      inactive: { label: 'Неактивно', className: 'bg-muted-foreground/20 text-muted-foreground border-muted-foreground/30' },
+      completed: { label: 'Завершено', className: 'bg-secondary/20 text-secondary border-secondary/30' }
+    };
+    
+    const config = statusConfig[status] || statusConfig.active;
+    return <Badge className={config.className}>{config.label}</Badge>;
+  };
 
   if (!user) return null;
 
@@ -299,6 +362,98 @@ const Profile = () => {
               </CardContent>
             </Card>
           </div>
+
+          <Card className="bg-card border-border mb-6">
+            <CardHeader>
+              <CardTitle className="text-2xl">Мои объявления</CardTitle>
+              <CardDescription>
+                Управление вашими объявлениями
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {offers.length === 0 ? (
+                <div className="text-center py-12">
+                  <Icon name="FileText" size={48} className="mx-auto mb-4 text-muted-foreground" />
+                  <p className="text-muted-foreground">Пока нет объявлений</p>
+                  <p className="text-sm text-muted-foreground mt-2">Создайте первое объявление</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {offers.map((offer) => (
+                    <div 
+                      key={offer.id} 
+                      className="border border-border rounded-lg p-4 hover:border-secondary transition-all"
+                    >
+                      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div className="flex items-center gap-4 flex-1">
+                          <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                            offer.offer_type === 'buy' 
+                              ? 'bg-accent/20' 
+                              : 'bg-secondary/20'
+                          }`}>
+                            <Icon 
+                              name={offer.offer_type === 'buy' ? 'ShoppingCart' : 'Wallet'} 
+                              size={24} 
+                              className={offer.offer_type === 'buy' ? 'text-accent' : 'text-secondary'}
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <p className="font-semibold text-lg">
+                                {offer.offer_type === 'buy' ? 'Куплю' : 'Продам'} {offer.amount.toLocaleString('ru-RU')} USDT
+                              </p>
+                              {getOfferStatusBadge(offer.status)}
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                              Курс: {offer.rate.toFixed(2)} ₽ • {offer.meeting_time}
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Создано: {formatDate(offer.created_at)}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
+                          {offer.status === 'active' && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleUpdateOfferStatus(offer.id, 'inactive')}
+                              className="border-secondary text-secondary hover:bg-secondary/10"
+                            >
+                              <Icon name="Pause" size={16} className="mr-1" />
+                              Деактивировать
+                            </Button>
+                          )}
+                          {offer.status === 'inactive' && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleUpdateOfferStatus(offer.id, 'active')}
+                              className="border-accent text-accent hover:bg-accent/10"
+                            >
+                              <Icon name="Play" size={16} className="mr-1" />
+                              Активировать
+                            </Button>
+                          )}
+                          {offer.status !== 'completed' && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleUpdateOfferStatus(offer.id, 'completed')}
+                              className="border-muted-foreground text-muted-foreground hover:bg-muted-foreground/10"
+                            >
+                              <Icon name="Check" size={16} className="mr-1" />
+                              Завершить
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
           <Card className="bg-card border-border">
             <CardHeader>

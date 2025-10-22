@@ -1,0 +1,30 @@
+{
+  "tests": [
+    {
+      "name": "Update offer status",
+      "method": "POST",
+      "body": {
+        "offer_id": 1,
+        "status": "inactive"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Invalid status",
+      "method": "POST",
+      "body": {
+        "offer_id": 1,
+        "status": "invalid_status"
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
