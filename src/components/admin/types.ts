@@ -9,6 +9,7 @@ export interface User {
 
 export interface Offer {
   id: number;
+  user_id: number;
   offer_type: string;
   amount: number;
   rate: number;

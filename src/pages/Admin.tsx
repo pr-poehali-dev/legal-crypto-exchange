@@ -4,15 +4,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
 import AdminHeader from '@/components/admin/AdminHeader';
 import AdminStats from '@/components/admin/AdminStats';
-import DealsTab from '@/components/admin/DealsTab';
-import OffersTab from '@/components/admin/OffersTab';
+import DealsOffersTab from '@/components/admin/DealsOffersTab';
 import UsersTab from '@/components/admin/UsersTab';
 import { useAdminData } from '@/components/admin/useAdminData';
 import { useExcelExport } from '@/components/admin/useExcelExport';
 
 const Admin = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('deals');
+  const [activeTab, setActiveTab] = useState('deals-offers');
   
   const {
     users,
@@ -47,14 +46,10 @@ const Admin = () => {
           <AdminStats users={users} offers={offers} deals={deals} />
 
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-3 bg-card border border-border mb-6">
-              <TabsTrigger value="deals" className="data-[state=active]:bg-secondary data-[state=active]:text-primary">
+            <TabsList className="grid w-full grid-cols-2 bg-card border border-border mb-6">
+              <TabsTrigger value="deals-offers" className="data-[state=active]:bg-secondary data-[state=active]:text-primary">
                 <Icon name="Handshake" className="mr-2" size={20} />
-                Сделки
-              </TabsTrigger>
-              <TabsTrigger value="offers" className="data-[state=active]:bg-secondary data-[state=active]:text-primary">
-                <Icon name="MessageSquare" className="mr-2" size={20} />
-                Объявления
+                Объявления и сделки
               </TabsTrigger>
               <TabsTrigger value="users" className="data-[state=active]:bg-secondary data-[state=active]:text-primary">
                 <Icon name="Users" className="mr-2" size={20} />
@@ -62,20 +57,23 @@ const Admin = () => {
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="deals" className="space-y-4">
-              <DealsTab deals={deals} onCompleteDeal={completeDeal} />
-            </TabsContent>
-
-            <TabsContent value="offers" className="space-y-4">
-              <OffersTab 
-                offers={offers} 
+            <TabsContent value="deals-offers" className="space-y-4">
+              <DealsOffersTab 
+                offers={offers}
+                deals={deals}
                 onToggleStatus={toggleOfferStatus}
                 onDelete={deleteOffer}
+                onCompleteDeal={completeDeal}
               />
             </TabsContent>
 
             <TabsContent value="users" className="space-y-4">
-              <UsersTab users={users} onToggleBlock={toggleUserBlock} />
+              <UsersTab 
+                users={users} 
+                offers={offers}
+                deals={deals}
+                onToggleBlock={toggleUserBlock} 
+              />
             </TabsContent>
           </Tabs>
         </div>
