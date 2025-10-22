@@ -110,7 +110,7 @@ const Navigation = () => {
             <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-secondary to-accent rounded-lg flex items-center justify-center flex-shrink-0">
               <Icon name="Shield" size={20} className="text-primary md:w-6 md:h-6" />
             </div>
-            <h1 className="text-base md:text-2xl font-bold text-foreground truncate">Legal Crypto Change</h1>
+            <h1 className="md:text-2xl font-bold text-foreground truncate text-sm">Legal Crypto Change</h1>
           </a>
           <div className="flex items-center space-x-2 md:space-x-8 flex-shrink-0">
             <a href="/#services" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Услуги</a>
