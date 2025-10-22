@@ -13,6 +13,7 @@ interface User {
   email: string;
   phone: string;
   created_at: string;
+  blocked?: boolean;
 }
 
 interface Offer {
@@ -27,12 +28,29 @@ interface Offer {
   phone: string;
 }
 
+interface Deal {
+  id: number;
+  user_id: number;
+  username: string;
+  email: string;
+  phone: string;
+  deal_type: string;
+  amount: number;
+  rate: number;
+  total: number;
+  status: string;
+  partner_name: string;
+  created_at: string;
+  updated_at: string;
+}
+
 const Admin = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
+  const [deals, setDeals] = useState<Deal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('offers');
+  const [activeTab, setActiveTab] = useState('deals');
 
   useEffect(() => {
     const user = localStorage.getItem('user');
@@ -52,8 +70,20 @@ const Admin = () => {
 
   const loadData = async () => {
     setIsLoading(true);
-    await Promise.all([loadUsers(), loadOffers()]);
+    await Promise.all([loadUsers(), loadOffers(), loadDeals()]);
     setIsLoading(false);
+  };
+
+  const loadDeals = async () => {
+    try {
+      const response = await fetch('https://functions.poehali.dev/b63444fc-5ce5-498a-8eab-6617d79ba7ee');
+      const data = await response.json();
+      if (data.success) {
+        setDeals(data.deals || []);
+      }
+    } catch (error) {
+      console.error('Failed to load deals:', error);
+    }
   };
 
   const loadUsers = async () => {
@@ -99,6 +129,51 @@ const Admin = () => {
       }
     } catch (error) {
       toast.error('Ошибка при удалении');
+    }
+  };
+
+  const completeDeal = async (dealId: number) => {
+    if (!confirm('Завершить эту сделку?')) return;
+
+    try {
+      const response = await fetch('https://functions.poehali.dev/33e941b4-9e68-46b2-8e4a-95ce5ca9b880', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deal_id: dealId })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        toast.success('Сделка завершена');
+        loadDeals();
+      } else {
+        toast.error('Ошибка при завершении сделки');
+      }
+    } catch (error) {
+      toast.error('Ошибка при завершении сделки');
+    }
+  };
+
+  const toggleUserBlock = async (userId: number, currentBlocked: boolean) => {
+    const action = currentBlocked ? 'разблокировать' : 'заблокировать';
+    if (!confirm(`Вы уверены что хотите ${action} пользователя?`)) return;
+
+    try {
+      const response = await fetch('https://functions.poehali.dev/62daff60-6649-4ae2-84a1-d891fa4799bc', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: userId, blocked: !currentBlocked })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        toast.success(data.message);
+        loadUsers();
+      } else {
+        toast.error('Ошибка при изменении статуса');
+      }
+    } catch (error) {
+      toast.error('Ошибка при изменении статуса');
     }
   };
 
@@ -155,12 +230,12 @@ const Admin = () => {
 
       <div className="container mx-auto px-6 py-12">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <Card className="bg-card border-border">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Icon name="Users" size={20} className="text-secondary" />
-                  Всего пользователей
+                  Пользователей
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -171,7 +246,7 @@ const Admin = () => {
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
                   <Icon name="MessageSquare" size={20} className="text-secondary" />
-                  Всего объявлений
+                  Объявлений
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -181,20 +256,35 @@ const Admin = () => {
             <Card className="bg-card border-border">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Icon name="CheckCircle" size={20} className="text-accent" />
-                  Активных объявлений
+                  <Icon name="Handshake" size={20} className="text-accent" />
+                  Сделок
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-4xl font-bold text-accent">
-                  {offers.filter(o => o.status === 'active').length}
+                <p className="text-4xl font-bold text-accent">{deals.length}</p>
+              </CardContent>
+            </Card>
+            <Card className="bg-card border-border">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Icon name="CheckCircle" size={20} className="text-green-500" />
+                  Завершено
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-4xl font-bold text-green-500">
+                  {deals.filter(d => d.status === 'completed').length}
                 </p>
               </CardContent>
             </Card>
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-2 bg-card border border-border mb-6">
+            <TabsList className="grid w-full grid-cols-3 bg-card border border-border mb-6">
+              <TabsTrigger value="deals" className="data-[state=active]:bg-secondary data-[state=active]:text-primary">
+                <Icon name="Handshake" className="mr-2" size={20} />
+                Сделки
+              </TabsTrigger>
               <TabsTrigger value="offers" className="data-[state=active]:bg-secondary data-[state=active]:text-primary">
                 <Icon name="MessageSquare" className="mr-2" size={20} />
                 Объявления
@@ -204,6 +294,54 @@ const Admin = () => {
                 Пользователи
               </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="deals" className="space-y-4">
+              {deals.length === 0 ? (
+                <Card className="bg-card border-border">
+                  <CardContent className="p-12 text-center">
+                    <Icon name="Inbox" size={48} className="mx-auto mb-4 text-muted-foreground" />
+                    <p className="text-muted-foreground">Сделок пока нет</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                deals.map((deal) => (
+                  <Card key={deal.id} className="bg-card border-border hover:border-secondary transition-colors">
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Badge variant={deal.deal_type === 'buy' ? 'default' : 'secondary'}>
+                              {deal.deal_type === 'buy' ? 'Покупка' : 'Продажа'} USDT
+                            </Badge>
+                            <Badge variant={deal.status === 'completed' ? 'default' : 'outline'}>
+                              {deal.status === 'completed' ? 'Завершена' : deal.status === 'pending' ? 'В процессе' : 'Отменена'}
+                            </Badge>
+                          </div>
+                          <p className="text-2xl font-bold text-foreground mb-2">
+                            {deal.amount.toLocaleString()} USDT × {deal.rate.toLocaleString()} ₽ = {deal.total.toLocaleString()} ₽
+                          </p>
+                          <div className="space-y-1 text-sm text-muted-foreground">
+                            <p><strong>Пользователь:</strong> {deal.username} ({deal.email})</p>
+                            <p><strong>Телефон:</strong> {deal.phone}</p>
+                            <p><strong>Партнёр:</strong> {deal.partner_name}</p>
+                            <p><strong>Создана:</strong> {new Date(deal.created_at).toLocaleString('ru-RU')}</p>
+                          </div>
+                        </div>
+                        {deal.status !== 'completed' && (
+                          <Button
+                            onClick={() => completeDeal(deal.id)}
+                            className="bg-green-600 hover:bg-green-700 text-white"
+                          >
+                            <Icon name="CheckCircle" className="mr-2" size={16} />
+                            Завершить
+                          </Button>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              )}
+            </TabsContent>
 
             <TabsContent value="offers" className="space-y-4">
               {offers.length === 0 ? (
@@ -287,25 +425,39 @@ const Admin = () => {
                 users.map(user => (
                   <Card key={user.id} className="bg-card border-border">
                     <CardContent className="p-6">
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div>
-                          <p className="text-sm text-muted-foreground">Имя</p>
-                          <p className="font-semibold">{user.name}</p>
+                      <div className="flex items-start justify-between">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 flex-1">
+                          <div>
+                            <p className="text-sm text-muted-foreground">Имя</p>
+                            <p className="font-semibold">{user.name}</p>
+                            {user.blocked && (
+                              <Badge variant="destructive" className="mt-1">Заблокирован</Badge>
+                            )}
+                          </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">Email</p>
+                            <p className="font-semibold">{user.email}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">Телефон</p>
+                            <p className="font-semibold">{user.phone}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-muted-foreground">Регистрация</p>
+                            <p className="font-semibold">
+                              {new Date(user.created_at).toLocaleDateString('ru-RU')}
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Email</p>
-                          <p className="font-semibold">{user.email}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Телефон</p>
-                          <p className="font-semibold">{user.phone}</p>
-                        </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">Регистрация</p>
-                          <p className="font-semibold">
-                            {new Date(user.created_at).toLocaleDateString('ru-RU')}
-                          </p>
-                        </div>
+                        <Button
+                          size="sm"
+                          variant={user.blocked ? 'default' : 'destructive'}
+                          onClick={() => toggleUserBlock(user.id, user.blocked || false)}
+                          className="ml-4"
+                        >
+                          <Icon name={user.blocked ? 'Unlock' : 'Lock'} className="mr-2" size={16} />
+                          {user.blocked ? 'Разблокировать' : 'Заблокировать'}
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>

@@ -1,5 +1,7 @@
 {
-  "test-hash": "https://functions.poehali.dev/790d9caf-2aec-4449-b72d-837a08664154",
+  "admin-toggle-user-block": "https://functions.poehali.dev/62daff60-6649-4ae2-84a1-d891fa4799bc",
+  "admin-get-deals": "https://functions.poehali.dev/b63444fc-5ce5-498a-8eab-6617d79ba7ee",
+  "admin-complete-deal": "https://functions.poehali.dev/33e941b4-9e68-46b2-8e4a-95ce5ca9b880",
   "get-all-users": "https://functions.poehali.dev/d95b473e-1b4b-4f75-82aa-7e0211e55839",
   "get-all-offers": "https://functions.poehali.dev/24cbcabc-c4e4-496b-a820-0315a576e32e",
   "get-exchange-rate": "https://functions.poehali.dev/f429c90b-c275-4b5d-bcd3-d3a69a15dea9",

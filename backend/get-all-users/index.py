@@ -30,7 +30,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         cur = conn.cursor()
         
         cur.execute(
-            "SELECT id, name, email, phone, created_at FROM users ORDER BY created_at DESC"
+            "SELECT id, name, email, phone, created_at, COALESCE(blocked, false) FROM users ORDER BY created_at DESC"
         )
         
         rows = cur.fetchall()
@@ -42,7 +42,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'name': row[1],
                 'email': row[2],
                 'phone': row[3],
-                'created_at': row[4].isoformat() if row[4] else None
+                'created_at': row[4].isoformat() if row[4] else None,
+                'blocked': row[5]
             })
         
         cur.close()

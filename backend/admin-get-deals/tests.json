@@ -1,0 +1,13 @@
+{
+  "tests": [{
+    "name": "Get all deals",
+    "method": "GET",
+    "path": "/",
+    "expectedStatus": 200,
+    "expectedBody": {
+      "success": true,
+      "deals": "array"
+    },
+    "bodyMatcher": "partial"
+  }]
+}

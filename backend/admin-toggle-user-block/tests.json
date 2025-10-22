@@ -1,0 +1,16 @@
+{
+  "tests": [{
+    "name": "Block user",
+    "method": "POST",
+    "path": "/",
+    "body": {
+      "user_id": 1,
+      "blocked": true
+    },
+    "expectedStatus": 200,
+    "expectedBody": {
+      "success": true
+    },
+    "bodyMatcher": "partial"
+  }]
+}

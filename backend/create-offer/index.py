@@ -55,6 +55,21 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         conn = psycopg2.connect(dsn)
         cursor = conn.cursor()
         
+        cursor.execute('SELECT COALESCE(blocked, false) FROM users WHERE id = %s', (user_id,))
+        user_data = cursor.fetchone()
+        
+        if user_data and user_data[0]:
+            cursor.close()
+            conn.close()
+            return {
+                'statusCode': 403,
+                'headers': {
+                    'Access-Control-Allow-Origin': '*',
+                    'Content-Type': 'application/json'
+                },
+                'body': json.dumps({'error': 'Вы заблокированы и не можете создавать объявления'})
+            }
+        
         cursor.execute('''
             INSERT INTO offers (user_id, offer_type, amount, rate, meeting_time, status)
             VALUES (%s, %s, %s, %s, %s, 'active')
