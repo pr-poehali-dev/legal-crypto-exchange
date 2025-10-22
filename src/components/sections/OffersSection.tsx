@@ -51,11 +51,11 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
 
   const fetchCurrentRate = async () => {
     try {
-      const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=rub');
+      const response = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=USDTRUB');
       const data = await response.json();
       
-      if (data.tether?.rub) {
-        setCurrentRate(data.tether.rub);
+      if (data.price) {
+        setCurrentRate(parseFloat(data.price));
       }
     } catch (error) {
       console.error('Failed to fetch rate:', error);
