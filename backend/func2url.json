@@ -1,4 +1,5 @@
 {
+  "create-offer": "https://functions.poehali.dev/cc03f400-dfb5-45bc-a27d-f18787a96d3e",
   "get-user-deals": "https://functions.poehali.dev/2b464d39-4017-4dda-aff5-982683e83257",
   "login-user": "https://functions.poehali.dev/42eabe98-7376-4ced-87c2-b0b8a64ec658",
   "register-user": "https://functions.poehali.dev/0ff8de54-89bc-48dd-867a-b014941a6c41",

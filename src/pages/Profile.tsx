@@ -3,6 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 import Navigation from '@/components/sections/Navigation';
 
@@ -19,9 +24,15 @@ interface Deal {
 
 const Profile = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [user, setUser] = useState<any>(null);
   const [deals, setDeals] = useState<Deal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [offerType, setOfferType] = useState<'buy' | 'sell'>('buy');
+  const [amount, setAmount] = useState('');
+  const [rate, setRate] = useState('');
+  const [meetingTime, setMeetingTime] = useState('');
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -73,6 +84,56 @@ const Profile = () => {
     });
   };
 
+  const handleCreateOffer = async () => {
+    if (!amount || !rate || !meetingTime) {
+      toast({
+        title: 'Ошибка',
+        description: 'Заполните все поля',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch('https://functions.poehali.dev/cc03f400-dfb5-45bc-a27d-f18787a96d3e', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: user.id,
+          offer_type: offerType,
+          amount: parseFloat(amount),
+          rate: parseFloat(rate),
+          meeting_time: meetingTime,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast({
+          title: 'Успешно!',
+          description: 'Объявление создано',
+        });
+        setIsCreateDialogOpen(false);
+        setAmount('');
+        setRate('');
+        setMeetingTime('');
+      } else {
+        toast({
+          title: 'Ошибка',
+          description: data.error || 'Не удалось создать объявление',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось создать объявление',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const completedDeals = deals.filter(d => d.status === 'completed').length;
   const totalVolume = deals
     .filter(d => d.status === 'completed')
@@ -91,10 +152,91 @@ const Profile = () => {
               <h1 className="text-4xl font-bold mb-2">Личный кабинет</h1>
               <p className="text-muted-foreground">Управление профилем и история сделок</p>
             </div>
-            <Button onClick={() => navigate('/')} variant="outline" className="border-secondary">
-              <Icon name="ArrowLeft" className="mr-2" size={20} />
-              На главную
-            </Button>
+            <div className="flex gap-3">
+              <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="bg-secondary text-primary hover:bg-secondary/90">
+                    <Icon name="Plus" className="mr-2" size={20} />
+                    Создать объявление
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-card">
+                  <DialogHeader>
+                    <DialogTitle className="text-2xl">Новое объявление</DialogTitle>
+                    <DialogDescription>
+                      Заполните данные для создания объявления
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <Label htmlFor="offer-type">Тип объявления</Label>
+                      <Select value={offerType} onValueChange={(value: 'buy' | 'sell') => setOfferType(value)}>
+                        <SelectTrigger id="offer-type" className="bg-background">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="buy">Покупка USDT</SelectItem>
+                          <SelectItem value="sell">Продажа USDT</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="amount">Сумма (USDT)</Label>
+                      <Input
+                        id="amount"
+                        type="number"
+                        placeholder="Например: 1000"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        className="bg-background"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="rate">Курс (₽ за 1 USDT)</Label>
+                      <Input
+                        id="rate"
+                        type="number"
+                        step="0.01"
+                        placeholder="Например: 95.50"
+                        value={rate}
+                        onChange={(e) => setRate(e.target.value)}
+                        className="bg-background"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="meeting-time">Удобное время для встречи</Label>
+                      <Input
+                        id="meeting-time"
+                        type="text"
+                        placeholder="Например: Сегодня, 18:00"
+                        value={meetingTime}
+                        onChange={(e) => setMeetingTime(e.target.value)}
+                        className="bg-background"
+                      />
+                    </div>
+                    <div className="flex gap-3 pt-4">
+                      <Button
+                        onClick={handleCreateOffer}
+                        className="flex-1 bg-secondary text-primary hover:bg-secondary/90"
+                      >
+                        Создать
+                      </Button>
+                      <Button
+                        onClick={() => setIsCreateDialogOpen(false)}
+                        variant="outline"
+                        className="flex-1 border-secondary"
+                      >
+                        Отмена
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+              <Button onClick={() => navigate('/')} variant="outline" className="border-secondary">
+                <Icon name="ArrowLeft" className="mr-2" size={20} />
+                На главную
+              </Button>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 mb-8">

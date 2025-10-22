@@ -1,0 +1,33 @@
+{
+  "tests": [
+    {
+      "name": "Create buy offer",
+      "method": "POST",
+      "body": {
+        "user_id": 1,
+        "offer_type": "buy",
+        "amount": 1000,
+        "rate": 95.50,
+        "meeting_time": "Сегодня, 18:00"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "offer_id": "number"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Missing fields",
+      "method": "POST",
+      "body": {
+        "user_id": 1
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "string"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
