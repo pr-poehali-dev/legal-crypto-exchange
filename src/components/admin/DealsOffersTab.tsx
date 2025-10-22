@@ -10,9 +10,10 @@ interface DealsOffersTabProps {
   onToggleStatus: (offerId: number, currentStatus: string) => void;
   onDelete: (offerId: number) => void;
   onCompleteDeal: (dealId: number) => void;
+  onCompleteOffer: (offerId: number) => void;
 }
 
-const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDeal }: DealsOffersTabProps) => {
+const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDeal, onCompleteOffer }: DealsOffersTabProps) => {
   type CombinedItem = (Offer & { itemType: 'offer' }) | (Deal & { itemType: 'deal' });
   
   const combinedItems: CombinedItem[] = [
@@ -74,14 +75,26 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
                     </p>
                   </div>
                   <div className="flex flex-col gap-2 ml-4">
-                    <Button
-                      size="sm"
-                      variant={offer.status === 'active' ? 'outline' : 'default'}
-                      onClick={() => onToggleStatus(offer.id, offer.status)}
-                    >
-                      <Icon name={offer.status === 'active' ? 'PauseCircle' : 'PlayCircle'} className="mr-2" size={16} />
-                      {offer.status === 'active' ? 'Деактивировать' : 'Активировать'}
-                    </Button>
+                    {offer.status !== 'completed' && (
+                      <>
+                        <Button
+                          size="sm"
+                          variant={offer.status === 'active' ? 'outline' : 'default'}
+                          onClick={() => onToggleStatus(offer.id, offer.status)}
+                        >
+                          <Icon name={offer.status === 'active' ? 'PauseCircle' : 'PlayCircle'} className="mr-2" size={16} />
+                          {offer.status === 'active' ? 'Деактивировать' : 'Активировать'}
+                        </Button>
+                        <Button
+                          size="sm"
+                          className="bg-green-600 hover:bg-green-700 text-white"
+                          onClick={() => onCompleteOffer(offer.id)}
+                        >
+                          <Icon name="CheckCircle" className="mr-2" size={16} />
+                          Подтвердить сделку
+                        </Button>
+                      </>
+                    )}
                     <Button
                       size="sm"
                       variant="destructive"

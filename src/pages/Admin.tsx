@@ -21,7 +21,8 @@ const Admin = () => {
     deleteOffer,
     completeDeal,
     toggleUserBlock,
-    toggleOfferStatus
+    toggleOfferStatus,
+    completeOffer
   } = useAdminData();
 
   const { exportToExcel } = useExcelExport(users, offers, deals);
@@ -64,6 +65,7 @@ const Admin = () => {
                 onToggleStatus={toggleOfferStatus}
                 onDelete={deleteOffer}
                 onCompleteDeal={completeDeal}
+                onCompleteOffer={completeOffer}
               />
             </TabsContent>
 

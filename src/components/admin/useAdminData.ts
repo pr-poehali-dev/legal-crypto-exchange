@@ -157,6 +157,28 @@ export const useAdminData = () => {
     }
   };
 
+  const completeOffer = async (offerId: number) => {
+    if (!confirm('Подтвердить успешную сделку по этому объявлению?')) return;
+
+    try {
+      const response = await fetch('https://functions.poehali.dev/716426cb-1d05-4858-a5f1-4d46123b5470', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ offer_id: offerId, status: 'completed' })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        toast.success('Сделка подтверждена');
+        loadOffers();
+      } else {
+        toast.error('Ошибка при подтверждении сделки');
+      }
+    } catch (error) {
+      toast.error('Ошибка при подтверждении сделки');
+    }
+  };
+
   return {
     users,
     offers,
@@ -165,6 +187,7 @@ export const useAdminData = () => {
     deleteOffer,
     completeDeal,
     toggleUserBlock,
-    toggleOfferStatus
+    toggleOfferStatus,
+    completeOffer
   };
 };
