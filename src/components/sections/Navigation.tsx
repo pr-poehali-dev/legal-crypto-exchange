@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -6,17 +6,35 @@ import Icon from '@/components/ui/icon';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 const Navigation = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [formData, setFormData] = useState({
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+  }, []);
+  const [registerData, setRegisterData] = useState({
     name: '',
     email: '',
     phone: '',
     password: ''
   });
+  const [loginData, setLoginData] = useState({
+    email: '',
+    password: ''
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitStatus('idle');
@@ -27,16 +45,53 @@ const Navigation = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(registerData)
       });
+
+      const data = await response.json();
 
       if (response.ok) {
         setSubmitStatus('success');
-        setFormData({ name: '', email: '', phone: '', password: '' });
+        setRegisterData({ name: '', email: '', phone: '', password: '' });
         setTimeout(() => {
-          setIsOpen(false);
+          setIsRegisterOpen(false);
           setSubmitStatus('idle');
         }, 2000);
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      const response = await fetch('https://functions.poehali.dev/42eabe98-7376-4ced-87c2-b0b8a64ec658', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loginData)
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.user) {
+        setUser(data.user);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        setSubmitStatus('success');
+        setLoginData({ email: '', password: '' });
+        setTimeout(() => {
+          setIsLoginOpen(false);
+          setSubmitStatus('idle');
+        }, 1000);
       } else {
         setSubmitStatus('error');
       }
@@ -62,86 +117,156 @@ const Navigation = () => {
             <a href="#guarantees" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Гарантии</a>
             <a href="#offers" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Объявления</a>
             <a href="#contact" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Контакты</a>
-            <Dialog open={isOpen} onOpenChange={setIsOpen}>
-              <DialogTrigger asChild>
-                <Button className="bg-secondary text-primary hover:bg-secondary/90">
-                  Регистрация
+            
+            {user ? (
+              <div className="flex items-center gap-3">
+                <span className="text-sm text-muted-foreground">Привет, {user.name}!</span>
+                <Button onClick={handleLogout} variant="outline" className="border-secondary">
+                  Выйти
                 </Button>
-              </DialogTrigger>
-              <DialogContent className="bg-card">
-                <DialogHeader>
-                  <DialogTitle className="text-2xl">Регистрация</DialogTitle>
-                  <DialogDescription>
-                    Создайте аккаунт для безопасных сделок с USDT
-                  </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                    <Label htmlFor="name">Имя и фамилия</Label>
-                    <Input 
-                      id="name" 
-                      placeholder="Иван Иванов" 
-                      className="bg-background border-border"
-                      value={formData.name}
-                      onChange={(e) => setFormData({...formData, name: e.target.value})}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="email">Email</Label>
-                    <Input 
-                      id="email" 
-                      type="email" 
-                      placeholder="ivan@example.com" 
-                      className="bg-background border-border"
-                      value={formData.email}
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="phone">Телефон</Label>
-                    <Input 
-                      id="phone" 
-                      placeholder="+7 (999) 123-45-67" 
-                      className="bg-background border-border"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="password">Пароль</Label>
-                    <Input 
-                      id="password" 
-                      type="password" 
-                      className="bg-background border-border"
-                      value={formData.password}
-                      onChange={(e) => setFormData({...formData, password: e.target.value})}
-                      required
-                      minLength={6}
-                    />
-                  </div>
-                  {submitStatus === 'success' && (
-                    <div className="text-accent text-sm">
-                      ✅ Регистрация успешна! Мы свяжемся с вами.
-                    </div>
-                  )}
-                  {submitStatus === 'error' && (
-                    <div className="text-red-500 text-sm">
-                      ❌ Ошибка регистрации. Попробуйте позже.
-                    </div>
-                  )}
-                  <Button 
-                    type="submit"
-                    className="w-full bg-secondary text-primary hover:bg-secondary/90"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? 'Регистрация...' : 'Зарегистрироваться'}
-                  </Button>
-                </form>
-              </DialogContent>
-            </Dialog>
+              </div>
+            ) : (
+              <>
+                <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="border-secondary hidden sm:flex">
+                      Войти
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="bg-card">
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl">Вход</DialogTitle>
+                      <DialogDescription>
+                        Войдите в свой аккаунт для доступа к сделкам
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleLogin} className="space-y-4">
+                      <div>
+                        <Label htmlFor="login-email">Email</Label>
+                        <Input 
+                          id="login-email" 
+                          type="email" 
+                          placeholder="ivan@example.com" 
+                          className="bg-background border-border"
+                          value={loginData.email}
+                          onChange={(e) => setLoginData({...loginData, email: e.target.value})}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="login-password">Пароль</Label>
+                        <Input 
+                          id="login-password" 
+                          type="password" 
+                          className="bg-background border-border"
+                          value={loginData.password}
+                          onChange={(e) => setLoginData({...loginData, password: e.target.value})}
+                          required
+                        />
+                      </div>
+                      {submitStatus === 'success' && (
+                        <div className="text-accent text-sm">
+                          ✅ Вход выполнен успешно!
+                        </div>
+                      )}
+                      {submitStatus === 'error' && (
+                        <div className="text-red-500 text-sm">
+                          ❌ Неверный email или пароль
+                        </div>
+                      )}
+                      <Button 
+                        type="submit"
+                        className="w-full bg-secondary text-primary hover:bg-secondary/90"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? 'Вход...' : 'Войти'}
+                      </Button>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+
+                <Dialog open={isRegisterOpen} onOpenChange={setIsRegisterOpen}>
+                  <DialogTrigger asChild>
+                    <Button className="bg-secondary text-primary hover:bg-secondary/90">
+                      Регистрация
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="bg-card">
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl">Регистрация</DialogTitle>
+                      <DialogDescription>
+                        Создайте аккаунт для безопасных сделок с USDT
+                      </DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleRegister} className="space-y-4">
+                      <div>
+                        <Label htmlFor="name">Имя и фамилия</Label>
+                        <Input 
+                          id="name" 
+                          placeholder="Иван Иванов" 
+                          className="bg-background border-border"
+                          value={registerData.name}
+                          onChange={(e) => setRegisterData({...registerData, name: e.target.value})}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="email">Email</Label>
+                        <Input 
+                          id="email" 
+                          type="email" 
+                          placeholder="ivan@example.com" 
+                          className="bg-background border-border"
+                          value={registerData.email}
+                          onChange={(e) => setRegisterData({...registerData, email: e.target.value})}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="phone">Телефон</Label>
+                        <Input 
+                          id="phone" 
+                          placeholder="+7 (999) 123-45-67" 
+                          className="bg-background border-border"
+                          value={registerData.phone}
+                          onChange={(e) => setRegisterData({...registerData, phone: e.target.value})}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="password">Пароль</Label>
+                        <Input 
+                          id="password" 
+                          type="password" 
+                          className="bg-background border-border"
+                          value={registerData.password}
+                          onChange={(e) => setRegisterData({...registerData, password: e.target.value})}
+                          required
+                          minLength={6}
+                        />
+                      </div>
+                      {submitStatus === 'success' && (
+                        <div className="text-accent text-sm">
+                          ✅ Регистрация успешна! Теперь можете войти.
+                        </div>
+                      )}
+                      {submitStatus === 'error' && (
+                        <div className="text-red-500 text-sm">
+                          ❌ Ошибка регистрации. Email уже используется.
+                        </div>
+                      )}
+                      <Button 
+                        type="submit"
+                        className="w-full bg-secondary text-primary hover:bg-secondary/90"
+                        disabled={isSubmitting}
+                      >
+                        {isSubmitting ? 'Регистрация...' : 'Зарегистрироваться'}
+                      </Button>
+                    </form>
+                  </DialogContent>
+                </Dialog>
+              </>
+            )}
           </div>
         </div>
       </div>
