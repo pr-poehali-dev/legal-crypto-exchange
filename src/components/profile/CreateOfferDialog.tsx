@@ -14,8 +14,6 @@ interface CreateOfferDialogProps {
   setAmount: (value: string) => void;
   rate: string;
   setRate: (value: string) => void;
-  meetingTime: string;
-  setMeetingTime: (value: string) => void;
   meetingHour: string;
   setMeetingHour: (value: string) => void;
   meetingMinute: string;
@@ -32,8 +30,6 @@ const CreateOfferDialog = ({
   setAmount,
   rate,
   setRate,
-  meetingTime,
-  setMeetingTime,
   meetingHour,
   setMeetingHour,
   meetingMinute,
@@ -88,17 +84,6 @@ const CreateOfferDialog = ({
               placeholder="Например: 95.50"
               value={rate}
               onChange={(e) => setRate(e.target.value)}
-              className="bg-background"
-            />
-          </div>
-          <div>
-            <Label htmlFor="meeting-time">Дата встречи</Label>
-            <Input
-              id="meeting-time"
-              type="text"
-              placeholder="Например: Сегодня, Завтра, 25 октября"
-              value={meetingTime}
-              onChange={(e) => setMeetingTime(e.target.value)}
               className="bg-background"
             />
           </div>

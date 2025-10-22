@@ -40,7 +40,6 @@ const Profile = () => {
   const [offerType, setOfferType] = useState<'buy' | 'sell'>('buy');
   const [amount, setAmount] = useState('');
   const [rate, setRate] = useState('');
-  const [meetingTime, setMeetingTime] = useState('');
   const [meetingHour, setMeetingHour] = useState('');
   const [meetingMinute, setMeetingMinute] = useState('');
 
@@ -98,7 +97,7 @@ const Profile = () => {
   };
 
   const handleCreateOffer = async () => {
-    if (!amount || !rate || !meetingTime || !meetingHour || !meetingMinute) {
+    if (!amount || !rate || !meetingHour || !meetingMinute) {
       toast({
         title: 'Ошибка',
         description: 'Заполните все поля',
@@ -107,7 +106,7 @@ const Profile = () => {
       return;
     }
 
-    const fullMeetingTime = `${meetingTime}, ${meetingHour}:${meetingMinute}`;
+    const fullMeetingTime = `${meetingHour}:${meetingMinute}`;
 
     try {
       const response = await fetch('https://functions.poehali.dev/cc03f400-dfb5-45bc-a27d-f18787a96d3e', {
@@ -132,7 +131,6 @@ const Profile = () => {
         setIsCreateDialogOpen(false);
         setAmount('');
         setRate('');
-        setMeetingTime('');
         setMeetingHour('');
         setMeetingMinute('');
         loadOffers(user.id);
@@ -207,8 +205,6 @@ const Profile = () => {
               setAmount={setAmount}
               rate={rate}
               setRate={setRate}
-              meetingTime={meetingTime}
-              setMeetingTime={setMeetingTime}
               meetingHour={meetingHour}
               setMeetingHour={setMeetingHour}
               meetingMinute={meetingMinute}
