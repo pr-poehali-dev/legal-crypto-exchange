@@ -73,7 +73,7 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-gradient-to-br from-secondary to-accent rounded-full flex items-center justify-center">
-              <span className="text-primary font-bold">{offer.username[0]}</span>
+              <span className="text-primary font-bold">{offer.username?.[0] || 'U'}</span>
             </div>
             <div>
               <div className="flex items-center gap-2">
