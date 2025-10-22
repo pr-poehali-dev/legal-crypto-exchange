@@ -117,7 +117,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         try:
             requests.post(
-                'https://functions.poehali.dev/c17d8ba8-84ab-4563-98d1-53c3a38aeae2',
+                'https://functions.poehali.dev/09e16699-07ea-42a0-a07b-6faa27662d58',
                 json={
                     'telegram_id': telegram_id,
                     'message': message
