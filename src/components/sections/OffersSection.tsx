@@ -104,34 +104,37 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
 
   const renderOfferCard = (offer: Offer) => (
     <Card key={offer.id} className="bg-card border-border hover:border-secondary transition-all">
-      <CardContent className="p-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-secondary to-accent rounded-full flex items-center justify-center">
+      <CardContent className="p-4 md:p-6">
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-secondary to-accent rounded-full flex items-center justify-center flex-shrink-0">
               <span className="text-primary font-bold">{offer.username?.[0] || 'U'}</span>
             </div>
-            <div>
-              <p className="font-semibold text-lg">{offer.username || 'Пользователь'}</p>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-base truncate">{offer.username || 'Пользователь'}</p>
               <p className="text-sm text-muted-foreground">{offer.deals_count} успешных сделок</p>
             </div>
           </div>
-          <div className="flex items-center gap-6">
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground">Сумма</p>
-              <p className="text-xl font-bold">{offer.amount.toLocaleString('ru-RU')} USDT</p>
+          
+          <div className="grid grid-cols-3 gap-3">
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">Сумма</p>
+              <p className="text-base md:text-lg font-bold">{offer.amount.toLocaleString('ru-RU')} USDT</p>
             </div>
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground">Курс</p>
-              <p className="text-xl font-bold text-secondary">{offer.rate.toFixed(2)} ₽</p>
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">Курс</p>
+              <p className="text-base md:text-lg font-bold text-secondary">{offer.rate.toFixed(2)} ₽</p>
             </div>
-            <div className="text-right">
-              <p className="text-sm text-muted-foreground">Встреча</p>
-              <p className="text-sm font-medium">{offer.meeting_time}</p>
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">Встреча</p>
+              <p className="text-sm font-medium">Сегодня, {offer.meeting_time}</p>
             </div>
-            <Button className="bg-secondary text-primary hover:bg-secondary/90">
-              Связаться
-            </Button>
           </div>
+          
+          <Button className="bg-secondary text-primary hover:bg-secondary/90 w-full">
+            <Icon name="MessageCircle" className="mr-2" size={16} />
+            Связаться
+          </Button>
         </div>
       </CardContent>
     </Card>
