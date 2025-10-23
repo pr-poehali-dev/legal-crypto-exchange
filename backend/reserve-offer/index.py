@@ -104,9 +104,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         )
         conn.commit()
         
+        offer_type_text = 'Покупка' if offer_type == 'buy' else 'Продажа'
+        
+        # Send notification to offer owner
         if telegram_id:
-            offer_type_text = 'Покупка' if offer_type == 'buy' else 'Продажа'
-            message = f"""🔔 Ваше объявление зарезервировано!
+            owner_message = f"""🔔 Ваше объявление зарезервировано!
 
 Пользователь {username} хочет связаться по объявлению:
 📝 Тип: {offer_type_text}
@@ -121,12 +123,37 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'https://functions.poehali.dev/09e16699-07ea-42a0-a07b-6faa27662d58',
                     json={
                         'telegram_id': telegram_id,
-                        'message': message
+                        'message': owner_message
                     },
                     timeout=5
                 )
             except Exception as e:
-                print(f"Failed to send Telegram notification: {e}")
+                print(f"Failed to send owner notification: {e}")
+        
+        # Send notification to admins
+        admin_chat_id = os.environ.get('TELEGRAM_CHAT_ID')
+        if admin_chat_id:
+            admin_message = f"""📅 Новая встреча!
+
+👤 Владелец: {owner_username}
+👤 Клиент: {username}
+📝 Тип: {offer_type_text}
+💰 Сумма: {amount} USDT
+💱 Курс: {rate} ₽
+⏰ Время встречи: {meeting_time}
+💵 Итого: {float(amount) * float(rate):,.2f} ₽"""
+            
+            try:
+                requests.post(
+                    'https://functions.poehali.dev/09e16699-07ea-42a0-a07b-6faa27662d58',
+                    json={
+                        'telegram_id': admin_chat_id,
+                        'message': admin_message
+                    },
+                    timeout=5
+                )
+            except Exception as e:
+                print(f"Failed to send admin notification: {e}")
         
         cur.close()
         conn.close()
