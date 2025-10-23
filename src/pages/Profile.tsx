@@ -167,6 +167,7 @@ const Profile = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             offer_id: editingOffer.id,
+            user_id: user.id,
             offer_type: offerType,
             amount: parseFloat(amount),
             rate: parseFloat(rate),
@@ -259,7 +260,7 @@ const Profile = () => {
       const response = await fetch('https://functions.poehali.dev/d7e2a78c-387a-4964-93af-6f6956d1cdd7', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ offer_id: offerId }),
+        body: JSON.stringify({ offer_id: offerId, user_id: user.id }),
       });
 
       const data = await response.json();

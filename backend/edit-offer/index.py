@@ -33,12 +33,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     try:
         body = json.loads(event.get('body', '{}'))
         offer_id = body.get('offer_id')
+        user_id = body.get('user_id')
         offer_type = body.get('offer_type')
         amount = body.get('amount')
         rate = body.get('rate')
         meeting_time = body.get('meeting_time')
         
-        if not offer_id or not offer_type or not amount or not rate or not meeting_time:
+        if not offer_id or not user_id or not offer_type or not amount or not rate or not meeting_time:
             return {
                 'statusCode': 400,
                 'headers': {'Access-Control-Allow-Origin': '*'},
@@ -48,6 +49,28 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         dsn = os.environ.get('DATABASE_URL')
         conn = psycopg2.connect(dsn)
         cur = conn.cursor()
+        
+        # Check if user owns this offer
+        cur.execute('SELECT user_id FROM offers WHERE id = %s', (offer_id,))
+        result = cur.fetchone()
+        
+        if not result:
+            cur.close()
+            conn.close()
+            return {
+                'statusCode': 404,
+                'headers': {'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Offer not found'})
+            }
+        
+        if result[0] != user_id:
+            cur.close()
+            conn.close()
+            return {
+                'statusCode': 403,
+                'headers': {'Access-Control-Allow-Origin': '*'},
+                'body': json.dumps({'error': 'Not authorized to edit this offer'})
+            }
         
         cur.execute('''
             UPDATE offers 

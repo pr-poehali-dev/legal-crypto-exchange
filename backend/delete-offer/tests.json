@@ -5,11 +5,13 @@
       "method": "POST",
       "path": "/",
       "body": {
-        "offer_id": 999
+        "offer_id": 999,
+        "user_id": 1
       },
-      "expectedStatus": 200,
+      "expectedStatus": 404,
       "expectedBody": {
-        "success": true
+        "success": false,
+        "error": "Offer not found"
       },
       "bodyMatcher": "partial"
     },
