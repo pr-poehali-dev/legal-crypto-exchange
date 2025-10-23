@@ -77,13 +77,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             total = float(amount) * float(rate)
             
             if reserved_by:
-                # Determine deal types: if owner sells, reserver buys (and vice versa)
-                if offer_type == 'buy':
-                    owner_deal_type = 'buy'
-                    reserver_deal_type = 'sell'
-                else:
-                    owner_deal_type = 'sell'
-                    reserver_deal_type = 'buy'
+                # Owner keeps their original offer_type, reserver gets opposite
+                owner_deal_type = offer_type
+                reserver_deal_type = 'sell' if offer_type == 'buy' else 'buy'
                 
                 # Create deal for owner
                 cur.execute(
@@ -92,7 +88,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     (owner_id, owner_deal_type, amount, rate, total, reserver_name)
                 )
                 
-                # Create deal for reserver
+                # Create deal for reserver (OPPOSITE type)
                 cur.execute(
                     """INSERT INTO deals (user_id, deal_type, amount, rate, total, status, partner_name, created_at, updated_at)
                        VALUES (%s, %s, %s, %s, %s, 'completed', %s, NOW(), NOW())""",
