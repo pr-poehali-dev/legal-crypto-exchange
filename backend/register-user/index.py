@@ -3,6 +3,7 @@ import os
 import urllib.request
 import urllib.parse
 import hashlib
+import re
 from typing import Dict, Any
 import psycopg2
 
@@ -49,7 +50,55 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
-            'body': json.dumps({'error': 'All fields are required'})
+            'body': json.dumps({'error': 'Все поля обязательны для заполнения'})
+        }
+    
+    # Validate email format
+    email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    if not re.match(email_pattern, email):
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': 'Введите корректный email адрес'})
+        }
+    
+    # Validate phone format (Russian phone numbers)
+    phone_cleaned = re.sub(r'[^\d+]', '', phone)
+    phone_pattern = r'^(\+7|8)?[\s\-]?\(?[0-9]{3}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$'
+    
+    if not re.match(phone_pattern, phone) and not (len(phone_cleaned) >= 10 and len(phone_cleaned) <= 12):
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': 'Введите корректный номер телефона (формат: +7XXXXXXXXXX или 8XXXXXXXXXX)'})
+        }
+    
+    # Validate name length
+    if len(name.strip()) < 2:
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': 'Имя должно содержать минимум 2 символа'})
+        }
+    
+    # Validate password strength
+    if len(password) < 6:
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': 'Пароль должен содержать минимум 6 символов'})
         }
     
     password_hash = hashlib.sha256(password.encode()).hexdigest()
