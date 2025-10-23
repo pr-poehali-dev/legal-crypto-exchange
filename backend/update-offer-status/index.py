@@ -55,33 +55,53 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     conn = psycopg2.connect(dsn)
     cur = conn.cursor()
     
-    # If completing the offer, create a deal record
+    # If completing the offer, create deal records for both participants
     if status == 'completed':
         # Get offer details
-        cur.execute(
-            "SELECT user_id, offer_type, amount, rate, reserved_by FROM offers WHERE id = %s",
-            (offer_id,)
-        )
+        cur.execute("""
+            SELECT o.user_id, o.offer_type, o.amount, o.rate, o.reserved_by,
+                   owner.username as owner_name, reserver.username as reserver_name
+            FROM offers o
+            LEFT JOIN users owner ON o.user_id = owner.id
+            LEFT JOIN users reserver ON o.reserved_by = reserver.id
+            WHERE o.id = %s
+        """, (offer_id,))
+        
         offer_row = cur.fetchone()
         
         if offer_row:
-            user_id, offer_type, amount, rate, reserved_by = offer_row
+            owner_id, offer_type, amount, rate, reserved_by, owner_name, reserver_name = offer_row
             total = float(amount) * float(rate)
             
-            # Get partner username if reserved
-            partner_name = None
             if reserved_by:
-                cur.execute("SELECT username FROM users WHERE id = %s", (reserved_by,))
-                partner_row = cur.fetchone()
-                if partner_row:
-                    partner_name = partner_row[0]
-            
-            # Create deal record
-            cur.execute(
-                """INSERT INTO deals (user_id, deal_type, amount, rate, total, status, partner_name, created_at, updated_at)
-                   VALUES (%s, %s, %s, %s, %s, 'completed', %s, NOW(), NOW())""",
-                (user_id, offer_type, amount, rate, total, partner_name)
-            )
+                # Determine deal types: if owner sells, reserver buys (and vice versa)
+                if offer_type == 'buy':
+                    owner_deal_type = 'buy'
+                    reserver_deal_type = 'sell'
+                else:
+                    owner_deal_type = 'sell'
+                    reserver_deal_type = 'buy'
+                
+                # Create deal for owner
+                cur.execute(
+                    """INSERT INTO deals (user_id, deal_type, amount, rate, total, status, partner_name, created_at, updated_at)
+                       VALUES (%s, %s, %s, %s, %s, 'completed', %s, NOW(), NOW())""",
+                    (owner_id, owner_deal_type, amount, rate, total, reserver_name)
+                )
+                
+                # Create deal for reserver
+                cur.execute(
+                    """INSERT INTO deals (user_id, deal_type, amount, rate, total, status, partner_name, created_at, updated_at)
+                       VALUES (%s, %s, %s, %s, %s, 'completed', %s, NOW(), NOW())""",
+                    (reserved_by, reserver_deal_type, amount, rate, total, owner_name)
+                )
+            else:
+                # No reservation - only create deal for owner
+                cur.execute(
+                    """INSERT INTO deals (user_id, deal_type, amount, rate, total, status, partner_name, created_at, updated_at)
+                       VALUES (%s, %s, %s, %s, %s, 'completed', NULL, NOW(), NOW())""",
+                    (owner_id, offer_type, amount, rate, total)
+                )
     
     cur.execute(
         "UPDATE offers SET status = %s WHERE id = %s",
