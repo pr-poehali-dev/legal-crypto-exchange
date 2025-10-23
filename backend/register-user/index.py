@@ -119,6 +119,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         conn = psycopg2.connect(database_url)
         cursor = conn.cursor()
         
+        # Check if email already exists
         cursor.execute("SELECT id FROM users WHERE email = %s", (email,))
         if cursor.fetchone():
             cursor.close()
@@ -129,7 +130,21 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'Content-Type': 'application/json',
                     'Access-Control-Allow-Origin': '*'
                 },
-                'body': json.dumps({'error': 'Email already registered'})
+                'body': json.dumps({'error': 'Этот email уже зарегистрирован'})
+            }
+        
+        # Check if phone already exists
+        cursor.execute("SELECT id FROM users WHERE phone = %s", (phone,))
+        if cursor.fetchone():
+            cursor.close()
+            conn.close()
+            return {
+                'statusCode': 400,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'error': 'Этот номер телефона уже зарегистрирован'})
             }
         
         cursor.execute(

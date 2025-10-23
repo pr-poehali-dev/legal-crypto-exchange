@@ -7,18 +7,34 @@
       "expectedStatus": 200
     },
     {
-      "name": "Test user registration",
+      "name": "Test duplicate email",
       "method": "POST",
       "path": "/",
       "body": {
         "name": "Иван Тестов",
         "email": "test@example.com",
+        "phone": "+7 (999) 888-88-88",
+        "password": "test123"
+      },
+      "expectedStatus": 400,
+      "expectedBody": {
+        "error": "Этот email уже зарегистрирован"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Test duplicate phone",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "name": "Петр Тестов",
+        "email": "newuser@example.com",
         "phone": "+7 (999) 111-22-33",
         "password": "test123"
       },
-      "expectedStatus": 200,
+      "expectedStatus": 400,
       "expectedBody": {
-        "success": true
+        "error": "Этот номер телефона уже зарегистрирован"
       },
       "bodyMatcher": "partial"
     }
