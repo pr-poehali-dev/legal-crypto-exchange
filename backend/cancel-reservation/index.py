@@ -94,7 +94,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     cur.execute(
-        "UPDATE offers SET reserved_by = NULL, reserved_at = NULL WHERE id = %s",
+        "UPDATE offers SET last_reserved_by = reserved_by, last_reserved_at = reserved_at, reserved_by = NULL, reserved_at = NULL WHERE id = %s",
         (offer_id,)
     )
     

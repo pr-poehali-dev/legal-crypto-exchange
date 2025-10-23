@@ -57,13 +57,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     # If completing the offer, create deal records for both participants
     if status == 'completed':
-        # Get offer details
+        # Get offer details (check both reserved_by and last_reserved_by)
         cur.execute("""
-            SELECT o.user_id, o.offer_type, o.amount, o.rate, o.reserved_by,
-                   owner.username as owner_name, reserver.username as reserver_name
+            SELECT o.user_id, o.offer_type, o.amount, o.rate, 
+                   COALESCE(o.reserved_by, o.last_reserved_by) as reserved_by_user,
+                   owner.username as owner_name, 
+                   COALESCE(reserver.username, last_reserver.username) as reserver_name
             FROM offers o
             LEFT JOIN users owner ON o.user_id = owner.id
             LEFT JOIN users reserver ON o.reserved_by = reserver.id
+            LEFT JOIN users last_reserver ON o.last_reserved_by = last_reserver.id
             WHERE o.id = %s
         """, (offer_id,))
         
