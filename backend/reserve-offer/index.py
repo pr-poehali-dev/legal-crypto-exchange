@@ -52,60 +52,61 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     dsn = os.environ.get('DATABASE_URL')
     
-    conn = psycopg2.connect(dsn)
-    cur = conn.cursor()
-    
-    cur.execute("""
-        SELECT o.user_id, o.amount, o.rate, o.meeting_time, o.offer_type, 
-               u.telegram_id, u.username as owner_username, o.reserved_by
-        FROM offers o
-        JOIN users u ON o.user_id = u.id
-        WHERE o.id = %s AND o.status = 'active'
-    """, (offer_id,))
-    
-    result = cur.fetchone()
-    
-    if not result:
-        cur.close()
-        conn.close()
-        return {
-            'statusCode': 404,
-            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-            'isBase64Encoded': False,
-            'body': json.dumps({'success': False, 'error': 'Offer not found or not active'})
-        }
-    
-    owner_id, amount, rate, meeting_time, offer_type, telegram_id, owner_username, reserved_by = result
-    
-    if owner_id == user_id:
-        cur.close()
-        conn.close()
-        return {
-            'statusCode': 400,
-            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-            'isBase64Encoded': False,
-            'body': json.dumps({'success': False, 'error': 'Cannot reserve own offer'})
-        }
-    
-    if reserved_by:
-        cur.close()
-        conn.close()
-        return {
-            'statusCode': 400,
-            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-            'isBase64Encoded': False,
-            'body': json.dumps({'success': False, 'error': 'Offer already reserved'})
-        }
-    
-    cur.execute(
-        "UPDATE offers SET reserved_by = %s, reserved_at = NOW() WHERE id = %s",
-        (user_id, offer_id)
-    )
-    conn.commit()
-    
-    if telegram_id:
-        offer_type_text = 'Покупка' if offer_type == 'buy' else 'Продажа'
-        message = f"""🔔 Ваше объявление зарезервировано!
+    try:
+        conn = psycopg2.connect(dsn)
+        cur = conn.cursor()
+        
+        cur.execute("""
+            SELECT o.user_id, o.amount, o.rate, o.meeting_time, o.offer_type, 
+                   u.telegram_id, u.username as owner_username, o.reserved_by
+            FROM offers o
+            JOIN users u ON o.user_id = u.id
+            WHERE o.id = %s AND o.status = 'active'
+        """, (offer_id,))
+        
+        result = cur.fetchone()
+        
+        if not result:
+            cur.close()
+            conn.close()
+            return {
+                'statusCode': 404,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'isBase64Encoded': False,
+                'body': json.dumps({'success': False, 'error': 'Offer not found or not active'})
+            }
+        
+        owner_id, amount, rate, meeting_time, offer_type, telegram_id, owner_username, reserved_by = result
+        
+        if owner_id == user_id:
+            cur.close()
+            conn.close()
+            return {
+                'statusCode': 400,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'isBase64Encoded': False,
+                'body': json.dumps({'success': False, 'error': 'Cannot reserve own offer'})
+            }
+        
+        if reserved_by:
+            cur.close()
+            conn.close()
+            return {
+                'statusCode': 400,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'isBase64Encoded': False,
+                'body': json.dumps({'success': False, 'error': 'Offer already reserved'})
+            }
+        
+        cur.execute(
+            "UPDATE offers SET reserved_by = %s, reserved_at = NOW() WHERE id = %s",
+            (user_id, offer_id)
+        )
+        conn.commit()
+        
+        if telegram_id:
+            offer_type_text = 'Покупка' if offer_type == 'buy' else 'Продажа'
+            message = f"""🔔 Ваше объявление зарезервировано!
 
 Пользователь {username} хочет связаться по объявлению:
 📝 Тип: {offer_type_text}
@@ -114,25 +115,32 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 ⏰ Время встречи: {meeting_time}
 
 Пожалуйста, приходите в офис в указанное время."""
+            
+            try:
+                requests.post(
+                    'https://functions.poehali.dev/09e16699-07ea-42a0-a07b-6faa27662d58',
+                    json={
+                        'telegram_id': telegram_id,
+                        'message': message
+                    },
+                    timeout=5
+                )
+            except Exception as e:
+                print(f"Failed to send Telegram notification: {e}")
         
-        try:
-            requests.post(
-                'https://functions.poehali.dev/09e16699-07ea-42a0-a07b-6faa27662d58',
-                json={
-                    'telegram_id': telegram_id,
-                    'message': message
-                },
-                timeout=5
-            )
-        except Exception as e:
-            print(f"Failed to send Telegram notification: {e}")
-    
-    cur.close()
-    conn.close()
-    
-    return {
-        'statusCode': 200,
-        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-        'isBase64Encoded': False,
-        'body': json.dumps({'success': True})
-    }
+        cur.close()
+        conn.close()
+        
+        return {
+            'statusCode': 200,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
+            'body': json.dumps({'success': True})
+        }
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
+            'body': json.dumps({'success': False, 'error': f'Database error: {str(e)}'})
+        }

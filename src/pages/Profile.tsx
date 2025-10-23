@@ -80,6 +80,11 @@ const Profile = () => {
   const loadDeals = async (userId: number) => {
     try {
       const response = await fetch(`https://functions.poehali.dev/2b464d39-4017-4dda-aff5-982683e83257?user_id=${userId}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      
       const data = await response.json();
       
       if (data.success) {
@@ -95,6 +100,11 @@ const Profile = () => {
   const loadUserData = async (userId: number) => {
     try {
       const response = await fetch(`https://functions.poehali.dev/89a1066f-b5ab-4ce5-bc62-94bfd60d600b?user_id=${userId}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      
       const data = await response.json();
       
       if (data.success && data.user) {
@@ -112,6 +122,11 @@ const Profile = () => {
   const loadOffers = async (userId: number) => {
     try {
       const response = await fetch(`https://functions.poehali.dev/ad8e0859-d6b1-4dde-8da7-2b137a4c9abb?user_id=${userId}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      
       const data = await response.json();
       
       if (data.success) {
@@ -307,6 +322,16 @@ const Profile = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ offer_id: offerId, user_id: user.id }),
       });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast({
+          title: 'Ошибка',
+          description: errorData.error || 'Не удалось отменить резервацию',
+          variant: 'destructive',
+        });
+        return;
+      }
 
       const data = await response.json();
 

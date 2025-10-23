@@ -35,6 +35,7 @@ export const useAdminData = () => {
   const loadDeals = async () => {
     try {
       const response = await fetch('https://functions.poehali.dev/b63444fc-5ce5-498a-8eab-6617d79ba7ee');
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       if (data.success) {
         setDeals(data.deals || []);
@@ -47,6 +48,7 @@ export const useAdminData = () => {
   const loadUsers = async () => {
     try {
       const response = await fetch('https://functions.poehali.dev/d95b473e-1b4b-4f75-82aa-7e0211e55839');
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       if (data.success) {
         setUsers(data.users || []);
@@ -59,6 +61,7 @@ export const useAdminData = () => {
   const loadOffers = async () => {
     try {
       const response = await fetch('https://functions.poehali.dev/24cbcabc-c4e4-496b-a820-0315a576e32e');
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       if (data.success) {
         setOffers(data.offers || []);

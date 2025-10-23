@@ -66,6 +66,11 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
     }
     try {
       const response = await fetch('https://functions.poehali.dev/85034798-463f-4b9f-b879-43364e8c40ff');
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      
       const data = await response.json();
       
       if (data.success) {
@@ -73,7 +78,9 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
         setLastUpdate(new Date());
       }
     } catch (error) {
-      console.error('Failed to load offers:', error);
+      if (!silent) {
+        console.error('Failed to load offers:', error);
+      }
     } finally {
       if (!silent) {
         setIsLoading(false);
@@ -84,13 +91,18 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
   const fetchCurrentRate = async () => {
     try {
       const response = await fetch('https://functions.poehali.dev/f429c90b-c275-4b5d-bcd3-d3a69a15dea9');
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      
       const data = await response.json();
       
       if (data.success && data.rate) {
         setCurrentRate(data.rate);
       }
     } catch (error) {
-      console.error('Failed to fetch rate:', error);
+      // Silently fail for rate updates
     }
   };
 

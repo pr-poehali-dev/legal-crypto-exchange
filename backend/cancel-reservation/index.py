@@ -5,7 +5,7 @@ from typing import Dict, Any
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Cancel offer reservation (owner only)
+    Business: Cancel offer reservation (owner or reserver can cancel)
     Args: event with httpMethod, body containing offer_id, user_id
           context with request_id
     Returns: HTTP response with success status
@@ -72,16 +72,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     owner_id, reserved_by = result
     
-    if owner_id != user_id:
-        cur.close()
-        conn.close()
-        return {
-            'statusCode': 403,
-            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-            'isBase64Encoded': False,
-            'body': json.dumps({'success': False, 'error': 'Not authorized'})
-        }
-    
     if not reserved_by:
         cur.close()
         conn.close()
@@ -90,6 +80,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'isBase64Encoded': False,
             'body': json.dumps({'success': False, 'error': 'Offer is not reserved'})
+        }
+    
+    # Allow cancellation by owner OR by the person who reserved it
+    if owner_id != user_id and reserved_by != user_id:
+        cur.close()
+        conn.close()
+        return {
+            'statusCode': 403,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
+            'body': json.dumps({'success': False, 'error': 'Not authorized'})
         }
     
     cur.execute(
