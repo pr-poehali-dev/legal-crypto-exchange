@@ -114,9 +114,9 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                             className="text-green-500"
                           />
                         </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <p className="font-semibold text-lg">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2 mb-1">
+                            <p className="font-semibold text-lg break-words">
                               {deal.deal_type === 'buy' ? 'Куплю' : 'Продам'} {deal.amount.toLocaleString('ru-RU')} USDT
                             </p>
                             <Badge className="bg-green-500/20 text-green-500 border-green-500/30">
@@ -160,9 +160,9 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                         className={offer.offer_type === 'buy' ? 'text-accent' : 'text-secondary'}
                       />
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <p className="font-semibold text-lg">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <p className="font-semibold text-lg break-words">
                           {offer.offer_type === 'buy' ? 'Куплю' : 'Продам'} {offer.amount.toLocaleString('ru-RU')} USDT
                         </p>
                         {getOfferStatusBadge(offer.status)}
