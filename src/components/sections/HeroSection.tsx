@@ -90,17 +90,17 @@ const HeroSection = () => {
                   </div>
                 </div>
 
-                <div className="absolute -top-2 -right-2 sm:-top-4 sm:-right-4 bg-card border border-border rounded-xl sm:rounded-2xl px-2 py-1.5 sm:px-4 sm:py-3 shadow-xl backdrop-blur-sm animate-float">
-                  <div className="flex items-center gap-1.5 sm:gap-2">
-                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-accent rounded-full animate-pulse"></div>
-                    <span className="text-xs sm:text-sm font-semibold whitespace-nowrap">Юридическая защита</span>
+                <div className="hidden sm:block absolute -top-4 -right-4 bg-card border border-border rounded-2xl px-4 py-3 shadow-xl backdrop-blur-sm animate-float">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
+                    <span className="text-sm font-semibold whitespace-nowrap">Юридическая защита</span>
                   </div>
                 </div>
 
-                <div className="absolute -bottom-2 -left-2 sm:-bottom-4 sm:-left-4 bg-card border border-border rounded-xl sm:rounded-2xl px-2 py-1.5 sm:px-4 sm:py-3 shadow-xl backdrop-blur-sm animate-float" style={{animationDelay: '1s'}}>
-                  <div className="flex items-center gap-1.5 sm:gap-2">
-                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-secondary rounded-full animate-pulse"></div>
-                    <span className="text-xs sm:text-sm font-semibold whitespace-nowrap">Быстрые сделки</span>
+                <div className="hidden sm:block absolute -bottom-4 -left-4 bg-card border border-border rounded-2xl px-4 py-3 shadow-xl backdrop-blur-sm animate-float" style={{animationDelay: '1s'}}>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-secondary rounded-full animate-pulse"></div>
+                    <span className="text-sm font-semibold whitespace-nowrap">Быстрые сделки</span>
                   </div>
                 </div>
 
