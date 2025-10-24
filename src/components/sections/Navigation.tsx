@@ -9,6 +9,7 @@ const Navigation = () => {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -176,6 +177,15 @@ const Navigation = () => {
             <h1 className="text-[10px] sm:text-xs md:text-2xl font-bold text-foreground whitespace-nowrap">Legal Crypto Change</h1>
           </a>
           <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-8 flex-shrink-0">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="md:hidden p-1"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              <Icon name={isMobileMenuOpen ? "X" : "Menu"} size={24} />
+            </Button>
+
             <a href="/#services" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Услуги</a>
             <a href="/#guarantees" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Гарантии</a>
             <a href="/offers" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Объявления</a>
@@ -359,6 +369,90 @@ const Navigation = () => {
             )}
           </div>
         </div>
+        
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-border/50 bg-card/95 backdrop-blur-lg">
+            <div className="container mx-auto px-4 py-4 space-y-3">
+              <a 
+                href="/#services" 
+                className="block py-2 px-4 text-muted-foreground hover:text-foreground hover:bg-secondary/10 rounded-lg transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <div className="flex items-center gap-3">
+                  <Icon name="Briefcase" size={18} />
+                  <span>Услуги</span>
+                </div>
+              </a>
+              <a 
+                href="/#guarantees" 
+                className="block py-2 px-4 text-muted-foreground hover:text-foreground hover:bg-secondary/10 rounded-lg transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <div className="flex items-center gap-3">
+                  <Icon name="Shield" size={18} />
+                  <span>Гарантии</span>
+                </div>
+              </a>
+              <a 
+                href="/offers" 
+                className="block py-2 px-4 text-muted-foreground hover:text-foreground hover:bg-secondary/10 rounded-lg transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <div className="flex items-center gap-3">
+                  <Icon name="FileText" size={18} />
+                  <span>Объявления</span>
+                </div>
+              </a>
+              <a 
+                href="/#contact" 
+                className="block py-2 px-4 text-muted-foreground hover:text-foreground hover:bg-secondary/10 rounded-lg transition-colors"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <div className="flex items-center gap-3">
+                  <Icon name="Mail" size={18} />
+                  <span>Контакты</span>
+                </div>
+              </a>
+              
+              {user && (
+                <>
+                  <div className="border-t border-border/50 pt-3 mt-3">
+                    <div className="px-4 py-2 text-sm text-muted-foreground">
+                      Привет, {user.name}!
+                    </div>
+                  </div>
+                  {user.email === 'admin@kuzbassexchange.ru' && (
+                    <button 
+                      onClick={() => {
+                        window.location.href = '/admin';
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full py-2 px-4 text-left text-muted-foreground hover:text-foreground hover:bg-secondary/10 rounded-lg transition-colors"
+                    >
+                      <div className="flex items-center gap-3">
+                        <Icon name="Shield" size={18} />
+                        <span>Админ панель</span>
+                      </div>
+                    </button>
+                  )}
+                  <button 
+                    onClick={() => {
+                      handleLogout();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="w-full py-2 px-4 text-left text-muted-foreground hover:text-foreground hover:bg-secondary/10 rounded-lg transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon name="LogOut" size={18} />
+                      <span>Выйти</span>
+                    </div>
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
