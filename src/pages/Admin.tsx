@@ -22,7 +22,8 @@ const Admin = () => {
     completeDeal,
     toggleUserBlock,
     toggleOfferStatus,
-    completeOffer
+    completeOffer,
+    clearAllOffers
   } = useAdminData();
 
   const { exportToExcel } = useExcelExport(users, offers, deals);
@@ -40,6 +41,7 @@ const Admin = () => {
       <AdminHeader 
         onExport={exportToExcel}
         onNavigateHome={() => navigate('/')}
+        onClearAllOffers={clearAllOffers}
       />
 
       <div className="container mx-auto px-6 py-12">

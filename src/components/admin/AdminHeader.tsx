@@ -4,9 +4,10 @@ import Icon from '@/components/ui/icon';
 interface AdminHeaderProps {
   onExport: () => void;
   onNavigateHome: () => void;
+  onClearAllOffers: () => void;
 }
 
-const AdminHeader = ({ onExport, onNavigateHome }: AdminHeaderProps) => {
+const AdminHeader = ({ onExport, onNavigateHome, onClearAllOffers }: AdminHeaderProps) => {
   return (
     <nav className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 lg:px-6 py-4">
@@ -19,6 +20,10 @@ const AdminHeader = ({ onExport, onNavigateHome }: AdminHeaderProps) => {
             <h1 className="text-lg lg:text-2xl font-bold text-foreground truncate">Админ-панель</h1>
           </div>
           <div className="flex items-center gap-2 lg:gap-3 flex-shrink-0">
+            <Button onClick={onClearAllOffers} size="sm" variant="destructive" className="text-xs lg:text-sm">
+              <Icon name="Trash2" className="lg:mr-2" size={16} />
+              <span className="hidden lg:inline">Очистить всё</span>
+            </Button>
             <Button onClick={onExport} size="sm" className="bg-green-600 hover:bg-green-700 text-white text-xs lg:text-sm">
               <Icon name="Download" className="lg:mr-2" size={16} />
               <span className="hidden lg:inline">Экспорт в Excel</span>

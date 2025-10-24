@@ -187,6 +187,29 @@ export const useAdminData = () => {
     }
   };
 
+  const clearAllOffers = async () => {
+    if (!confirm('ВНИМАНИЕ! Это удалит ВСЕ объявления из базы. Продолжить?')) return;
+
+    try {
+      const response = await fetch('https://functions.poehali.dev/2237d1cb-ec94-4c0c-a318-6145c2f54e23', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ clear_all: true })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        toast.success(`Удалено объявлений: ${data.deleted_count}`);
+        await loadOffers();
+        await loadDeals();
+      } else {
+        toast.error('Ошибка при очистке');
+      }
+    } catch (error) {
+      toast.error('Ошибка при очистке');
+    }
+  };
+
   return {
     users,
     offers,
@@ -196,6 +219,7 @@ export const useAdminData = () => {
     completeDeal,
     toggleUserBlock,
     toggleOfferStatus,
-    completeOffer
+    completeOffer,
+    clearAllOffers
   };
 };
