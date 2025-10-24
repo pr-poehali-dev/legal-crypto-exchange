@@ -41,6 +41,7 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
       if (item.itemType === 'offer') {
         const offer = item as Offer & { itemType: 'offer' };
         return (
+          offer.id.toString().includes(query) ||
           offer.username?.toLowerCase().includes(query) ||
           offer.phone?.toLowerCase().includes(query) ||
           offer.amount.toString().includes(query) ||
@@ -49,6 +50,7 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
       } else {
         const deal = item as Deal & { itemType: 'deal' };
         return (
+          deal.id.toString().includes(query) ||
           deal.username?.toLowerCase().includes(query) ||
           deal.email?.toLowerCase().includes(query) ||
           deal.phone?.toLowerCase().includes(query) ||
@@ -80,7 +82,7 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
           <Icon name="Search" size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Поиск по имени, телефону, сумме..."
+            placeholder="Поиск по ID, имени, телефону, сумме..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-12 pr-4 py-3 bg-card border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-foreground"
@@ -122,6 +124,9 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-3">
+                      <Badge variant="outline" className="font-mono text-xs">
+                        ID: {offer.id}
+                      </Badge>
                       <Badge variant={offer.offer_type === 'buy' ? 'default' : 'secondary'}>
                         {offer.offer_type === 'buy' ? 'Покупка' : 'Продажа'}
                       </Badge>
@@ -202,6 +207,9 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-3">
+                      <Badge variant="outline" className="font-mono text-xs">
+                        ID: {deal.id}
+                      </Badge>
                       <Badge variant={deal.deal_type === 'buy' ? 'default' : 'secondary'}>
                         {deal.deal_type === 'buy' ? 'Покупка' : 'Продажа'}
                       </Badge>

@@ -47,6 +47,7 @@ const UsersTab = ({ users, offers, deals, onToggleBlock, onFilteredUsersChange }
   if (searchQuery.trim()) {
     const query = searchQuery.toLowerCase();
     filteredUsers = users.filter(user => 
+      user.id.toString().includes(query) ||
       user.name?.toLowerCase().includes(query) ||
       user.email?.toLowerCase().includes(query) ||
       user.phone?.toLowerCase().includes(query)
@@ -74,7 +75,7 @@ const UsersTab = ({ users, offers, deals, onToggleBlock, onFilteredUsersChange }
         <Icon name="Search" size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
         <input
           type="text"
-          placeholder="Поиск по имени, email, телефону..."
+          placeholder="Поиск по ID, имени, email, телефону..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full pl-12 pr-4 py-3 bg-card border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-foreground"
@@ -97,6 +98,9 @@ const UsersTab = ({ users, offers, deals, onToggleBlock, onFilteredUsersChange }
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-3">
+                    <Badge variant="outline" className="font-mono text-xs">
+                      ID: {user.id}
+                    </Badge>
                     <h3 className="text-xl font-bold">{user.name}</h3>
                     {user.blocked && (
                       <Badge variant="destructive">Заблокирован</Badge>
