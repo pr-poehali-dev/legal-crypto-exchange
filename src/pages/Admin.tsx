@@ -8,10 +8,13 @@ import DealsOffersTab from '@/components/admin/DealsOffersTab';
 import UsersTab from '@/components/admin/UsersTab';
 import { useAdminData } from '@/components/admin/useAdminData';
 import { useExcelExport } from '@/components/admin/useExcelExport';
+import { Offer, User } from '@/components/admin/types';
 
 const Admin = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('deals-offers');
+  const [filteredOffers, setFilteredOffers] = useState<Offer[]>([]);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   
   const {
     users,
@@ -39,7 +42,7 @@ const Admin = () => {
   return (
     <div className="min-h-screen bg-background">
       <AdminHeader 
-        onExport={exportToExcel}
+        onExport={() => exportToExcel(filteredOffers.length > 0 ? filteredOffers : undefined, filteredUsers.length > 0 ? filteredUsers : undefined)}
         onNavigateHome={() => navigate('/')}
         onClearAllOffers={clearAllOffers}
       />
@@ -68,6 +71,7 @@ const Admin = () => {
                 onDelete={deleteOffer}
                 onCompleteDeal={completeDeal}
                 onCompleteOffer={completeOffer}
+                onFilteredOffersChange={setFilteredOffers}
               />
             </TabsContent>
 
@@ -76,7 +80,8 @@ const Admin = () => {
                 users={users} 
                 offers={offers}
                 deals={deals}
-                onToggleBlock={toggleUserBlock} 
+                onToggleBlock={toggleUserBlock}
+                onFilteredUsersChange={setFilteredUsers}
               />
             </TabsContent>
           </Tabs>

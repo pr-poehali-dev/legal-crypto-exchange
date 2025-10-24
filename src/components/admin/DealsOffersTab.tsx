@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -13,9 +13,10 @@ interface DealsOffersTabProps {
   onDelete: (offerId: number) => void;
   onCompleteDeal: (dealId: number) => void;
   onCompleteOffer: (offerId: number) => void;
+  onFilteredOffersChange: (offers: Offer[]) => void;
 }
 
-const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDeal, onCompleteOffer }: DealsOffersTabProps) => {
+const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDeal, onCompleteOffer, onFilteredOffersChange }: DealsOffersTabProps) => {
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -61,6 +62,16 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
     ...offers.map(o => ({ ...o, itemType: 'offer' as const })),
     ...deals.map(d => ({ ...d, itemType: 'deal' as const }))
   ];
+
+  useEffect(() => {
+    const filteredOffersOnly = combinedItems
+      .filter(item => item.itemType === 'offer')
+      .map(item => {
+        const { itemType, ...offer } = item;
+        return offer as Offer;
+      });
+    onFilteredOffersChange(filteredOffersOnly);
+  }, [filterStatus, searchQuery, offers]);
 
   return (
     <div className="space-y-6">

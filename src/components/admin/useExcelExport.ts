@@ -3,7 +3,9 @@ import { toast } from 'sonner';
 import { User, Offer, Deal } from './types';
 
 export const useExcelExport = (users: User[], offers: Offer[], deals: Deal[]) => {
-  const exportToExcel = () => {
+  const exportToExcel = (filteredOffers?: Offer[], filteredUsers?: User[]) => {
+    const offersToExport = filteredOffers || offers;
+    const usersToExport = filteredUsers || users;
     const workbook = XLSX.utils.book_new();
 
     const dealsData = deals.map(deal => ({
@@ -23,7 +25,7 @@ export const useExcelExport = (users: User[], offers: Offer[], deals: Deal[]) =>
     const dealsSheet = XLSX.utils.json_to_sheet(dealsData);
     XLSX.utils.book_append_sheet(workbook, dealsSheet, 'Сделки');
 
-    const offersData = offers.map(offer => ({
+    const offersData = offersToExport.map(offer => ({
       'ID': offer.id,
       'Пользователь': offer.username,
       'Телефон': offer.phone,
@@ -37,7 +39,7 @@ export const useExcelExport = (users: User[], offers: Offer[], deals: Deal[]) =>
     const offersSheet = XLSX.utils.json_to_sheet(offersData);
     XLSX.utils.book_append_sheet(workbook, offersSheet, 'Объявления');
 
-    const usersData = users.map(user => ({
+    const usersData = usersToExport.map(user => ({
       'ID': user.id,
       'Имя': user.name,
       'Email': user.email,
@@ -49,9 +51,9 @@ export const useExcelExport = (users: User[], offers: Offer[], deals: Deal[]) =>
     XLSX.utils.book_append_sheet(workbook, usersSheet, 'Пользователи');
 
     const statsData = [
-      { 'Показатель': 'Всего пользователей', 'Значение': users.length },
-      { 'Показатель': 'Всего объявлений', 'Значение': offers.length },
-      { 'Показатель': 'Активных объявлений', 'Значение': offers.filter(o => o.status === 'active').length },
+      { 'Показатель': 'Всего пользователей', 'Значение': usersToExport.length },
+      { 'Показатель': 'Всего объявлений', 'Значение': offersToExport.length },
+      { 'Показатель': 'Активных объявлений', 'Значение': offersToExport.filter(o => o.status === 'active').length },
       { 'Показатель': 'Всего сделок', 'Значение': deals.length },
       { 'Показатель': 'Завершённых сделок', 'Значение': deals.filter(d => d.status === 'completed').length },
       { 'Показатель': 'Общий объём (₽)', 'Значение': deals.filter(d => d.status === 'completed').reduce((sum, d) => sum + d.total, 0) }

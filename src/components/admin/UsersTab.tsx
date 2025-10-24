@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -10,9 +10,10 @@ interface UsersTabProps {
   offers: Offer[];
   deals: Deal[];
   onToggleBlock: (userId: number, currentBlocked: boolean) => void;
+  onFilteredUsersChange: (users: User[]) => void;
 }
 
-const UsersTab = ({ users, offers, deals, onToggleBlock }: UsersTabProps) => {
+const UsersTab = ({ users, offers, deals, onToggleBlock, onFilteredUsersChange }: UsersTabProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const getUserStats = (userId: number) => {
     const userDeals = deals.filter(d => d.user_id === userId);
@@ -51,6 +52,10 @@ const UsersTab = ({ users, offers, deals, onToggleBlock }: UsersTabProps) => {
       user.phone?.toLowerCase().includes(query)
     );
   }
+
+  useEffect(() => {
+    onFilteredUsersChange(filteredUsers);
+  }, [searchQuery, users]);
 
   if (users.length === 0) {
     return (
