@@ -93,8 +93,18 @@ const CreateOfferDialog = ({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="buy">Покупка USDT</SelectItem>
-                <SelectItem value="sell">Продажа USDT</SelectItem>
+                <SelectItem value="buy">
+                  <div className="flex flex-col items-start">
+                    <span className="font-medium">Покупка USDT</span>
+                    <span className="text-xs text-muted-foreground">Вы отдаёте рубли, получаете USDT</span>
+                  </div>
+                </SelectItem>
+                <SelectItem value="sell">
+                  <div className="flex flex-col items-start">
+                    <span className="font-medium">Продажа USDT</span>
+                    <span className="text-xs text-muted-foreground">Вы отдаёте USDT, получаете рубли</span>
+                  </div>
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>

@@ -31,7 +31,7 @@ const OffersTab = ({ offers, onToggleStatus, onDelete }: OffersTabProps) => {
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-3">
                   <Badge variant={offer.offer_type === 'buy' ? 'default' : 'secondary'}>
-                    {offer.offer_type === 'buy' ? 'Покупка' : 'Продажа'}
+                    {offer.offer_type === 'buy' ? 'Покупает USDT' : 'Продаёт USDT'}
                   </Badge>
                   <Badge variant={offer.status === 'active' ? 'default' : 'outline'}>
                     {offer.status === 'active' ? 'Активно' : 'Неактивно'}

@@ -143,13 +143,13 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
               
               const offer = item as Offer & { itemType: 'offer' };
               
-              // Определяем реальный тип операции для текущего пользователя
+              // Определяем что показывать пользователю
+              // Если я создал объявление - показываю то, что я хочу делать
+              // Если я зарезервировал - показываю противоположное
               let userDealType: 'buy' | 'sell';
               if (offer.relation_type === 'created') {
-                // Я создал объявление - показываем как есть
                 userDealType = offer.offer_type as 'buy' | 'sell';
               } else {
-                // Я зарезервировал - инвертируем
                 userDealType = offer.offer_type === 'buy' ? 'sell' : 'buy';
               }
               
