@@ -5,7 +5,7 @@ from typing import Dict, Any
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Update offer status (activate/deactivate/complete)
+    Business: Update offer status (activate/deactivate/complete). Works in both user and admin mode.
     Args: event with body containing offer_id, status; context with request_id
     Returns: Success status
     '''

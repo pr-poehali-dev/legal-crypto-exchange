@@ -39,12 +39,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     offer_id = body_data.get('offer_id')
     user_id = body_data.get('user_id')
     
-    if not offer_id or not user_id:
+    if not offer_id:
         return {
             'statusCode': 400,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'isBase64Encoded': False,
-            'body': json.dumps({'success': False, 'error': 'Missing required fields'})
+            'body': json.dumps({'success': False, 'error': 'Missing offer_id'})
         }
     
     dsn = os.environ.get('DATABASE_URL')
@@ -52,7 +52,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     conn = psycopg2.connect(dsn)
     cur = conn.cursor()
     
-    # Check if user owns this offer
+    # Check if offer exists
     cur.execute('SELECT user_id FROM offers WHERE id = %s', (offer_id,))
     result = cur.fetchone()
     
@@ -66,7 +66,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({'success': False, 'error': 'Offer not found'})
         }
     
-    if result[0] != user_id:
+    # If user_id provided, check authorization (user mode)
+    # If no user_id, skip check (admin mode)
+    if user_id and result[0] != user_id:
         cur.close()
         conn.close()
         return {

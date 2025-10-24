@@ -145,7 +145,7 @@ export const useAdminData = () => {
     const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
 
     try {
-      const response = await fetch('https://functions.poehali.dev/c6a4e4a7-6edb-4a9e-a4d7-c8fb0a5e8a4f', {
+      const response = await fetch('https://functions.poehali.dev/716426cb-1d05-4858-a5f1-4d46123b5470', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ offer_id: offerId, status: newStatus })
