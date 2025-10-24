@@ -49,14 +49,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     now_str = now_utc.strftime('%Y-%m-%d %H:%M:%S')
     
     cursor.execute("""
-        DELETE FROM offers 
-        WHERE status != 'completed' AND (
-            (status = 'active' AND meeting_time < %s)
-            OR 
-            (status = 'reserved' AND reserved_at < (NOW() - INTERVAL '1 day'))
-        )
+        DELETE FROM t_p53513159_legal_crypto_exchang.offers 
+        WHERE status != 'completed' 
+        AND status = 'reserved' 
+        AND reserved_at < (NOW() - INTERVAL '1 day')
         RETURNING id, status
-    """, (now_str,))
+    """)
     
     deleted_rows = cursor.fetchall()
     deleted_ids = [row['id'] for row in deleted_rows]
