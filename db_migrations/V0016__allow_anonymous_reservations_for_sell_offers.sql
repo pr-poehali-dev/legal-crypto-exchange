@@ -1,0 +1,1 @@
+ALTER TABLE offers DROP CONSTRAINT IF EXISTS check_anonymous_only_buy
