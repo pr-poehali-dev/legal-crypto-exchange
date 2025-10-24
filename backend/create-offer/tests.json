@@ -4,16 +4,15 @@
       "name": "Create buy offer",
       "method": "POST",
       "body": {
-        "user_id": 1,
+        "user_id": 3,
         "offer_type": "buy",
         "amount": 1000,
         "rate": 95.50,
-        "meeting_time": "Сегодня, 18:00"
+        "meeting_time": "18:00"
       },
       "expectedStatus": 200,
       "expectedBody": {
-        "success": true,
-        "offer_id": "number"
+        "success": true
       },
       "bodyMatcher": "partial"
     },

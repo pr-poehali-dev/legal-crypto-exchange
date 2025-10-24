@@ -83,13 +83,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         safe_name = offer_req.name.replace("'", "''")
         safe_phone = offer_req.phone.replace("'", "''")
         
-        # Insert anonymous buy offer
+        # Insert anonymous buy offer with expires_at (24 hours from now)
         cursor.execute(f"""
             INSERT INTO t_p53513159_legal_crypto_exchang.offers 
             (user_id, offer_type, amount, rate, meeting_time, status, 
-             is_anonymous, anonymous_name, anonymous_phone)
+             is_anonymous, anonymous_name, anonymous_phone, expires_at)
             VALUES ({anon_user_id}, 'buy', {offer_req.amount}, {offer_req.rate}, '{offer_req.meeting_time}', 'active',
-                    true, '{safe_name}', '{safe_phone}')
+                    true, '{safe_name}', '{safe_phone}', NOW() + INTERVAL '24 hours')
             RETURNING id, offer_type, amount, rate, meeting_time, status, created_at,
                       anonymous_name, anonymous_phone, is_anonymous
         """)

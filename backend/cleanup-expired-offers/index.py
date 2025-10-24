@@ -51,8 +51,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     cursor.execute("""
         DELETE FROM t_p53513159_legal_crypto_exchang.offers 
         WHERE status != 'completed' 
-        AND status = 'reserved' 
-        AND reserved_at < (NOW() - INTERVAL '1 day')
+        AND (
+            (status = 'reserved' AND reserved_at < (NOW() - INTERVAL '1 day'))
+            OR
+            (expires_at IS NOT NULL AND expires_at < NOW())
+        )
         RETURNING id, status
     """)
     

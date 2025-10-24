@@ -56,7 +56,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         conn = psycopg2.connect(dsn)
         cursor = conn.cursor()
         
-        cursor.execute('SELECT COALESCE(blocked, false) FROM users WHERE id = %s', (user_id,))
+        cursor.execute('SELECT COALESCE(blocked, false) FROM t_p53513159_legal_crypto_exchang.users WHERE id = %s', (user_id,))
         user_data = cursor.fetchone()
         
         if user_data and user_data[0]:
@@ -72,14 +72,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         cursor.execute('''
-            INSERT INTO offers (user_id, offer_type, amount, rate, meeting_time, status)
-            VALUES (%s, %s, %s, %s, %s, 'active')
+            INSERT INTO t_p53513159_legal_crypto_exchang.offers 
+            (user_id, offer_type, amount, rate, meeting_time, status, expires_at)
+            VALUES (%s, %s, %s, %s, %s, 'active', NOW() + INTERVAL '24 hours')
             RETURNING id
         ''', (user_id, offer_type, float(amount), float(rate), meeting_time))
         
         offer_id = cursor.fetchone()[0]
         
-        cursor.execute('SELECT username FROM users WHERE id = %s', (user_id,))
+        cursor.execute('SELECT username FROM t_p53513159_legal_crypto_exchang.users WHERE id = %s', (user_id,))
         username_result = cursor.fetchone()
         username = username_result[0] if username_result else 'Пользователь'
         
