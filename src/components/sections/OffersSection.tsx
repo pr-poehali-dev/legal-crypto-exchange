@@ -49,6 +49,7 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
   }, []);
 
   useEffect(() => {
+    cleanupExpiredOffers();
     loadOffers();
     fetchCurrentRate();
     
@@ -60,9 +61,14 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
       loadOffers(true);
     }, 30000);
     
+    const cleanupInterval = setInterval(() => {
+      cleanupExpiredOffers();
+    }, 60000);
+    
     return () => {
       clearInterval(rateInterval);
       clearInterval(offersInterval);
+      clearInterval(cleanupInterval);
     };
   }, []);
 
@@ -91,6 +97,17 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
       if (!silent) {
         setIsLoading(false);
       }
+    }
+  };
+
+  const cleanupExpiredOffers = async () => {
+    try {
+      await fetch('https://functions.poehali.dev/2237d1cb-ec94-4c0c-a318-6145c2f54e23', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+    } catch (error) {
+      console.error('Failed to cleanup expired offers:', error);
     }
   };
 
