@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Icon from '@/components/ui/icon';
 
 interface CryptoRate {
@@ -16,6 +16,8 @@ const CryptoTicker = () => {
     { symbol: 'BNB/USDT', name: 'BNB', price: 0, change: 0, icon: 'TrendingUp' },
     { symbol: 'USDT/RUB', name: 'Tether', price: 0, change: 0, icon: 'DollarSign' },
   ]);
+  const [isPaused, setIsPaused] = useState(false);
+  const tickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchRates = async () => {
@@ -74,13 +76,23 @@ const CryptoTicker = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const tickerItems = [...rates, ...rates, ...rates];
+  const tickerItems = [...rates, ...rates, ...rates, ...rates, ...rates, ...rates];
+
+  const handleTouchStart = () => {
+    if (window.innerWidth <= 768) {
+      setIsPaused(true);
+    }
+  };
 
   return (
     <div className="w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-y border-border/50 overflow-hidden py-3 relative">
       <div className="absolute inset-0 bg-gradient-to-r from-violet-500/5 to-fuchsia-500/5"></div>
       
-      <div className="relative flex animate-scroll">
+      <div 
+        ref={tickerRef}
+        className={`relative flex ${isPaused ? 'animate-scroll-paused' : 'animate-scroll'}`}
+        onTouchStart={handleTouchStart}
+      >
         {tickerItems.map((rate, index) => (
           <div
             key={`${rate.symbol}-${index}`}
@@ -115,13 +127,22 @@ const CryptoTicker = () => {
             transform: translateX(0);
           }
           100% {
-            transform: translateX(-33.333%);
+            transform: translateX(-50%);
           }
         }
         .animate-scroll {
-          animation: scroll 15s linear infinite;
+          animation: scroll 30s linear infinite;
+        }
+        @media (max-width: 768px) {
+          .animate-scroll {
+            animation: scroll 15s linear infinite;
+          }
         }
         .animate-scroll:hover {
+          animation-play-state: paused;
+        }
+        .animate-scroll-paused {
+          animation: scroll 15s linear infinite;
           animation-play-state: paused;
         }
       `}</style>
