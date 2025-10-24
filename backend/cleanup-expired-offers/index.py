@@ -50,7 +50,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     cursor.execute("""
         DELETE FROM offers 
-        WHERE (
+        WHERE status != 'completed' AND (
             (status = 'active' AND meeting_time < %s)
             OR 
             (status = 'reserved' AND reserved_at < (NOW() - INTERVAL '1 day'))
