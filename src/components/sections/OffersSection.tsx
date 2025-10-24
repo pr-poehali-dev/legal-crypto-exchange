@@ -342,11 +342,11 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Icon name="MessageCircle" className="text-primary" />
-              Откликнуться на объявление
+              <Icon name="Lock" className="text-primary" />
+              Зарезервировать объявление
             </DialogTitle>
             <DialogDescription>
-              Владелец объявления получит ваши контакты и сможет связаться с вами.
+              Объявление будет зарезервировано за вами, и продавец свяжется с вами для завершения сделки.
             </DialogDescription>
           </DialogHeader>
           {selectedOffer && (
@@ -355,6 +355,7 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
               onSuccess={() => {
                 setResponseDialogOpen(false);
                 setSelectedOffer(null);
+                loadOffers();
               }} 
             />
           )}

@@ -42,15 +42,15 @@ const AnonymousResponseForm = ({ offerId, onSuccess }: AnonymousResponseFormProp
     setIsSubmitting(true);
 
     try {
-      const notifyUrl = func2url['notify-offer-interest'] || 'https://functions.poehali.dev/9c031941-05ab-46ce-9781-3bd0b4c6974f';
+      const reserveUrl = func2url['reserve-offer'] || 'https://functions.poehali.dev/9c031941-05ab-46ce-9781-3bd0b4c6974f';
       
-      const response = await fetch(notifyUrl, {
+      const response = await fetch(reserveUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           offer_id: offerId,
-          username: name,
-          phone: phone,
+          buyer_name: name,
+          buyer_phone: phone,
           is_anonymous: true,
         }),
       });
@@ -60,7 +60,7 @@ const AnonymousResponseForm = ({ offerId, onSuccess }: AnonymousResponseFormProp
       if (data.success) {
         toast({
           title: 'Успешно!',
-          description: 'Владелец объявления получил ваши контакты',
+          description: 'Объявление зарезервировано. Продавец свяжется с вами для завершения сделки.',
         });
         setName('');
         setPhone('');
@@ -68,14 +68,14 @@ const AnonymousResponseForm = ({ offerId, onSuccess }: AnonymousResponseFormProp
       } else {
         toast({
           title: 'Ошибка',
-          description: data.error || 'Не удалось отправить отклик',
+          description: data.error || 'Не удалось зарезервировать объявление',
           variant: 'destructive',
         });
       }
     } catch (error) {
       toast({
         title: 'Ошибка',
-        description: 'Не удалось отправить отклик. Проверьте подключение к интернету.',
+        description: 'Не удалось зарезервировать объявление. Проверьте подключение к интернету.',
         variant: 'destructive',
       });
     } finally {
@@ -113,18 +113,18 @@ const AnonymousResponseForm = ({ offerId, onSuccess }: AnonymousResponseFormProp
         {isSubmitting ? (
           <>
             <Icon name="Loader2" className="mr-2 animate-spin" />
-            Отправка...
+            Резервирование...
           </>
         ) : (
           <>
-            <Icon name="Send" className="mr-2" />
-            Отправить отклик
+            <Icon name="Lock" className="mr-2" />
+            Зарезервировать
           </>
         )}
       </Button>
 
       <p className="text-xs text-muted-foreground text-center">
-        * Владелец объявления получит ваше имя и телефон для связи
+        * Объявление будет зарезервировано за вами. Продавец свяжется с вами для завершения сделки.
       </p>
     </form>
   );
