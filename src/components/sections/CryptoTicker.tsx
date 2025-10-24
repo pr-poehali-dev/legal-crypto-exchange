@@ -95,7 +95,7 @@ const CryptoTicker = () => {
               <span className="text-lg font-semibold text-foreground">
                 {rate.price > 0 ? (
                   rate.symbol === 'USDT/RUB' 
-                    ? rate.price.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                    ? `${rate.price.toFixed(2)} ₽`
                     : rate.price.toLocaleString('ru-RU', { minimumFractionDigits: 0, maximumFractionDigits: 2 })
                 ) : '—'}
               </span>
