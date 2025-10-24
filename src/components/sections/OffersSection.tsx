@@ -151,6 +151,15 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
 
   const handleContact = async (offer: Offer) => {
     if (!currentUser) {
+      if (offer.offer_type === 'buy') {
+        toast({
+          title: 'Требуется регистрация',
+          description: 'Для отклика на это объявление необходимо войти в систему',
+          variant: 'destructive',
+        });
+        return;
+      }
+      
       setSelectedOffer(offer);
       setResponseDialogOpen(true);
       return;
