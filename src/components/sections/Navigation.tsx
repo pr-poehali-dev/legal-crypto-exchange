@@ -174,33 +174,33 @@ const Navigation = () => {
               {/* Внешнее свечение при hover */}
               <div className="absolute -inset-1 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 group-hover:from-emerald-500/40 group-hover:to-teal-500/40 rounded-2xl blur-lg transition-all duration-500"></div>
             </div>
-            <h1 className="text-[10px] sm:text-xs md:text-2xl font-bold text-foreground whitespace-nowrap">Legal Crypto Change</h1>
+            <h1 className="text-[10px] sm:text-xs lg:text-base xl:text-2xl font-bold text-foreground whitespace-nowrap">Legal Crypto Change</h1>
           </a>
-          <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-8 flex-shrink-0">
+          <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4 xl:space-x-8 flex-shrink-0">
             <Button
               variant="outline"
               size="sm"
-              className="md:hidden border-secondary/50 bg-secondary/5 hover:bg-secondary/10 px-3 py-2 flex items-center gap-2"
+              className="lg:hidden border-secondary/50 bg-secondary/5 hover:bg-secondary/10 px-3 py-2 flex items-center gap-2"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               <Icon name={isMobileMenuOpen ? "X" : "Menu"} size={20} />
               <span className="text-xs font-medium">{isMobileMenuOpen ? "Закрыть" : "Меню"}</span>
             </Button>
 
-            <a href="/#services" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Услуги</a>
-            <a href="/#guarantees" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Гарантии</a>
-            <a href="/offers" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Объявления</a>
-            <a href="/#contact" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Контакты</a>
+            <a href="/#services" className="hidden lg:inline text-sm xl:text-base text-muted-foreground hover:text-foreground transition-colors">Услуги</a>
+            <a href="/#guarantees" className="hidden lg:inline text-sm xl:text-base text-muted-foreground hover:text-foreground transition-colors">Гарантии</a>
+            <a href="/offers" className="hidden lg:inline text-sm xl:text-base text-muted-foreground hover:text-foreground transition-colors">Объявления</a>
+            <a href="/#contact" className="hidden lg:inline text-sm xl:text-base text-muted-foreground hover:text-foreground transition-colors">Контакты</a>
             
             {user ? (
-              <div className="flex items-center gap-1 md:gap-3">
-                <span className="text-sm text-muted-foreground hidden md:inline">Привет, {user.name}!</span>
+              <div className="flex items-center gap-1 lg:gap-2 xl:gap-3">
+                <span className="text-xs lg:text-sm text-muted-foreground hidden lg:inline">Привет, {user.name}!</span>
                 {user.email === 'admin@kuzbassexchange.ru' && (
                   <Button 
                     onClick={() => window.location.href = '/admin'} 
                     variant="outline"
                     size="sm"
-                    className="border-secondary hidden md:flex"
+                    className="border-secondary hidden lg:flex text-xs lg:text-sm"
                   >
                     <Icon name="Shield" className="mr-2" size={16} />
                     Админ
@@ -209,12 +209,12 @@ const Navigation = () => {
                 <Button 
                   onClick={() => window.location.href = '/profile'} 
                   size="sm"
-                  className="bg-secondary text-primary hover:bg-secondary/90"
+                  className="bg-secondary text-primary hover:bg-secondary/90 text-xs lg:text-sm"
                 >
-                  <Icon name="User" className="mr-0 md:mr-2" size={16} />
-                  <span className="hidden md:inline">Кабинет</span>
+                  <Icon name="User" className="mr-0 lg:mr-2" size={16} />
+                  <span className="hidden lg:inline">Кабинет</span>
                 </Button>
-                <Button onClick={handleLogout} variant="outline" size="sm" className="border-secondary hidden md:flex">
+                <Button onClick={handleLogout} variant="outline" size="sm" className="border-secondary hidden lg:flex text-xs lg:text-sm">
                   Выйти
                 </Button>
               </div>
@@ -222,7 +222,7 @@ const Navigation = () => {
               <>
                 <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
                   <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="border-secondary hidden md:inline-flex">
+                    <Button variant="outline" size="sm" className="border-secondary hidden lg:inline-flex text-xs lg:text-sm">
                       Войти
                     </Button>
                   </DialogTrigger>
@@ -280,7 +280,7 @@ const Navigation = () => {
 
                 <Dialog open={isRegisterOpen} onOpenChange={setIsRegisterOpen}>
                   <DialogTrigger asChild>
-                    <Button size="sm" className="bg-secondary text-primary hover:bg-secondary/90 hidden md:inline-flex">
+                    <Button size="sm" className="bg-secondary text-primary hover:bg-secondary/90 hidden lg:inline-flex text-xs lg:text-sm">
                       Регистрация
                     </Button>
                   </DialogTrigger>
