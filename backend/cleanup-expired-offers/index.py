@@ -50,12 +50,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     cursor.execute("""
         DELETE FROM offers 
-        WHERE meeting_time < %s 
-        AND status IN ('active', 'reserved')
-        RETURNING id
+        WHERE (
+            (status = 'active' AND meeting_time < %s)
+            OR 
+            (status = 'reserved' AND reserved_at < (NOW() - INTERVAL '1 day'))
+        )
+        RETURNING id, status
     """, (now_str,))
     
-    deleted_ids = [row['id'] for row in cursor.fetchall()]
+    deleted_rows = cursor.fetchall()
+    deleted_ids = [row['id'] for row in deleted_rows]
     deleted_count = len(deleted_ids)
     
     conn.commit()
