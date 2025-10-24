@@ -18,6 +18,7 @@ const CryptoTicker = () => {
   ]);
   const [isPaused, setIsPaused] = useState(false);
   const tickerRef = useRef<HTMLDivElement>(null);
+  const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const fetchRates = async () => {
@@ -79,9 +80,15 @@ const CryptoTicker = () => {
   const tickerItems = [...rates, ...rates, ...rates, ...rates, ...rates, ...rates];
 
   const handleTouchStart = () => {
-    if (window.innerWidth <= 768) {
-      setIsPaused(prev => !prev);
+    if (pauseTimeoutRef.current) {
+      clearTimeout(pauseTimeoutRef.current);
     }
+    
+    setIsPaused(true);
+    
+    pauseTimeoutRef.current = setTimeout(() => {
+      setIsPaused(false);
+    }, 3000);
   };
 
   return (
