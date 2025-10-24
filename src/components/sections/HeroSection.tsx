@@ -37,8 +37,8 @@ const HeroSection = () => {
               </div>
               
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold leading-[1.1] tracking-tight">
-                <span className="block text-foreground mb-2 sm:mb-3">Обмен USDT</span>
-                <span className="block bg-gradient-to-r from-secondary via-accent to-secondary bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient font-black">
+                <span className="block text-foreground mb-2 sm:mb-3 text-6xl">Обмен USDT</span>
+                <span className="block bg-gradient-to-r from-secondary via-accent to-secondary bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient font-black text-6xl">
                   с юридической защитой
                 </span>
               </h1>
