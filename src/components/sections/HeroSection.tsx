@@ -30,31 +30,31 @@ const HeroSection = () => {
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
-            <div className="text-left space-y-4 sm:space-y-6 animate-fade-in order-2 md:order-1">
-              <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-xs sm:text-sm font-medium backdrop-blur-sm">
-                <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-secondary rounded-full animate-pulse"></span>
+            <div className="text-left space-y-6 sm:space-y-8 animate-fade-in order-2 md:order-1">
+              <div className="inline-flex items-center gap-2 sm:gap-2.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-xs sm:text-sm font-semibold backdrop-blur-sm tracking-wide uppercase">
+                <span className="w-2 h-2 bg-secondary rounded-full animate-pulse shadow-lg shadow-secondary/50"></span>
                 Безопасный обмен с гарантией
               </div>
               
-              <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black leading-tight">
-                <span className="block text-foreground">Обмен USDT</span>
-                <span className="block bg-gradient-to-r from-secondary via-accent to-secondary bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold leading-[1.1] tracking-tight">
+                <span className="block text-foreground mb-2 sm:mb-3">Обмен USDT</span>
+                <span className="block bg-gradient-to-r from-secondary via-accent to-secondary bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient font-black">
                   с юридической защитой
                 </span>
               </h1>
               
-              <p className="text-sm sm:text-base md:text-xl text-muted-foreground max-w-xl leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-2xl leading-relaxed font-light tracking-wide">
                 Профессиональная площадка для безопасного обмена криптовалюты с полным юридическим сопровождением
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4">
+              <div className="flex flex-col sm:flex-row gap-4 pt-4 sm:pt-6">
                 <Button 
                   size="lg" 
-                  className="bg-secondary text-primary hover:bg-secondary/90 text-base sm:text-lg px-6 py-5 sm:px-8 sm:py-6 shadow-lg shadow-secondary/20 hover:shadow-xl hover:shadow-secondary/30 transition-all duration-300 group"
+                  className="bg-secondary text-primary hover:bg-secondary/90 text-lg sm:text-xl font-bold px-8 py-6 sm:px-10 sm:py-7 shadow-2xl shadow-secondary/30 hover:shadow-secondary/50 transition-all duration-300 group tracking-wide"
                   onClick={goToOffers}
                 >
                   Обменять
-                  <span className="ml-2 group-hover:translate-x-1 transition-transform duration-300">→</span>
+                  <span className="ml-3 text-2xl group-hover:translate-x-1 transition-transform duration-300">→</span>
                 </Button>
               </div>
             </div>
