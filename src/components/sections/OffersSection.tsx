@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 import AnonymousBuyOfferForm from '@/components/forms/AnonymousBuyOfferForm';
+import AnonymousResponseForm from '@/components/forms/AnonymousResponseForm';
 
 interface Offer {
   id: number;
@@ -37,6 +38,8 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [responseDialogOpen, setResponseDialogOpen] = useState(false);
+  const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
 
   useEffect(() => {
     const user = localStorage.getItem('user');
@@ -131,11 +134,8 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
 
   const handleContact = async (offer: Offer) => {
     if (!currentUser) {
-      toast({
-        title: 'Требуется авторизация',
-        description: 'Войдите в систему, чтобы связаться с продавцом',
-        variant: 'destructive',
-      });
+      setSelectedOffer(offer);
+      setResponseDialogOpen(true);
       return;
     }
 
@@ -335,6 +335,29 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
             setIsCreateDialogOpen(false);
             loadOffers();
           }} />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={responseDialogOpen} onOpenChange={setResponseDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Icon name="MessageCircle" className="text-primary" />
+              Откликнуться на объявление
+            </DialogTitle>
+            <DialogDescription>
+              Владелец объявления получит ваши контакты и сможет связаться с вами.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedOffer && (
+            <AnonymousResponseForm 
+              offerId={selectedOffer.id} 
+              onSuccess={() => {
+                setResponseDialogOpen(false);
+                setSelectedOffer(null);
+              }} 
+            />
+          )}
         </DialogContent>
       </Dialog>
     </section>
