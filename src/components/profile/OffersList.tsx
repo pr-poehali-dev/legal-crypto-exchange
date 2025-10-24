@@ -142,6 +142,17 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
               }
               
               const offer = item as Offer & { itemType: 'offer' };
+              
+              // Определяем реальный тип операции для текущего пользователя
+              let userDealType: 'buy' | 'sell';
+              if (offer.relation_type === 'created') {
+                // Я создал объявление - показываем как есть
+                userDealType = offer.offer_type as 'buy' | 'sell';
+              } else {
+                // Я зарезервировал - инвертируем
+                userDealType = offer.offer_type === 'buy' ? 'sell' : 'buy';
+              }
+              
               return (
               <div 
                 key={offer.id} 
@@ -150,20 +161,20 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div className="flex items-center gap-4 flex-1">
                     <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                      offer.offer_type === 'buy' 
+                      userDealType === 'buy' 
                         ? 'bg-accent/20' 
                         : 'bg-secondary/20'
                     }`}>
                       <Icon 
-                        name={offer.offer_type === 'buy' ? 'ShoppingCart' : 'Wallet'} 
+                        name={userDealType === 'buy' ? 'ShoppingCart' : 'Wallet'} 
                         size={24} 
-                        className={offer.offer_type === 'buy' ? 'text-accent' : 'text-secondary'}
+                        className={userDealType === 'buy' ? 'text-accent' : 'text-secondary'}
                       />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2 mb-1">
                         <p className="font-semibold text-lg break-words">
-                          {offer.offer_type === 'buy' ? 'Куплю' : 'Продам'} {offer.amount.toLocaleString('ru-RU')} USDT
+                          {userDealType === 'buy' ? 'Куплю' : 'Продам'} {offer.amount.toLocaleString('ru-RU')} USDT
                         </p>
                         {getOfferStatusBadge(offer.status)}
                         {offer.reserved_by && (
