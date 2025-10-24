@@ -11,10 +11,10 @@ interface CryptoRate {
 
 const CryptoTicker = () => {
   const [rates, setRates] = useState<CryptoRate[]>([
-    { symbol: 'BTC/USDT', name: 'Bitcoin', price: 0, change: 0, icon: 'Bitcoin' },
-    { symbol: 'ETH/USDT', name: 'Ethereum', price: 0, change: 0, icon: 'Wallet' },
-    { symbol: 'BNB/USDT', name: 'BNB', price: 0, change: 0, icon: 'TrendingUp' },
-    { symbol: 'USDT/RUB', name: 'Tether', price: 0, change: 0, icon: 'DollarSign' },
+    { symbol: 'BTC/USDT', name: 'Bitcoin', price: 0, change: 0, icon: '₿' },
+    { symbol: 'ETH/USDT', name: 'Ethereum', price: 0, change: 0, icon: 'Ξ' },
+    { symbol: 'BNB/USDT', name: 'BNB', price: 0, change: 0, icon: '🔶' },
+    { symbol: 'USDT/RUB', name: 'Tether', price: 0, change: 0, icon: '₮' },
   ]);
   const tickerRef = useRef<HTMLDivElement>(null);
 
@@ -41,28 +41,28 @@ const CryptoTicker = () => {
             name: 'Bitcoin', 
             price: parseFloat(btc.lastPrice), 
             change: parseFloat(btc.priceChangePercent),
-            icon: 'Bitcoin'
+            icon: '₿'
           },
           { 
             symbol: 'ETH/USDT', 
             name: 'Ethereum', 
             price: parseFloat(eth.lastPrice), 
             change: parseFloat(eth.priceChangePercent),
-            icon: 'Wallet'
+            icon: 'Ξ'
           },
           { 
             symbol: 'BNB/USDT', 
             name: 'BNB', 
             price: parseFloat(bnb.lastPrice), 
             change: parseFloat(bnb.priceChangePercent),
-            icon: 'TrendingUp'
+            icon: '🔶'
           },
           { 
             symbol: 'USDT/RUB', 
             name: 'Tether', 
             price: rubRate, 
             change: 0.05,
-            icon: 'DollarSign'
+            icon: '₮'
           },
         ]);
       } catch (error) {
@@ -91,7 +91,7 @@ const CryptoTicker = () => {
             className="flex items-center gap-3 px-6 min-w-fit whitespace-nowrap"
           >
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 flex items-center justify-center">
-              <Icon name={rate.icon as any} size={16} className="text-violet-400" />
+              <span className="text-lg">{rate.icon}</span>
             </div>
             
             <div className="flex items-center gap-2">
