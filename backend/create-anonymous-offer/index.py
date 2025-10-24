@@ -8,6 +8,7 @@ import json
 import os
 from typing import Dict, Any
 import psycopg2
+import requests
 from pydantic import BaseModel, Field, validator
 
 def get_db_connection():
@@ -108,6 +109,29 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'anonymous_phone': result[8],
             'is_anonymous': result[9]
         }
+        
+        bot_token = os.environ.get('TELEGRAM_BOT_TOKEN')
+        chat_id = os.environ.get('TELEGRAM_CHAT_ID')
+        
+        if bot_token and chat_id:
+            message = f"""📝 Новое анонимное объявление!
+
+👤 Имя: {safe_name}
+📞 Телефон: {safe_phone}
+📝 Тип: Покупка
+💰 Сумма: {offer_req.amount} USDT
+💱 Курс: {offer_req.rate} ₽
+⏰ Время встречи: {offer_req.meeting_time}
+💵 Итого: {offer_req.amount * offer_req.rate:,.2f} ₽"""
+            
+            try:
+                requests.post(
+                    'https://functions.poehali.dev/09e16699-07ea-42a0-a07b-6faa27662d58',
+                    json={'telegram_id': chat_id, 'message': message},
+                    timeout=5
+                )
+            except Exception as e:
+                print(f"Failed to send Telegram notification: {e}")
         
         return {
             'statusCode': 200,
