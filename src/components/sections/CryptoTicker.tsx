@@ -80,7 +80,7 @@ const CryptoTicker = () => {
 
   const handleTouchStart = () => {
     if (window.innerWidth <= 768) {
-      setIsPaused(true);
+      setIsPaused(prev => !prev);
     }
   };
 
