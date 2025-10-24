@@ -47,10 +47,12 @@ const ContactSection = () => {
   return (
     <section id="contact" className="py-12 md:py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-secondary/5 to-transparent"></div>
+      <div className="absolute top-1/3 left-10 w-80 h-80 bg-secondary/5 rounded-full blur-3xl animate-float"></div>
+      <div className="absolute bottom-1/3 right-10 w-72 h-72 bg-accent/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '2.5s' }}></div>
       
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <div className="grid md:grid-cols-2 gap-10 md:gap-16">
-          <div className="animate-fade-in">
+          <div className="animate-slide-in-left">
             <Badge className="mb-4 md:mb-6 bg-secondary/20 text-secondary border-secondary/30 text-xs md:text-sm font-semibold">
               Свяжитесь с нами
             </Badge>
@@ -59,8 +61,8 @@ const ContactSection = () => {
               Приглашаем вас на личную встречу в наш офис для безопасного проведения сделки
             </p>
             <div className="space-y-7">
-              <div className="flex items-start gap-4 group">
-                <div className="w-14 h-14 bg-gradient-to-br from-secondary to-amber-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+              <div className="flex items-start gap-4 group animate-fade-in-up delay-100">
+                <div className="w-14 h-14 bg-gradient-to-br from-secondary to-amber-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-secondary/50">
                   <Icon name="MapPin" size={26} className="text-white" />
                 </div>
                 <div>
@@ -68,8 +70,8 @@ const ContactSection = () => {
                   <p className="text-muted-foreground text-base md:text-lg">г. Москва, ул. Тверская, д. 15, офис 501</p>
                 </div>
               </div>
-              <div className="flex items-start gap-4 group">
-                <div className="w-14 h-14 bg-gradient-to-br from-secondary to-amber-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+              <div className="flex items-start gap-4 group animate-fade-in-up delay-200">
+                <div className="w-14 h-14 bg-gradient-to-br from-secondary to-amber-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-secondary/50">
                   <Icon name="Clock" size={26} className="text-white" />
                 </div>
                 <div>
@@ -77,8 +79,8 @@ const ContactSection = () => {
                   <p className="text-muted-foreground text-base md:text-lg">Пн-Пт: 10:00 - 20:00<br />Сб-Вс: 11:00 - 18:00</p>
                 </div>
               </div>
-              <div className="flex items-start gap-4 group">
-                <div className="w-14 h-14 bg-gradient-to-br from-secondary to-amber-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+              <div className="flex items-start gap-4 group animate-fade-in-up delay-300">
+                <div className="w-14 h-14 bg-gradient-to-br from-secondary to-amber-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-secondary/50">
                   <Icon name="Phone" size={26} className="text-white" />
                 </div>
                 <div>
@@ -86,8 +88,8 @@ const ContactSection = () => {
                   <p className="text-muted-foreground text-base md:text-lg">+7 (495) 123-45-67</p>
                 </div>
               </div>
-              <div className="flex items-start gap-4 group">
-                <div className="w-14 h-14 bg-gradient-to-br from-secondary to-amber-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+              <div className="flex items-start gap-4 group animate-fade-in-up delay-400">
+                <div className="w-14 h-14 bg-gradient-to-br from-secondary to-amber-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 group-hover:shadow-2xl group-hover:shadow-secondary/50">
                   <Icon name="Mail" size={26} className="text-white" />
                 </div>
                 <div>
@@ -97,7 +99,7 @@ const ContactSection = () => {
               </div>
             </div>
           </div>
-          <Card className="glass border-border glow-hover">
+          <Card className="glass border-border glow-hover animate-slide-in-right transform hover:scale-105 transition-all duration-500">
             <CardHeader>
               <CardTitle className="text-2xl md:text-3xl">Задать вопрос</CardTitle>
               <CardDescription>
@@ -106,7 +108,7 @@ const ContactSection = () => {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
+                <div className="animate-fade-in-up delay-100">
                   <Label htmlFor="contact-name">Имя</Label>
                   <Input 
                     id="contact-name" 
@@ -117,7 +119,7 @@ const ContactSection = () => {
                     required
                   />
                 </div>
-                <div>
+                <div className="animate-fade-in-up delay-200">
                   <Label htmlFor="contact-email">Email</Label>
                   <Input 
                     id="contact-email" 
@@ -129,7 +131,7 @@ const ContactSection = () => {
                     required
                   />
                 </div>
-                <div>
+                <div className="animate-fade-in-up delay-300">
                   <Label htmlFor="contact-phone">Телефон</Label>
                   <Input 
                     id="contact-phone" 
@@ -140,7 +142,7 @@ const ContactSection = () => {
                     required
                   />
                 </div>
-                <div>
+                <div className="animate-fade-in-up delay-400">
                   <Label htmlFor="contact-message">Сообщение</Label>
                   <Textarea 
                     id="contact-message" 
@@ -164,7 +166,7 @@ const ContactSection = () => {
                 )}
                 <Button 
                   type="submit" 
-                  className="w-full bg-secondary text-primary hover:bg-secondary/90 shadow-lg shadow-secondary/20 hover:shadow-xl hover:shadow-secondary/30 transition-all duration-300"
+                  className="w-full bg-secondary text-primary hover:bg-secondary/90 shadow-lg shadow-secondary/20 hover:shadow-xl hover:shadow-secondary/30 transition-all duration-300 hover:scale-105 animate-fade-in-up"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Отправка...' : 'Отправить сообщение'}
