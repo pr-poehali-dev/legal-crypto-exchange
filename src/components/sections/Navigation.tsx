@@ -222,7 +222,7 @@ const Navigation = () => {
               <>
                 <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
                   <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="border-secondary text-xs sm:text-sm px-2 sm:px-4">
+                    <Button variant="outline" size="sm" className="border-secondary hidden md:inline-flex">
                       Войти
                     </Button>
                   </DialogTrigger>
@@ -280,7 +280,7 @@ const Navigation = () => {
 
                 <Dialog open={isRegisterOpen} onOpenChange={setIsRegisterOpen}>
                   <DialogTrigger asChild>
-                    <Button size="sm" className="bg-secondary text-primary hover:bg-secondary/90 text-xs sm:text-sm px-2 sm:px-4 whitespace-nowrap">
+                    <Button size="sm" className="bg-secondary text-primary hover:bg-secondary/90 hidden md:inline-flex">
                       Регистрация
                     </Button>
                   </DialogTrigger>
@@ -416,41 +416,68 @@ const Navigation = () => {
                 </div>
               </a>
               
-              {user && (
-                <>
-                  <div className="border-t border-border/50 pt-3 mt-3">
-                    <div className="px-4 py-2 text-sm text-muted-foreground">
+              <div className="border-t border-border/50 pt-3 mt-3">
+                {user ? (
+                  <>
+                    <div className="px-4 py-2 text-sm text-muted-foreground mb-2">
                       Привет, {user.name}!
                     </div>
-                  </div>
-                  {user.email === 'admin@kuzbassexchange.ru' && (
+                    {user.email === 'admin@kuzbassexchange.ru' && (
+                      <button 
+                        onClick={() => {
+                          window.location.href = '/admin';
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="w-full py-2 px-4 text-left text-muted-foreground hover:text-foreground hover:bg-secondary/10 rounded-lg transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Icon name="Shield" size={18} />
+                          <span>Админ панель</span>
+                        </div>
+                      </button>
+                    )}
                     <button 
                       onClick={() => {
-                        window.location.href = '/admin';
+                        handleLogout();
                         setIsMobileMenuOpen(false);
                       }}
                       className="w-full py-2 px-4 text-left text-muted-foreground hover:text-foreground hover:bg-secondary/10 rounded-lg transition-colors"
                     >
                       <div className="flex items-center gap-3">
-                        <Icon name="Shield" size={18} />
-                        <span>Админ панель</span>
+                        <Icon name="LogOut" size={18} />
+                        <span>Выйти</span>
                       </div>
                     </button>
-                  )}
-                  <button 
-                    onClick={() => {
-                      handleLogout();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="w-full py-2 px-4 text-left text-muted-foreground hover:text-foreground hover:bg-secondary/10 rounded-lg transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Icon name="LogOut" size={18} />
-                      <span>Выйти</span>
-                    </div>
-                  </button>
-                </>
-              )}
+                  </>
+                ) : (
+                  <>
+                    <button 
+                      onClick={() => {
+                        setIsLoginOpen(true);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full py-3 px-4 text-left hover:bg-secondary/10 rounded-lg transition-colors mb-2 border border-secondary/50"
+                    >
+                      <div className="flex items-center justify-center gap-2">
+                        <Icon name="LogIn" size={18} className="text-secondary" />
+                        <span className="font-medium">Войти</span>
+                      </div>
+                    </button>
+                    <button 
+                      onClick={() => {
+                        setIsRegisterOpen(true);
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full py-3 px-4 text-left bg-secondary text-primary hover:bg-secondary/90 rounded-lg transition-colors"
+                    >
+                      <div className="flex items-center justify-center gap-2">
+                        <Icon name="UserPlus" size={18} />
+                        <span className="font-medium">Регистрация</span>
+                      </div>
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )}
