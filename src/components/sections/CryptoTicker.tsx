@@ -16,9 +16,7 @@ const CryptoTicker = () => {
     { symbol: 'BNB/USDT', name: 'BNB', price: 0, change: 0, icon: 'TrendingUp' },
     { symbol: 'USDT/RUB', name: 'Tether', price: 0, change: 0, icon: 'DollarSign' },
   ]);
-  const [isPaused, setIsPaused] = useState(false);
   const tickerRef = useRef<HTMLDivElement>(null);
-  const pauseTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const fetchRates = async () => {
@@ -79,26 +77,13 @@ const CryptoTicker = () => {
 
   const tickerItems = [...rates, ...rates, ...rates, ...rates, ...rates, ...rates];
 
-  const handleTouchStart = () => {
-    if (pauseTimeoutRef.current) {
-      clearTimeout(pauseTimeoutRef.current);
-    }
-    
-    setIsPaused(true);
-    
-    pauseTimeoutRef.current = setTimeout(() => {
-      setIsPaused(false);
-    }, 3000);
-  };
-
   return (
     <div className="w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-y border-border/50 overflow-hidden py-3 relative">
       <div className="absolute inset-0 bg-gradient-to-r from-violet-500/5 to-fuchsia-500/5"></div>
       
       <div 
         ref={tickerRef}
-        className={`relative flex ${isPaused ? 'animate-scroll-paused' : 'animate-scroll'}`}
-        onTouchStart={handleTouchStart}
+        className="relative flex animate-scroll"
       >
         {tickerItems.map((rate, index) => (
           <div
@@ -145,13 +130,7 @@ const CryptoTicker = () => {
             animation: scroll 15s linear infinite;
           }
         }
-        .animate-scroll:hover {
-          animation-play-state: paused;
-        }
-        .animate-scroll-paused {
-          animation: scroll 15s linear infinite;
-          animation-play-state: paused;
-        }
+
       `}</style>
     </div>
   );
