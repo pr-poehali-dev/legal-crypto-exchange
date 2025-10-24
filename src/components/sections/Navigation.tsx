@@ -373,7 +373,7 @@ const Navigation = () => {
         
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-border/50 bg-card/95 backdrop-blur-lg">
+          <div className="lg:hidden border-t border-border/50 bg-card/95 backdrop-blur-lg">
             <div className="container mx-auto px-4 py-4 space-y-3">
               <a 
                 href="/#services" 
