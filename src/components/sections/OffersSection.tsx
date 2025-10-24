@@ -228,17 +228,17 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
   );
 
   return (
-    <section id="offers" className="py-12 md:py-20 bg-card/30">
+    <section id="offers" className="py-8 md:py-20 bg-card/30">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="text-center mb-8 md:mb-16">
-          <h3 className="text-3xl md:text-5xl font-bold mb-3 md:mb-4">Объявления</h3>
-          <p className="text-base md:text-xl text-muted-foreground px-2">Актуальные предложения от проверенных пользователей</p>
+        <div className="text-center mb-6 md:mb-16">
+          <h3 className="text-2xl md:text-5xl font-bold mb-2 md:mb-4">Объявления</h3>
+          <p className="text-sm md:text-xl text-muted-foreground px-2">Актуальные предложения от проверенных пользователей</p>
           <div className="mt-3 md:mt-4 flex flex-col items-center gap-2">
             {currentRate && (
-              <div className="inline-flex items-center gap-2 bg-card border border-border rounded-lg px-3 md:px-4 py-2">
-                <Icon name="TrendingUp" size={16} className="text-secondary md:w-[18px] md:h-[18px]" />
-                <span className="text-xs md:text-sm text-muted-foreground">Рыночный курс USDT:</span>
-                <span className="text-base md:text-lg font-bold text-secondary">{currentRate.toFixed(2)} ₽</span>
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-card border border-border rounded-lg px-2 sm:px-3 md:px-4 py-1.5 sm:py-2">
+                <Icon name="TrendingUp" size={14} className="text-secondary sm:w-4 sm:h-4 md:w-[18px] md:h-[18px]" />
+                <span className="text-[11px] sm:text-xs md:text-sm text-muted-foreground">Курс USDT:</span>
+                <span className="text-sm sm:text-base md:text-lg font-bold text-secondary">{currentRate.toFixed(2)} ₽</span>
               </div>
             )}
             {lastUpdate && (
@@ -251,12 +251,12 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
         </div>
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 md:mb-6 gap-3">
-            <div className="flex items-center gap-2">
-              <Icon name="ArrowUpDown" size={18} className="text-muted-foreground" />
-              <span className="text-xs md:text-sm text-muted-foreground">Сортировать:</span>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <Icon name="ArrowUpDown" size={16} className="text-muted-foreground sm:w-[18px] sm:h-[18px]" />
+              <span className="text-[11px] sm:text-xs md:text-sm text-muted-foreground">Сортировать:</span>
             </div>
             <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
-              <SelectTrigger className="w-full md:w-[220px] bg-card border-border text-sm">
+              <SelectTrigger className="w-full md:w-[220px] bg-card border-border text-xs sm:text-sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
