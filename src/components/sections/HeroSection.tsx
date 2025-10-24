@@ -90,31 +90,31 @@ const HeroSection = () => {
                   </div>
                 </div>
 
-                <div className="hidden sm:block absolute -top-4 -right-4 bg-card border border-border rounded-2xl px-4 py-3 shadow-xl backdrop-blur-sm animate-float">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
-                    <span className="text-sm font-semibold whitespace-nowrap">Юридическая защита</span>
+                <div className="absolute top-0 right-0 sm:-top-4 sm:-right-4 bg-card border border-border rounded-lg sm:rounded-2xl px-2 py-1.5 sm:px-4 sm:py-3 shadow-xl backdrop-blur-sm animate-float">
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-accent rounded-full animate-pulse"></div>
+                    <span className="text-[10px] sm:text-sm font-semibold whitespace-nowrap">Юр. защита</span>
                   </div>
                 </div>
 
-                <div className="hidden sm:block absolute -bottom-4 -left-4 bg-card border border-border rounded-2xl px-4 py-3 shadow-xl backdrop-blur-sm animate-float" style={{animationDelay: '1s'}}>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-secondary rounded-full animate-pulse"></div>
-                    <span className="text-sm font-semibold whitespace-nowrap">Быстрые сделки</span>
+                <div className="absolute bottom-0 left-0 sm:-bottom-4 sm:-left-4 bg-card border border-border rounded-lg sm:rounded-2xl px-2 py-1.5 sm:px-4 sm:py-3 shadow-xl backdrop-blur-sm animate-float" style={{animationDelay: '1s'}}>
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-secondary rounded-full animate-pulse"></div>
+                    <span className="text-[10px] sm:text-sm font-semibold whitespace-nowrap">Быстро</span>
                   </div>
                 </div>
 
-                <div className="hidden sm:block absolute top-1/2 -left-16 md:-left-20 bg-card border border-border rounded-2xl px-4 py-3 shadow-xl backdrop-blur-sm animate-float" style={{animationDelay: '0.5s'}}>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <span className="text-sm font-semibold">Безопасно</span>
+                <div className="absolute top-1/2 left-0 sm:-left-16 md:-left-20 bg-card border border-border rounded-lg sm:rounded-2xl px-2 py-1.5 sm:px-4 sm:py-3 shadow-xl backdrop-blur-sm animate-float" style={{animationDelay: '0.5s'}}>
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-[10px] sm:text-sm font-semibold whitespace-nowrap">Безопасно</span>
                   </div>
                 </div>
 
-                <div className="hidden sm:block absolute top-1/3 -right-12 md:-right-16 bg-card border border-border rounded-2xl px-4 py-3 shadow-xl backdrop-blur-sm animate-float" style={{animationDelay: '1.5s'}}>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-violet-500 rounded-full animate-pulse"></div>
-                    <span className="text-sm font-semibold">Быстро</span>
+                <div className="absolute top-1/3 right-0 sm:-right-12 md:-right-16 bg-card border border-border rounded-lg sm:rounded-2xl px-2 py-1.5 sm:px-4 sm:py-3 shadow-xl backdrop-blur-sm animate-float" style={{animationDelay: '1.5s'}}>
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-violet-500 rounded-full animate-pulse"></div>
+                    <span className="text-[10px] sm:text-sm font-semibold whitespace-nowrap">Сделки</span>
                   </div>
                 </div>
               </div>
