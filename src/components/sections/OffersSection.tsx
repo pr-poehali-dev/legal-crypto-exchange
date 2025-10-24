@@ -224,19 +224,19 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
             </div>
           </div>
           
-          <div className="grid grid-cols-2 gap-4 bg-background/50 rounded-xl p-4">
-            <div>
+          <div className="grid grid-cols-2 gap-3 md:gap-4 bg-background/50 rounded-xl p-3 md:p-4">
+            <div className="min-w-0">
               <p className="text-xs text-muted-foreground mb-1.5 uppercase tracking-wide">Сумма</p>
-              <p className="text-base md:text-lg font-bold">{offer.amount.toLocaleString('ru-RU')} <span className="text-sm text-muted-foreground">USDT</span></p>
-              <p className="text-sm text-accent font-semibold mt-1">{(offer.amount * offer.rate).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₽</p>
+              <p className="text-sm md:text-base font-bold break-words">{offer.amount.toLocaleString('ru-RU')} <span className="text-xs md:text-sm text-muted-foreground">USDT</span></p>
+              <p className="text-xs md:text-sm text-accent font-semibold mt-1 break-words">{(offer.amount * offer.rate).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₽</p>
             </div>
-            <div>
+            <div className="min-w-0">
               <p className="text-xs text-muted-foreground mb-1.5 uppercase tracking-wide">Курс</p>
-              <p className="text-base md:text-lg font-bold text-secondary">{offer.rate.toFixed(2)} <span className="text-sm">₽</span></p>
+              <p className="text-sm md:text-base font-bold text-secondary break-words">{offer.rate.toFixed(2)} <span className="text-xs md:text-sm">₽</span></p>
             </div>
-            <div className="col-span-2">
+            <div className="col-span-2 min-w-0">
               <p className="text-xs text-muted-foreground mb-1.5 uppercase tracking-wide">Встреча</p>
-              <p className="text-sm font-medium">Сегодня {offer.meeting_time}</p>
+              <p className="text-sm font-medium break-words">Сегодня {offer.meeting_time}</p>
             </div>
           </div>
           
