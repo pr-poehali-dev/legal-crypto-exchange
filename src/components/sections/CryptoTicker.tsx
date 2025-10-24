@@ -10,20 +10,17 @@ interface CryptoRate {
 
 const CryptoIcon = ({ symbol }: { symbol: string }) => {
   const icons: Record<string, string> = {
-    'BTC/USDT': 'https://cryptologos.cc/logos/bitcoin-btc-logo.svg',
-    'ETH/USDT': 'https://cryptologos.cc/logos/ethereum-eth-logo.svg',
-    'BNB/USDT': 'https://cryptologos.cc/logos/bnb-bnb-logo.svg',
-    'USDT/RUB': 'https://cryptologos.cc/logos/tether-usdt-logo.svg'
+    'BTC/USDT': 'https://assets.coincap.io/assets/icons/btc@2x.png',
+    'ETH/USDT': 'https://assets.coincap.io/assets/icons/eth@2x.png',
+    'BNB/USDT': 'https://assets.coincap.io/assets/icons/bnb@2x.png',
+    'USDT/RUB': 'https://assets.coincap.io/assets/icons/usdt@2x.png'
   };
 
   return (
     <img 
       src={icons[symbol]} 
       alt={symbol} 
-      className="w-5 h-5"
-      onError={(e) => {
-        (e.target as HTMLImageElement).style.display = 'none';
-      }}
+      className="w-5 h-5 object-contain"
     />
   );
 };
