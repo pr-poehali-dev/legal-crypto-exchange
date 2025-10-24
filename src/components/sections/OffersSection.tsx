@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import AnonymousBuyOfferForm from '@/components/forms/AnonymousBuyOfferForm';
 
 interface Offer {
   id: number;
@@ -35,6 +36,7 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
   const [currentRate, setCurrentRate] = useState<number | null>(null);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   useEffect(() => {
     const user = localStorage.getItem('user');
@@ -186,29 +188,13 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
               <span className="text-primary font-bold text-lg">{offer.username?.[0] || 'U'}</span>
             </div>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <p className="font-semibold text-base md:text-lg truncate">{offer.username || 'Пользователь'}</p>
-                {offer.is_anonymous && (
-                  <Badge variant="secondary" className="text-xs">
-                    <Icon name="UserX" size={12} className="mr-1" />
-                    Без регистрации
-                  </Badge>
-                )}
-              </div>
-              <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                {!offer.is_anonymous && (
-                  <>
-                    <Icon name="CheckCircle2" size={14} className="text-accent" />
-                    <span>{offer.deals_count} успешных сделок</span>
-                  </>
-                )}
-                {offer.is_anonymous && (
-                  <>
-                    <Icon name="Phone" size={14} className="text-accent" />
-                    <span>Прямой контакт</span>
-                  </>
-                )}
-              </div>
+              <p className="font-semibold text-base md:text-lg truncate">{offer.username || 'Пользователь'}</p>
+              {!offer.is_anonymous && (
+                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <Icon name="CheckCircle2" size={14} className="text-accent" />
+                  <span>{offer.deals_count} успешных сделок</span>
+                </div>
+              )}
             </div>
           </div>
           
@@ -272,17 +258,26 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
               <Icon name="ArrowUpDown" size={16} className="text-muted-foreground sm:w-[18px] sm:h-[18px]" />
               <span className="text-[11px] sm:text-xs md:text-sm text-muted-foreground">Сортировать:</span>
             </div>
-            <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
-              <SelectTrigger className="w-full md:w-[220px] bg-card border-border text-xs sm:text-sm">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="rate">По курсу (от меньшего)</SelectItem>
-                <SelectItem value="time">По времени (от ближайшего)</SelectItem>
-                <SelectItem value="amount-min">По сумме (от минимальной)</SelectItem>
-                <SelectItem value="amount-max">По сумме (от максимальной)</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="flex gap-3 items-center">
+              <Button
+                onClick={() => setIsCreateDialogOpen(true)}
+                className="bg-secondary text-primary hover:bg-secondary/90"
+              >
+                <Icon name="Plus" className="mr-2" size={18} />
+                Создать объявление
+              </Button>
+              <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+                <SelectTrigger className="w-full md:w-[220px] bg-card border-border text-xs sm:text-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="rate">По курсу (от меньшего)</SelectItem>
+                  <SelectItem value="time">По времени (от ближайшего)</SelectItem>
+                  <SelectItem value="amount-min">По сумме (от минимальной)</SelectItem>
+                  <SelectItem value="amount-max">По сумме (от максимальной)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -327,6 +322,21 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
           </Tabs>
         </div>
       </div>
+
+      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Создать объявление о покупке USDT</DialogTitle>
+            <DialogDescription>
+              Создайте объявление без регистрации. Заполните форму и продавцы смогут увидеть ваше предложение.
+            </DialogDescription>
+          </DialogHeader>
+          <AnonymousBuyOfferForm onSuccess={() => {
+            setIsCreateDialogOpen(false);
+            loadOffers();
+          }} />
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };

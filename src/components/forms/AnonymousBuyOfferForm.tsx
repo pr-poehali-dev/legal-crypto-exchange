@@ -7,7 +7,11 @@ import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 import func2url from '../../../backend/func2url.json';
 
-const AnonymousBuyOfferForm = () => {
+interface AnonymousBuyOfferFormProps {
+  onSuccess?: () => void;
+}
+
+const AnonymousBuyOfferForm = ({ onSuccess }: AnonymousBuyOfferFormProps) => {
   const { toast } = useToast();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -60,6 +64,10 @@ const AnonymousBuyOfferForm = () => {
         setRate('');
         setMeetingHour('');
         setMeetingMinute('');
+        
+        if (onSuccess) {
+          onSuccess();
+        }
       } else {
         toast({
           title: 'Ошибка',
@@ -79,18 +87,7 @@ const AnonymousBuyOfferForm = () => {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Icon name="ShoppingCart" className="text-primary" />
-          Хочу купить USDT
-        </CardTitle>
-        <CardDescription>
-          Создайте объявление о покупке без регистрации. Продавцы свяжутся с вами по указанному телефону.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="name">Фамилия Имя *</Label>
@@ -187,12 +184,10 @@ const AnonymousBuyOfferForm = () => {
             )}
           </Button>
 
-          <p className="text-xs text-muted-foreground text-center">
-            * Регистрация не требуется. Продавцы увидят ваше объявление и свяжутся с вами.
-          </p>
-        </form>
-      </CardContent>
-    </Card>
+        <p className="text-xs text-muted-foreground text-center">
+          * Регистрация не требуется. Продавцы увидят ваше объявление и смогут связаться с вами.
+        </p>
+      </form>
   );
 };
 
