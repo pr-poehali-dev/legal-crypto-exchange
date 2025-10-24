@@ -57,21 +57,6 @@ const HeroSection = () => {
                   <span className="ml-2 group-hover:translate-x-1 transition-transform duration-300">→</span>
                 </Button>
               </div>
-
-              <div className="flex flex-wrap gap-4 pt-6">
-                <div className="bg-card border border-border rounded-2xl px-4 py-3 shadow-xl backdrop-blur-sm animate-float">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
-                    <span className="text-sm font-semibold">Юридическая защита</span>
-                  </div>
-                </div>
-                <div className="bg-card border border-border rounded-2xl px-4 py-3 shadow-xl backdrop-blur-sm animate-float" style={{animationDelay: '0.5s'}}>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-secondary rounded-full animate-pulse"></div>
-                    <span className="text-sm font-semibold">Быстрые сделки</span>
-                  </div>
-                </div>
-              </div>
             </div>
 
             <div className="flex items-center justify-center order-1 md:order-2">
@@ -107,14 +92,28 @@ const HeroSection = () => {
 
                 <div className="absolute -top-4 -right-4 bg-card border border-border rounded-2xl px-4 py-3 shadow-xl backdrop-blur-sm animate-float">
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <span className="text-sm font-semibold">Безопасно</span>
+                    <div className="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
+                    <span className="text-sm font-semibold">Юридическая защита</span>
                   </div>
                 </div>
 
                 <div className="absolute -bottom-4 -left-4 bg-card border border-border rounded-2xl px-4 py-3 shadow-xl backdrop-blur-sm animate-float" style={{animationDelay: '1s'}}>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-secondary rounded-full animate-pulse"></div>
+                    <span className="text-sm font-semibold">Быстрые сделки</span>
+                  </div>
+                </div>
+
+                <div className="absolute top-1/2 -left-16 md:-left-20 bg-card border border-border rounded-2xl px-4 py-3 shadow-xl backdrop-blur-sm animate-float" style={{animationDelay: '0.5s'}}>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span className="text-sm font-semibold">Безопасно</span>
+                  </div>
+                </div>
+
+                <div className="absolute top-1/3 -right-12 md:-right-16 bg-card border border-border rounded-2xl px-4 py-3 shadow-xl backdrop-blur-sm animate-float" style={{animationDelay: '1.5s'}}>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-violet-500 rounded-full animate-pulse"></div>
                     <span className="text-sm font-semibold">Быстро</span>
                   </div>
                 </div>
