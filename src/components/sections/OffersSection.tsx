@@ -146,8 +146,8 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
     }
   };
 
-  const buyOffers = getSortedOffers(offers.filter(o => o.offer_type === 'buy'));
-  const sellOffers = getSortedOffers(offers.filter(o => o.offer_type === 'sell'));
+  const buyOffers = getSortedOffers(offers.filter(o => o.offer_type === 'sell'));
+  const sellOffers = getSortedOffers(offers.filter(o => o.offer_type === 'buy'));
 
   const handleContact = async (offer: Offer) => {
     if (!currentUser) {
@@ -300,11 +300,11 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2 bg-card border border-border mb-8">
               <TabsTrigger value="buy" className="data-[state=active]:bg-secondary data-[state=active]:text-primary">
-                <Icon name="TrendingUp" className="mr-2" size={20} />
+                <Icon name="ShoppingCart" className="mr-2" size={20} />
                 Купить USDT
               </TabsTrigger>
               <TabsTrigger value="sell" className="data-[state=active]:bg-secondary data-[state=active]:text-primary">
-                <Icon name="TrendingDown" className="mr-2" size={20} />
+                <Icon name="Wallet" className="mr-2" size={20} />
                 Продать USDT
               </TabsTrigger>
             </TabsList>
@@ -316,7 +316,8 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
               ) : buyOffers.length === 0 ? (
                 <div className="text-center py-12">
                   <Icon name="Inbox" size={48} className="mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">Пока нет объявлений</p>
+                  <p className="text-muted-foreground mb-4">Пока нет продавцов USDT</p>
+                  <p className="text-xs text-muted-foreground">Здесь появятся объявления продавцов, у которых вы сможете купить USDT</p>
                 </div>
               ) : (
                 buyOffers.map(renderOfferCard)
@@ -330,7 +331,14 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
               ) : sellOffers.length === 0 ? (
                 <div className="text-center py-12">
                   <Icon name="Inbox" size={48} className="mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-muted-foreground">Пока нет объявлений</p>
+                  <p className="text-muted-foreground mb-4">Пока нет покупателей USDT</p>
+                  <p className="text-xs text-muted-foreground mb-6">Здесь появятся объявления покупателей, которым вы можете продать USDT</p>
+                  {!currentUser && (
+                    <Button onClick={() => setIsCreateDialogOpen(true)} className="bg-secondary text-primary hover:bg-secondary/90">
+                      <Icon name="Plus" className="mr-2" size={18} />
+                      Разместить объявление о покупке
+                    </Button>
+                  )}
                 </div>
               ) : (
                 sellOffers.map(renderOfferCard)
@@ -345,7 +353,7 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
           <DialogHeader>
             <DialogTitle>Создать объявление о покупке USDT</DialogTitle>
             <DialogDescription>
-              Создайте объявление без регистрации. Заполните форму и продавцы смогут увидеть ваше предложение.
+              Вы хотите купить USDT за рубли. Укажите условия - продавцы увидят ваше объявление и смогут связаться с вами.
             </DialogDescription>
           </DialogHeader>
           <AnonymousBuyOfferForm onSuccess={() => {

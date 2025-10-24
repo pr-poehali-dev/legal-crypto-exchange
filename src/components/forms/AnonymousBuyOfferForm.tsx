@@ -169,7 +169,7 @@ const AnonymousBuyOfferForm = ({ onSuccess }: AnonymousBuyOfferFormProps) => {
             </div>
           </div>
 
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
+          <Button type="submit" className="w-full bg-secondary text-primary hover:bg-secondary/90" disabled={isSubmitting}>
             {isSubmitting ? (
               <>
                 <Icon name="Loader2" className="mr-2 animate-spin" />
@@ -177,14 +177,14 @@ const AnonymousBuyOfferForm = ({ onSuccess }: AnonymousBuyOfferFormProps) => {
               </>
             ) : (
               <>
-                <Icon name="Plus" className="mr-2" />
-                Создать объявление о покупке
+                <Icon name="ShoppingCart" className="mr-2" />
+                Создать объявление о покупке USDT
               </>
             )}
           </Button>
 
         <p className="text-xs text-muted-foreground text-center">
-          * Регистрация не требуется. Продавцы увидят ваше объявление и смогут связаться с вами.
+          * Регистрация не требуется. Ваше объявление попадёт в раздел "Продать USDT", где его увидят продавцы.
         </p>
       </form>
   );
