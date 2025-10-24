@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -28,12 +28,19 @@ const PeriodFilter = ({ value, onPeriodChange, className = '' }: PeriodFilterPro
   const [endDate, setEndDate] = useState<Date>();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
+  useEffect(() => {
+    if (value === 'custom' && !startDate && !endDate) {
+      setTimeout(() => setIsPopoverOpen(true), 100);
+    }
+  }, [value]);
+
   const handlePeriodSelect = (period: string) => {
     if (period === 'custom') {
-      setIsPopoverOpen(true);
+      onPeriodChange(period);
     } else {
       setStartDate(undefined);
       setEndDate(undefined);
+      setIsPopoverOpen(false);
       onPeriodChange(period);
     }
   };
