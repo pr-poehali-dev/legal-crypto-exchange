@@ -148,25 +148,30 @@ const Navigation = () => {
       <div className="container mx-auto px-3 md:px-6 py-3 md:py-4">
         <div className="flex items-center justify-between gap-2">
           <a href="/" className="flex items-center space-x-1.5 md:space-x-2 cursor-pointer group">
-            <div className="w-7 h-7 md:w-10 md:h-10 flex items-center justify-center flex-shrink-0 relative group-hover:scale-110 transition-transform duration-500">
-              {/* Внешнее кольцо */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 animate-spin-slow opacity-80"></div>
+            <div className="w-9 h-9 md:w-12 md:h-12 flex items-center justify-center flex-shrink-0 relative">
+              {/* Фоновый градиент с вращением */}
+              <div className="absolute inset-0 bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 rounded-2xl animate-spin-slow opacity-90 blur-[2px]"></div>
               
-              {/* Средний слой с пульсацией */}
-              <div className="absolute inset-[2px] md:inset-[3px] rounded-full bg-gradient-to-tr from-teal-600 to-emerald-500 animate-pulse shadow-lg shadow-teal-500/60"></div>
-              
-              {/* Внутренний круг */}
-              <div className="absolute inset-[4px] md:inset-[6px] rounded-full bg-gradient-to-br from-emerald-300 to-teal-400 flex items-center justify-center">
-                {/* Символ */}
-                <div className="relative">
-                  <span className="text-[10px] md:text-base font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] group-hover:scale-125 transition-transform duration-300 inline-block">₮</span>
-                  {/* Блик */}
-                  <div className="absolute -top-1 -right-1 w-1 h-1 md:w-1.5 md:h-1.5 bg-white rounded-full opacity-80 animate-pulse"></div>
-                </div>
+              {/* Основной контейнер */}
+              <div className="absolute inset-[1px] bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden">
+                {/* Анимированные линии */}
+                <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-violet-400 to-transparent animate-slide-in"></div>
+                <div className="absolute bottom-0 right-0 w-full h-[1px] bg-gradient-to-r from-transparent via-fuchsia-400 to-transparent animate-slide-in delay-500"></div>
               </div>
               
-              {/* Внешнее свечение */}
-              <div className="absolute -inset-1 rounded-full bg-teal-400/30 blur-sm group-hover:bg-teal-400/50 group-hover:blur-md transition-all duration-500"></div>
+              {/* Текст LCC */}
+              <div className="relative z-10 flex items-center justify-center">
+                <span className="text-[10px] md:text-sm font-black bg-gradient-to-br from-violet-400 via-purple-300 to-fuchsia-400 bg-clip-text text-transparent drop-shadow-[0_0_8px_rgba(168,85,247,0.5)] group-hover:scale-110 transition-transform duration-300 tracking-tight">
+                  LCC
+                </span>
+              </div>
+              
+              {/* Светящиеся точки по углам */}
+              <div className="absolute top-0.5 left-0.5 w-0.5 h-0.5 md:w-1 md:h-1 bg-violet-400 rounded-full animate-pulse shadow-[0_0_4px_rgba(168,85,247,0.8)]"></div>
+              <div className="absolute bottom-0.5 right-0.5 w-0.5 h-0.5 md:w-1 md:h-1 bg-fuchsia-400 rounded-full animate-pulse delay-300 shadow-[0_0_4px_rgba(232,121,249,0.8)]"></div>
+              
+              {/* Внешнее свечение при hover */}
+              <div className="absolute -inset-1 bg-gradient-to-br from-violet-500/0 to-fuchsia-500/0 group-hover:from-violet-500/30 group-hover:to-fuchsia-500/30 rounded-2xl blur-lg transition-all duration-500"></div>
             </div>
             <h1 className="text-xs md:text-2xl font-bold text-foreground whitespace-nowrap">Legal Crypto Change</h1>
           </a>
