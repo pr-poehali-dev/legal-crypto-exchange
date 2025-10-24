@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef } from 'react';
-import Icon from '@/components/ui/icon';
 
 interface CryptoRate {
   symbol: string;
@@ -8,6 +7,26 @@ interface CryptoRate {
   change: number;
   icon: string;
 }
+
+const CryptoIcon = ({ symbol }: { symbol: string }) => {
+  const icons: Record<string, string> = {
+    'BTC/USDT': 'https://cryptologos.cc/logos/bitcoin-btc-logo.svg',
+    'ETH/USDT': 'https://cryptologos.cc/logos/ethereum-eth-logo.svg',
+    'BNB/USDT': 'https://cryptologos.cc/logos/bnb-bnb-logo.svg',
+    'USDT/RUB': 'https://cryptologos.cc/logos/tether-usdt-logo.svg'
+  };
+
+  return (
+    <img 
+      src={icons[symbol]} 
+      alt={symbol} 
+      className="w-5 h-5"
+      onError={(e) => {
+        (e.target as HTMLImageElement).style.display = 'none';
+      }}
+    />
+  );
+};
 
 const CryptoTicker = () => {
   const [rates, setRates] = useState<CryptoRate[]>([
@@ -90,8 +109,8 @@ const CryptoTicker = () => {
             key={`${rate.symbol}-${index}`}
             className="flex items-center gap-3 px-6 min-w-fit whitespace-nowrap"
           >
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 flex items-center justify-center">
-              <span className="text-lg">{rate.icon}</span>
+            <div className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center p-1">
+              <CryptoIcon symbol={rate.symbol} />
             </div>
             
             <div className="flex items-center gap-2">
