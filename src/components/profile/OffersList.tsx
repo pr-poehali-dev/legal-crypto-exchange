@@ -79,12 +79,12 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
           Управление вашими объявлениями
         </CardDescription>
         <Tabs value={filterStatus} onValueChange={setFilterStatus} className="mt-4">
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 gap-2">
-            <TabsTrigger value="all" className="text-xs md:text-sm">Все</TabsTrigger>
-            <TabsTrigger value="active" className="text-xs md:text-sm">Активные</TabsTrigger>
-            <TabsTrigger value="reserved" className="text-xs md:text-sm col-span-2 md:col-span-1">Зарезервированные</TabsTrigger>
-            <TabsTrigger value="inactive" className="text-xs md:text-sm col-span-2 md:col-span-1">Приостановленные</TabsTrigger>
-            <TabsTrigger value="completed" className="text-xs md:text-sm col-span-2 md:col-span-1">Завершенные</TabsTrigger>
+          <TabsList className="flex flex-wrap md:grid md:grid-cols-5 w-full h-auto gap-2 p-2">
+            <TabsTrigger value="all" className="flex-1 min-w-[80px] text-sm">Все</TabsTrigger>
+            <TabsTrigger value="active" className="flex-1 min-w-[100px] text-sm">Активные</TabsTrigger>
+            <TabsTrigger value="reserved" className="flex-1 min-w-[140px] text-sm">Зарезервир.</TabsTrigger>
+            <TabsTrigger value="inactive" className="flex-1 min-w-[140px] text-sm">Приостановл.</TabsTrigger>
+            <TabsTrigger value="completed" className="flex-1 min-w-[120px] text-sm">Завершённые</TabsTrigger>
           </TabsList>
         </Tabs>
       </CardHeader>
