@@ -41,14 +41,34 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     offer_id = body_data.get('offer_id')
     user_id = body_data.get('user_id')
     username = body_data.get('username')
+    buyer_name = body_data.get('buyer_name')
+    buyer_phone = body_data.get('buyer_phone')
+    is_anonymous = body_data.get('is_anonymous', False)
     
-    if not all([offer_id, user_id, username]):
+    if not offer_id:
         return {
             'statusCode': 400,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'isBase64Encoded': False,
-            'body': json.dumps({'success': False, 'error': 'Missing required fields'})
+            'body': json.dumps({'success': False, 'error': 'Missing offer_id'})
         }
+    
+    if is_anonymous:
+        if not buyer_name or not buyer_phone:
+            return {
+                'statusCode': 400,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'isBase64Encoded': False,
+                'body': json.dumps({'success': False, 'error': 'Missing buyer_name or buyer_phone'})
+            }
+    else:
+        if not user_id or not username:
+            return {
+                'statusCode': 400,
+                'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                'isBase64Encoded': False,
+                'body': json.dumps({'success': False, 'error': 'Missing user_id or username'})
+            }
     
     dsn = os.environ.get('DATABASE_URL')
     
@@ -78,7 +98,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         owner_id, amount, rate, meeting_time, offer_type, telegram_id, owner_username, reserved_by = result
         
-        if owner_id == user_id:
+        if not is_anonymous and owner_id == user_id:
             cur.close()
             conn.close()
             return {
@@ -98,19 +118,29 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'success': False, 'error': 'Offer already reserved'})
             }
         
-        cur.execute(
-            "UPDATE offers SET reserved_by = %s, reserved_at = NOW() WHERE id = %s",
-            (user_id, offer_id)
-        )
+        if is_anonymous:
+            cur.execute(
+                "UPDATE offers SET reserved_by = NULL, reserved_at = NOW(), buyer_name = %s, buyer_phone = %s WHERE id = %s",
+                (buyer_name, buyer_phone, offer_id)
+            )
+            display_name = buyer_name
+        else:
+            cur.execute(
+                "UPDATE offers SET reserved_by = %s, reserved_at = NOW() WHERE id = %s",
+                (user_id, offer_id)
+            )
+            display_name = username
+        
         conn.commit()
         
         offer_type_text = 'Покупка' if offer_type == 'buy' else 'Продажа'
         
         # Send notification to offer owner
         if telegram_id:
+            contact_info = f"\n📞 Телефон: {buyer_phone}" if is_anonymous else ""
             owner_message = f"""🔔 Ваше объявление зарезервировано!
 
-Пользователь {username} хочет связаться по объявлению:
+Пользователь {display_name} хочет связаться по объявлению:{contact_info}
 📝 Тип: {offer_type_text}
 💰 Сумма: {amount} USDT
 💱 Курс: {rate} ₽
@@ -133,10 +163,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         # Send notification to admins
         admin_chat_id = os.environ.get('TELEGRAM_CHAT_ID')
         if admin_chat_id:
+            contact_details = f"\n📞 Телефон клиента: {buyer_phone}" if is_anonymous else ""
             admin_message = f"""📅 Новая встреча!
 
 👤 Владелец: {owner_username}
-👤 Клиент: {username}
+👤 Клиент: {display_name}{contact_details}
 📝 Тип: {offer_type_text}
 💰 Сумма: {amount} USDT
 💱 Курс: {rate} ₽
