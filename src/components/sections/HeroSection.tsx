@@ -58,18 +58,18 @@ const HeroSection = () => {
                 </Button>
               </div>
 
-              <div className="flex flex-wrap gap-8 pt-6 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-secondary/20 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-secondary"></div>
+              <div className="flex flex-wrap gap-4 pt-6">
+                <div className="bg-card border border-border rounded-2xl px-4 py-3 shadow-xl backdrop-blur-sm animate-float">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-accent rounded-full animate-pulse"></div>
+                    <span className="text-sm font-semibold">Юридическая защита</span>
                   </div>
-                  <span>Юридическая защита</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 rounded-full bg-secondary/20 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-secondary"></div>
+                <div className="bg-card border border-border rounded-2xl px-4 py-3 shadow-xl backdrop-blur-sm animate-float" style={{animationDelay: '0.5s'}}>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-secondary rounded-full animate-pulse"></div>
+                    <span className="text-sm font-semibold">Быстрые сделки</span>
                   </div>
-                  <span>Быстрые сделки</span>
                 </div>
               </div>
             </div>
