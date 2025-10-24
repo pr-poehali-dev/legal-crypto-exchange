@@ -101,30 +101,30 @@ const TelegramSettings = ({ userId, currentTelegramId, onUpdate }: TelegramSetti
             <div className="space-y-2">
               <p className="text-sm font-medium flex items-center gap-2">
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-secondary text-primary text-xs font-bold">1</span>
-                Откройте бота
+                Узнайте свой Telegram ID
               </p>
               <p className="text-sm text-muted-foreground pl-8">
-                Перейдите в Telegram и откройте <a href="https://t.me/cryptochange131231_bot" target="_blank" rel="noopener noreferrer" className="text-secondary hover:underline font-medium">@cryptochange131231_bot</a>
+                Напишите боту <a href="https://t.me/userinfobot" target="_blank" rel="noopener noreferrer" className="text-secondary hover:underline font-medium">@userinfobot</a> в Telegram. Он пришлёт вам ваш ID.
               </p>
             </div>
             
             <div className="space-y-2">
               <p className="text-sm font-medium flex items-center gap-2">
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-secondary text-primary text-xs font-bold">2</span>
-                Запустите бота
+                Введите ID и сохраните
               </p>
               <p className="text-sm text-muted-foreground pl-8">
-                Нажмите кнопку <span className="font-mono bg-background px-2 py-0.5 rounded">Start</span> или напишите команду <span className="font-mono bg-background px-2 py-0.5 rounded">/start</span>
+                Скопируйте полученный ID и вставьте в поле ниже, затем нажмите «Сохранить».
               </p>
             </div>
             
             <div className="space-y-2">
               <p className="text-sm font-medium flex items-center gap-2">
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-secondary text-primary text-xs font-bold">3</span>
-                Получите Telegram ID
+                Активируйте уведомления
               </p>
               <p className="text-sm text-muted-foreground pl-8">
-                Бот пришлёт вам ваш Telegram ID. Скопируйте его и вставьте в поле ниже.
+                Откройте <a href="https://t.me/cryptochange131231_bot" target="_blank" rel="noopener noreferrer" className="text-secondary hover:underline font-medium">@cryptochange131231_bot</a> и напишите <span className="font-mono bg-background px-2 py-0.5 rounded">/start</span>. Готово!
               </p>
             </div>
           </CollapsibleContent>
