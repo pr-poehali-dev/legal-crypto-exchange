@@ -49,15 +49,48 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     now_str = now_utc.strftime('%Y-%m-%d %H:%M:%S')
     
     cursor.execute("""
-        DELETE FROM t_p53513159_legal_crypto_exchang.offers 
-        WHERE status != 'completed' 
-        AND (
-            (status = 'reserved' AND reserved_at < (NOW() - INTERVAL '1 day'))
-            OR
-            (expires_at IS NOT NULL AND expires_at < NOW())
-        )
-        RETURNING id, status
+        SELECT id, status, meeting_time FROM t_p53513159_legal_crypto_exchang.offers 
+        WHERE status != 'completed'
     """)
+    offers_to_check = cursor.fetchall()
+    
+    ids_to_delete = []
+    for offer in offers_to_check:
+        offer_id = offer['id']
+        status = offer['status']
+        meeting_time = offer['meeting_time']
+        
+        if status == 'reserved':
+            cursor.execute("""
+                SELECT reserved_at FROM t_p53513159_legal_crypto_exchang.offers 
+                WHERE id = %s AND reserved_at < (NOW() - INTERVAL '1 day')
+            """, (offer_id,))
+            if cursor.fetchone():
+                ids_to_delete.append(offer_id)
+        
+        elif status == 'active' and meeting_time:
+            try:
+                meeting_datetime_str = f"{now_utc.strftime('%Y-%m-%d')} {meeting_time}"
+                cursor.execute("""
+                    SELECT %s::timestamp < NOW()
+                """, (meeting_datetime_str,))
+                result = cursor.fetchone()
+                if result and result[0]:
+                    ids_to_delete.append(offer_id)
+            except:
+                pass
+    
+    deleted_rows = []
+    if ids_to_delete:
+        for offer_id in ids_to_delete:
+            cursor.execute("""
+                DELETE FROM t_p53513159_legal_crypto_exchang.offers 
+                WHERE id = %s
+                RETURNING id, status
+            """, (offer_id,))
+            deleted_row = cursor.fetchone()
+            if deleted_row:
+                deleted_rows.append(deleted_row)
     
     deleted_rows = cursor.fetchall()
     deleted_ids = [row['id'] for row in deleted_rows]
