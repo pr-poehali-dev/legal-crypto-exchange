@@ -70,38 +70,54 @@ const PeriodFilter = ({ value, onPeriodChange, className = '' }: PeriodFilterPro
               <Icon name="Calendar" size={16} className="mr-2" />
               {startDate && endDate
                 ? `${format(startDate, 'dd.MM.yy')} - ${format(endDate, 'dd.MM.yy')}`
-                : 'Выбрать даты'}
+                : 'Выбрать период'}
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-4" align="start">
             <div className="space-y-4">
-              <div>
-                <p className="text-sm font-medium mb-2">Начало периода</p>
-                <Calendar
-                  mode="single"
-                  selected={startDate}
-                  onSelect={setStartDate}
-                  locale={ru}
-                  disabled={(date) => date > new Date()}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm font-medium mb-2">От (начало)</p>
+                  <Calendar
+                    mode="single"
+                    selected={startDate}
+                    onSelect={setStartDate}
+                    locale={ru}
+                    disabled={(date) => date > new Date() || (endDate ? date > endDate : false)}
+                    className="rounded-md border"
+                  />
+                </div>
+                <div>
+                  <p className="text-sm font-medium mb-2">До (конец)</p>
+                  <Calendar
+                    mode="single"
+                    selected={endDate}
+                    onSelect={setEndDate}
+                    locale={ru}
+                    disabled={(date) => date > new Date() || (startDate ? date < startDate : false)}
+                    className="rounded-md border"
+                  />
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-medium mb-2">Конец периода</p>
-                <Calendar
-                  mode="single"
-                  selected={endDate}
-                  onSelect={setEndDate}
-                  locale={ru}
-                  disabled={(date) => date > new Date() || (startDate ? date < startDate : false)}
-                />
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleCustomApply}
+                  disabled={!startDate || !endDate}
+                  className="flex-1"
+                >
+                  Применить период
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setStartDate(undefined);
+                    setEndDate(undefined);
+                  }}
+                  className="flex-1"
+                >
+                  Сбросить
+                </Button>
               </div>
-              <Button
-                onClick={handleCustomApply}
-                disabled={!startDate || !endDate}
-                className="w-full"
-              >
-                Применить
-              </Button>
             </div>
           </PopoverContent>
         </Popover>
