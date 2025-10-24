@@ -91,57 +91,84 @@ const CryptoTicker = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const tickerItems = [...rates, ...rates, ...rates, ...rates, ...rates, ...rates];
+  const tickerItems = [...rates, ...rates];
 
   return (
     <div className="w-full bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border-y border-border/50 overflow-hidden py-3 relative">
       <div className="absolute inset-0 bg-gradient-to-r from-violet-500/5 to-fuchsia-500/5"></div>
       
-      <div 
-        ref={tickerRef}
-        className="relative flex animate-scroll"
-      >
-        {tickerItems.map((rate, index) => (
-          <div
-            key={`${rate.symbol}-${index}`}
-            className="flex items-center gap-3 px-6 min-w-fit whitespace-nowrap"
-          >
-            <div className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center p-1">
-              <CryptoIcon symbol={rate.symbol} />
+      <div className="relative flex">
+        <div className="flex animate-scroll-seamless">
+          {tickerItems.map((rate, index) => (
+            <div
+              key={`${rate.symbol}-${index}`}
+              className="flex items-center gap-3 px-6 min-w-fit whitespace-nowrap"
+            >
+              <div className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center p-1">
+                <CryptoIcon symbol={rate.symbol} />
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold text-foreground">{rate.symbol}</span>
+                <span className="text-lg font-semibold text-foreground">
+                  {rate.price > 0 ? (
+                    rate.symbol === 'USDT/RUB' 
+                      ? `${rate.price.toFixed(2)} ₽`
+                      : rate.price.toLocaleString('ru-RU', { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+                  ) : '—'}
+                </span>
+                <span className={`text-sm font-medium ${rate.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                  {rate.change >= 0 ? '+' : ''}{rate.change.toFixed(2)}%
+                </span>
+              </div>
+              
+              <div className="w-px h-6 bg-border/50 ml-3"></div>
             </div>
-            
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-bold text-foreground">{rate.symbol}</span>
-              <span className="text-lg font-semibold text-foreground">
-                {rate.price > 0 ? (
-                  rate.symbol === 'USDT/RUB' 
-                    ? `${rate.price.toFixed(2)} ₽`
-                    : rate.price.toLocaleString('ru-RU', { minimumFractionDigits: 0, maximumFractionDigits: 2 })
-                ) : '—'}
-              </span>
-              <span className={`text-sm font-medium ${rate.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                {rate.change >= 0 ? '+' : ''}{rate.change.toFixed(2)}%
-              </span>
+          ))}
+        </div>
+        
+        <div className="flex animate-scroll-seamless" aria-hidden="true">
+          {tickerItems.map((rate, index) => (
+            <div
+              key={`duplicate-${rate.symbol}-${index}`}
+              className="flex items-center gap-3 px-6 min-w-fit whitespace-nowrap"
+            >
+              <div className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center p-1">
+                <CryptoIcon symbol={rate.symbol} />
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-bold text-foreground">{rate.symbol}</span>
+                <span className="text-lg font-semibold text-foreground">
+                  {rate.price > 0 ? (
+                    rate.symbol === 'USDT/RUB' 
+                      ? `${rate.price.toFixed(2)} ₽`
+                      : rate.price.toLocaleString('ru-RU', { minimumFractionDigits: 0, maximumFractionDigits: 2 })
+                  ) : '—'}
+                </span>
+                <span className={`text-sm font-medium ${rate.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                  {rate.change >= 0 ? '+' : ''}{rate.change.toFixed(2)}%
+                </span>
+              </div>
+              
+              <div className="w-px h-6 bg-border/50 ml-3"></div>
             </div>
-            
-            <div className="w-px h-6 bg-border/50 ml-3"></div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       <style>{`
-        @keyframes scroll {
+        @keyframes scroll-seamless {
           0% {
             transform: translateX(0);
           }
           100% {
-            transform: translateX(-50%);
+            transform: translateX(-100%);
           }
         }
-        .animate-scroll {
-          animation: scroll 7s linear infinite;
+        .animate-scroll-seamless {
+          animation: scroll-seamless 20s linear infinite;
         }
-
       `}</style>
     </div>
   );
