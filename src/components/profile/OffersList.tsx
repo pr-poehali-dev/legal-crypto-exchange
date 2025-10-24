@@ -79,12 +79,12 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
           Управление вашими объявлениями
         </CardDescription>
         <Tabs value={filterStatus} onValueChange={setFilterStatus} className="mt-4">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="all">Все</TabsTrigger>
-            <TabsTrigger value="active">Активные</TabsTrigger>
-            <TabsTrigger value="reserved">Зарезервированные</TabsTrigger>
-            <TabsTrigger value="inactive">Приостановленные</TabsTrigger>
-            <TabsTrigger value="completed">Завершенные</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 gap-2">
+            <TabsTrigger value="all" className="text-xs md:text-sm">Все</TabsTrigger>
+            <TabsTrigger value="active" className="text-xs md:text-sm">Активные</TabsTrigger>
+            <TabsTrigger value="reserved" className="text-xs md:text-sm col-span-2 md:col-span-1">Зарезервированные</TabsTrigger>
+            <TabsTrigger value="inactive" className="text-xs md:text-sm col-span-2 md:col-span-1">Приостановленные</TabsTrigger>
+            <TabsTrigger value="completed" className="text-xs md:text-sm col-span-2 md:col-span-1">Завершенные</TabsTrigger>
           </TabsList>
         </Tabs>
       </CardHeader>
