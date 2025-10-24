@@ -36,14 +36,14 @@ const HeroSection = () => {
                 Безопасный обмен с гарантией
               </div>
               
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold leading-[1.1] tracking-tight">
-                <span className="block text-foreground mb-2 sm:mb-3 text-6xl">Обмен USDT</span>
-                <span className="block bg-gradient-to-r from-secondary via-accent to-secondary bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient font-black text-6xl">
+              <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold leading-[1.1] tracking-tight">
+                <span className="block text-foreground mb-2 sm:mb-3 text-3xl sm:text-6xl">Обмен USDT</span>
+                <span className="block bg-gradient-to-r from-secondary via-accent to-secondary bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient font-black text-3xl sm:text-6xl">
                   с юридической защитой
                 </span>
               </h1>
               
-              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-2xl leading-relaxed font-light tracking-wide">
+              <p className="text-sm sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-2xl leading-relaxed font-light tracking-wide">
                 Профессиональная площадка для безопасного обмена криптовалюты с полным юридическим сопровождением
               </p>
               
@@ -90,7 +90,7 @@ const HeroSection = () => {
                   </div>
                 </div>
 
-                <div className="absolute top-0 right-0 sm:-top-4 sm:-right-4 bg-card border border-border rounded-lg sm:rounded-2xl px-2 py-1.5 sm:px-4 sm:py-3 shadow-xl backdrop-blur-sm animate-float">
+                <div className="absolute top-8 right-0 sm:-top-4 sm:-right-4 bg-card border border-border rounded-lg sm:rounded-2xl px-2 py-1.5 sm:px-4 sm:py-3 shadow-xl backdrop-blur-sm animate-float">
                   <div className="flex items-center gap-1 sm:gap-2">
                     <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-accent rounded-full animate-pulse"></div>
                     <span className="text-[10px] sm:text-sm font-semibold whitespace-nowrap">Юр. защита</span>
