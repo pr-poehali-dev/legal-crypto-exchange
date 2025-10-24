@@ -160,9 +160,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             except Exception as e:
                 print(f"Failed to send owner notification: {e}")
         
-        # Send notification to admins
-        admin_chat_id = os.environ.get('TELEGRAM_CHAT_ID')
-        if admin_chat_id:
+        # Send notification to deals bot
+        bot_token_deals = os.environ.get('TELEGRAM_BOT_TOKEN_DEALS')
+        if bot_token_deals:
             contact_details = f"\n📞 Телефон клиента: {buyer_phone}" if is_anonymous else ""
             admin_message = f"""📅 Новая встреча!
 
@@ -175,16 +175,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 💵 Итого: {float(amount) * float(rate):,.2f} ₽"""
             
             try:
+                telegram_api_url = f'https://api.telegram.org/bot{bot_token_deals}/sendMessage'
                 requests.post(
-                    'https://functions.poehali.dev/09e16699-07ea-42a0-a07b-6faa27662d58',
-                    json={
-                        'telegram_id': admin_chat_id,
-                        'message': admin_message
-                    },
+                    telegram_api_url,
+                    json={'chat_id': bot_token_deals.split(':')[0], 'text': admin_message},
                     timeout=5
                 )
             except Exception as e:
-                print(f"Failed to send admin notification: {e}")
+                print(f"Failed to send deals notification: {e}")
         
         cur.close()
         conn.close()

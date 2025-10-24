@@ -87,10 +87,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         cursor.close()
         conn.close()
         
-        bot_token = os.environ.get('TELEGRAM_BOT_TOKEN')
-        chat_id = os.environ.get('TELEGRAM_CHAT_ID')
+        bot_token = os.environ.get('TELEGRAM_BOT_TOKEN_OFFERS')
         
-        if bot_token and chat_id:
+        if bot_token:
             offer_type_text = 'Покупка' if offer_type == 'buy' else 'Продажа'
             message = f"""📝 Новое объявление!
 
@@ -102,9 +101,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 💵 Итого: {float(amount) * float(rate):,.2f} ₽"""
             
             try:
+                telegram_api_url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
                 requests.post(
-                    'https://functions.poehali.dev/09e16699-07ea-42a0-a07b-6faa27662d58',
-                    json={'telegram_id': chat_id, 'message': message},
+                    telegram_api_url,
+                    json={'chat_id': bot_token.split(':')[0], 'text': message},
                     timeout=5
                 )
             except Exception as e:
