@@ -145,10 +145,10 @@ const Navigation = () => {
 
   return (
     <nav className="border-b border-border/50 glass sticky top-0 z-50 shadow-lg shadow-black/5">
-      <div className="container mx-auto px-3 md:px-6 py-3 md:py-4">
-        <div className="flex items-center justify-between gap-2">
-          <a href="/" className="flex items-center space-x-1.5 md:space-x-2 cursor-pointer group">
-            <div className="w-9 h-9 md:w-12 md:h-12 flex items-center justify-center flex-shrink-0 relative">
+      <div className="container mx-auto px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4">
+        <div className="flex items-center justify-between gap-1 sm:gap-2">
+          <a href="/" className="flex items-center space-x-1 sm:space-x-1.5 md:space-x-2 cursor-pointer group">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-12 md:h-12 flex items-center justify-center flex-shrink-0 relative">
               {/* Фоновый градиент с вращением */}
               <div className="absolute inset-0 bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 rounded-2xl animate-spin-slow opacity-90 blur-[2px]"></div>
               
@@ -173,9 +173,9 @@ const Navigation = () => {
               {/* Внешнее свечение при hover */}
               <div className="absolute -inset-1 bg-gradient-to-br from-violet-500/0 to-fuchsia-500/0 group-hover:from-violet-500/30 group-hover:to-fuchsia-500/30 rounded-2xl blur-lg transition-all duration-500"></div>
             </div>
-            <h1 className="text-xs md:text-2xl font-bold text-foreground whitespace-nowrap">Legal Crypto Change</h1>
+            <h1 className="text-[10px] sm:text-xs md:text-2xl font-bold text-foreground whitespace-nowrap">Legal Crypto Change</h1>
           </a>
-          <div className="flex items-center space-x-2 md:space-x-8 flex-shrink-0">
+          <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-8 flex-shrink-0">
             <a href="/#services" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Услуги</a>
             <a href="/#guarantees" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Гарантии</a>
             <a href="/#offers" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Объявления</a>
