@@ -66,6 +66,7 @@ const AnonymousResponseForm = ({ offerId, onSuccess }: AnonymousResponseFormProp
         setPhone('');
         onSuccess?.();
       } else {
+        console.error('Reserve offer error:', data);
         toast({
           title: 'Ошибка',
           description: data.error || 'Не удалось зарезервировать объявление',
@@ -73,6 +74,7 @@ const AnonymousResponseForm = ({ offerId, onSuccess }: AnonymousResponseFormProp
         });
       }
     } catch (error) {
+      console.error('Reserve offer fetch error:', error);
       toast({
         title: 'Ошибка',
         description: 'Не удалось зарезервировать объявление. Проверьте подключение к интернету.',
