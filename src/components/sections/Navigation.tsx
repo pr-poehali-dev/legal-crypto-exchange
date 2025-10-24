@@ -147,10 +147,26 @@ const Navigation = () => {
     <nav className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto px-3 md:px-6 py-3 md:py-4">
         <div className="flex items-center justify-between gap-2">
-          <a href="/" className="flex items-center space-x-1.5 md:space-x-2 cursor-pointer hover:opacity-80 transition-opacity group">
-            <div className="w-7 h-7 md:w-10 md:h-10 bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-500 rounded-full flex items-center justify-center flex-shrink-0 relative overflow-hidden shadow-lg shadow-teal-500/50 group-hover:shadow-teal-500/80 transition-all duration-300 group-hover:scale-110 group-hover:rotate-12 animate-pulse">
-              <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent animate-spin-slow"></div>
-              <span className="text-xs md:text-lg font-black text-white z-10 drop-shadow-md">₮</span>
+          <a href="/" className="flex items-center space-x-1.5 md:space-x-2 cursor-pointer group">
+            <div className="w-7 h-7 md:w-10 md:h-10 flex items-center justify-center flex-shrink-0 relative group-hover:scale-110 transition-transform duration-500">
+              {/* Внешнее кольцо */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 animate-spin-slow opacity-80"></div>
+              
+              {/* Средний слой с пульсацией */}
+              <div className="absolute inset-[2px] md:inset-[3px] rounded-full bg-gradient-to-tr from-teal-600 to-emerald-500 animate-pulse shadow-lg shadow-teal-500/60"></div>
+              
+              {/* Внутренний круг */}
+              <div className="absolute inset-[4px] md:inset-[6px] rounded-full bg-gradient-to-br from-emerald-300 to-teal-400 flex items-center justify-center">
+                {/* Символ */}
+                <div className="relative">
+                  <span className="text-[10px] md:text-base font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] group-hover:scale-125 transition-transform duration-300 inline-block">₮</span>
+                  {/* Блик */}
+                  <div className="absolute -top-1 -right-1 w-1 h-1 md:w-1.5 md:h-1.5 bg-white rounded-full opacity-80 animate-pulse"></div>
+                </div>
+              </div>
+              
+              {/* Внешнее свечение */}
+              <div className="absolute -inset-1 rounded-full bg-teal-400/30 blur-sm group-hover:bg-teal-400/50 group-hover:blur-md transition-all duration-500"></div>
             </div>
             <h1 className="text-xs md:text-2xl font-bold text-foreground whitespace-nowrap">Legal Crypto Change</h1>
           </a>
