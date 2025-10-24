@@ -19,6 +19,7 @@ interface Offer {
   phone: string;
   deals_count: number;
   created_at: string;
+  is_anonymous?: boolean;
 }
 
 interface OffersSectionProps {
@@ -185,10 +186,28 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
               <span className="text-primary font-bold text-lg">{offer.username?.[0] || 'U'}</span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-base md:text-lg truncate">{offer.username || 'Пользователь'}</p>
+              <div className="flex items-center gap-2 flex-wrap">
+                <p className="font-semibold text-base md:text-lg truncate">{offer.username || 'Пользователь'}</p>
+                {offer.is_anonymous && (
+                  <Badge variant="secondary" className="text-xs">
+                    <Icon name="UserX" size={12} className="mr-1" />
+                    Без регистрации
+                  </Badge>
+                )}
+              </div>
               <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                <Icon name="CheckCircle2" size={14} className="text-accent" />
-                <span>{offer.deals_count} успешных сделок</span>
+                {!offer.is_anonymous && (
+                  <>
+                    <Icon name="CheckCircle2" size={14} className="text-accent" />
+                    <span>{offer.deals_count} успешных сделок</span>
+                  </>
+                )}
+                {offer.is_anonymous && (
+                  <>
+                    <Icon name="Phone" size={14} className="text-accent" />
+                    <span>Прямой контакт</span>
+                  </>
+                )}
               </div>
             </div>
           </div>

@@ -32,19 +32,35 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     cur = conn.cursor()
     
     if offer_type:
-        cur.execute(
-            "SELECT o.id, o.user_id, o.offer_type, o.amount, o.rate, o.meeting_time, o.created_at, u.username, u.phone FROM offers o JOIN users u ON o.user_id = u.id WHERE o.status = 'active' AND o.reserved_by IS NULL AND o.offer_type = %s ORDER BY o.created_at DESC",
-            (offer_type,)
-        )
+        cur.execute(f"""
+            SELECT o.id, o.user_id, o.offer_type, o.amount, o.rate, o.meeting_time, o.created_at, 
+                   u.username, u.phone, o.is_anonymous, o.anonymous_name, o.anonymous_phone
+            FROM t_p53513159_legal_crypto_exchang.offers o 
+            LEFT JOIN t_p53513159_legal_crypto_exchang.users u ON o.user_id = u.id 
+            WHERE o.status = 'active' AND o.reserved_by IS NULL AND o.offer_type = '{offer_type}'
+            ORDER BY o.created_at DESC
+        """)
     else:
-        cur.execute(
-            "SELECT o.id, o.user_id, o.offer_type, o.amount, o.rate, o.meeting_time, o.created_at, u.username, u.phone FROM offers o JOIN users u ON o.user_id = u.id WHERE o.status = 'active' AND o.reserved_by IS NULL ORDER BY o.created_at DESC"
-        )
+        cur.execute("""
+            SELECT o.id, o.user_id, o.offer_type, o.amount, o.rate, o.meeting_time, o.created_at, 
+                   u.username, u.phone, o.is_anonymous, o.anonymous_name, o.anonymous_phone
+            FROM t_p53513159_legal_crypto_exchang.offers o 
+            LEFT JOIN t_p53513159_legal_crypto_exchang.users u ON o.user_id = u.id 
+            WHERE o.status = 'active' AND o.reserved_by IS NULL
+            ORDER BY o.created_at DESC
+        """)
     
     rows = cur.fetchall()
     
     offers = []
     for row in rows:
+        is_anonymous = row[9] if len(row) > 9 and row[9] else False
+        
+        # For anonymous offers, use anonymous_name and anonymous_phone
+        # For registered offers, use username and phone from users table
+        username = row[10] if is_anonymous and row[10] else (row[7] if not is_anonymous else 'Аноним')
+        phone = row[11] if is_anonymous and row[11] else (row[8] if not is_anonymous else '')
+        
         offers.append({
             'id': row[0],
             'user_id': row[1],
@@ -53,8 +69,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'rate': float(row[4]),
             'meeting_time': row[5],
             'created_at': row[6].isoformat() if row[6] else None,
-            'username': row[7],
-            'phone': row[8],
+            'username': username,
+            'phone': phone,
+            'is_anonymous': is_anonymous,
             'deals_count': 0
         })
     

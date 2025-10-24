@@ -1,0 +1,30 @@
+{
+  "tests": [
+    {
+      "name": "Create anonymous buy offer successfully",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "name": "Иван Петров",
+        "phone": "+79991234567",
+        "amount": 1000,
+        "rate": 95.50,
+        "meeting_time": "14:30"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "offer": {
+          "offer_type": "buy"
+        }
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Handle CORS preflight",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    }
+  ]
+}

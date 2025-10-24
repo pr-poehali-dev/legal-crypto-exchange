@@ -1,4 +1,5 @@
 {
+  "create-anonymous-offer": "https://functions.poehali.dev/1b230655-4a48-4344-93de-76fdaf50a5bb",
   "update-statistics": "https://functions.poehali.dev/c2157c27-57f6-40c0-9239-5dea42db4833",
   "get-statistics": "https://functions.poehali.dev/121400a8-102d-4ec6-9d94-c1263c344c59",
   "send-telegram-message": "https://functions.poehali.dev/09e16699-07ea-42a0-a07b-6faa27662d58",
