@@ -53,10 +53,6 @@ const Footer = () => {
             <h5 className="font-semibold mb-4">Поддержка</h5>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><a href="/#contact" className="hover:text-foreground transition-colors">Связаться с нами</a></li>
-              <li><a href="https://t.me/LegalCryptoExchangeBot" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors flex items-center gap-1">
-                <Icon name="MessageCircle" size={14} />
-                Telegram бот
-              </a></li>
               <li><a href="/#guarantees" className="hover:text-foreground transition-colors">Правила обмена</a></li>
             </ul>
           </div>
