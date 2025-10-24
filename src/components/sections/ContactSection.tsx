@@ -45,59 +45,61 @@ const ContactSection = () => {
   };
 
   return (
-    <section id="contact" className="py-12 md:py-20">
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-          <div>
-            <Badge className="mb-3 md:mb-4 bg-secondary/20 text-secondary border-secondary/30 text-xs md:text-sm">
+    <section id="contact" className="py-12 md:py-24 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-secondary/5 to-transparent"></div>
+      
+      <div className="container mx-auto px-4 md:px-6 relative z-10">
+        <div className="grid md:grid-cols-2 gap-10 md:gap-16">
+          <div className="animate-fade-in">
+            <Badge className="mb-4 md:mb-6 bg-secondary/20 text-secondary border-secondary/30 text-xs md:text-sm font-semibold">
               Свяжитесь с нами
             </Badge>
-            <h3 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6">Наш офис</h3>
-            <p className="text-base md:text-xl text-muted-foreground mb-6 md:mb-8">
+            <h3 className="text-4xl md:text-6xl font-bold mb-6 md:mb-8 leading-tight">Наш офис</h3>
+            <p className="text-lg md:text-xl text-muted-foreground mb-8 md:mb-12 leading-relaxed">
               Приглашаем вас на личную встречу в наш офис для безопасного проведения сделки
             </p>
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-secondary/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Icon name="MapPin" size={24} className="text-secondary" />
+            <div className="space-y-7">
+              <div className="flex items-start gap-4 group">
+                <div className="w-14 h-14 bg-gradient-to-br from-secondary to-amber-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                  <Icon name="MapPin" size={26} className="text-white" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold mb-1">Адрес</h4>
-                  <p className="text-muted-foreground">г. Москва, ул. Тверская, д. 15, офис 501</p>
+                  <h4 className="text-lg md:text-xl font-semibold mb-2 group-hover:text-secondary transition-colors">Адрес</h4>
+                  <p className="text-muted-foreground text-base md:text-lg">г. Москва, ул. Тверская, д. 15, офис 501</p>
                 </div>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-secondary/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Icon name="Clock" size={24} className="text-secondary" />
+              <div className="flex items-start gap-4 group">
+                <div className="w-14 h-14 bg-gradient-to-br from-secondary to-amber-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                  <Icon name="Clock" size={26} className="text-white" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold mb-1">Время работы</h4>
-                  <p className="text-muted-foreground">Пн-Пт: 10:00 - 20:00<br />Сб-Вс: 11:00 - 18:00</p>
+                  <h4 className="text-lg md:text-xl font-semibold mb-2 group-hover:text-secondary transition-colors">Время работы</h4>
+                  <p className="text-muted-foreground text-base md:text-lg">Пн-Пт: 10:00 - 20:00<br />Сб-Вс: 11:00 - 18:00</p>
                 </div>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-secondary/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Icon name="Phone" size={24} className="text-secondary" />
+              <div className="flex items-start gap-4 group">
+                <div className="w-14 h-14 bg-gradient-to-br from-secondary to-amber-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                  <Icon name="Phone" size={26} className="text-white" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold mb-1">Телефон</h4>
-                  <p className="text-muted-foreground">+7 (495) 123-45-67</p>
+                  <h4 className="text-lg md:text-xl font-semibold mb-2 group-hover:text-secondary transition-colors">Телефон</h4>
+                  <p className="text-muted-foreground text-base md:text-lg">+7 (495) 123-45-67</p>
                 </div>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-secondary/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Icon name="Mail" size={24} className="text-secondary" />
+              <div className="flex items-start gap-4 group">
+                <div className="w-14 h-14 bg-gradient-to-br from-secondary to-amber-500 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                  <Icon name="Mail" size={26} className="text-white" />
                 </div>
                 <div>
-                  <h4 className="text-lg font-semibold mb-1">Email</h4>
-                  <p className="text-muted-foreground">info@legalcryptochange.ru</p>
+                  <h4 className="text-lg md:text-xl font-semibold mb-2 group-hover:text-secondary transition-colors">Email</h4>
+                  <p className="text-muted-foreground text-base md:text-lg">info@legalcryptochange.ru</p>
                 </div>
               </div>
             </div>
           </div>
-          <Card className="bg-card border-border">
+          <Card className="glass border-border glow-hover">
             <CardHeader>
-              <CardTitle className="text-2xl">Задать вопрос</CardTitle>
+              <CardTitle className="text-2xl md:text-3xl">Задать вопрос</CardTitle>
               <CardDescription>
                 Напишите нам, и мы свяжемся с вами в ближайшее время
               </CardDescription>
@@ -162,7 +164,7 @@ const ContactSection = () => {
                 )}
                 <Button 
                   type="submit" 
-                  className="w-full bg-secondary text-primary hover:bg-secondary/90"
+                  className="w-full bg-secondary text-primary hover:bg-secondary/90 shadow-lg shadow-secondary/20 hover:shadow-xl hover:shadow-secondary/30 transition-all duration-300"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? 'Отправка...' : 'Отправить сообщение'}

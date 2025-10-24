@@ -2,47 +2,68 @@ import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/ca
 import Icon from '@/components/ui/icon';
 
 const ServicesSection = () => {
+  const services = [
+    {
+      icon: 'Shield',
+      title: 'Юридическая защита',
+      description: 'Каждая сделка сопровождается юристом и оформляется договором',
+      gradient: 'from-violet-500 to-purple-600'
+    },
+    {
+      icon: 'Building2',
+      title: 'Офлайн встречи',
+      description: 'Безопасное пространство для проведения сделок в нашем офисе',
+      gradient: 'from-secondary to-amber-500'
+    },
+    {
+      icon: 'Users',
+      title: 'Проверенные участники',
+      description: 'Система верификации и репутации для безопасных сделок',
+      gradient: 'from-accent to-emerald-600'
+    }
+  ];
+
   return (
-    <section id="services" className="py-12 md:py-20 bg-card/30">
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="text-center mb-8 md:mb-16">
-          <h3 className="text-3xl md:text-5xl font-bold mb-3 md:mb-4">Наши услуги</h3>
-          <p className="text-base md:text-xl text-muted-foreground px-2">Полный спектр услуг для безопасного обмена криптовалюты</p>
+    <section id="services" className="py-12 md:py-24 relative overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-card/20 to-transparent"></div>
+      
+      <div className="container mx-auto px-4 md:px-6 relative z-10">
+        <div className="text-center mb-12 md:mb-20 animate-fade-in">
+          <div className="inline-block mb-4">
+            <span className="text-secondary text-sm font-semibold tracking-wider uppercase">Преимущества</span>
+          </div>
+          <h3 className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+            Наши услуги
+          </h3>
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+            Полный спектр услуг для безопасного обмена криптовалюты
+          </p>
         </div>
-        <div className="grid md:grid-cols-3 gap-4 md:gap-8">
-          <Card className="bg-card border-border hover:border-secondary transition-all duration-300 group">
-            <CardHeader>
-              <div className="w-16 h-16 bg-gradient-to-br from-secondary to-accent rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Icon name="Shield" size={32} className="text-primary" />
-              </div>
-              <CardTitle className="text-2xl">Юридическая защита</CardTitle>
-              <CardDescription className="text-base">
-                Каждая сделка сопровождается юристом и оформляется договором
-              </CardDescription>
-            </CardHeader>
-          </Card>
-          <Card className="bg-card border-border hover:border-secondary transition-all duration-300 group">
-            <CardHeader>
-              <div className="w-16 h-16 bg-gradient-to-br from-secondary to-accent rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Icon name="Building2" size={32} className="text-primary" />
-              </div>
-              <CardTitle className="text-2xl">Офлайн встречи</CardTitle>
-              <CardDescription className="text-base">
-                Безопасное пространство для проведения сделок в нашем офисе
-              </CardDescription>
-            </CardHeader>
-          </Card>
-          <Card className="bg-card border-border hover:border-secondary transition-all duration-300 group">
-            <CardHeader>
-              <div className="w-16 h-16 bg-gradient-to-br from-secondary to-accent rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Icon name="Users" size={32} className="text-primary" />
-              </div>
-              <CardTitle className="text-2xl">Проверенные участники</CardTitle>
-              <CardDescription className="text-base">
-                Система верификации и репутации для безопасных сделок
-              </CardDescription>
-            </CardHeader>
-          </Card>
+
+        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+          {services.map((service, index) => (
+            <Card 
+              key={index}
+              className="glass hover:border-secondary/50 transition-all duration-500 group relative overflow-hidden glow-hover"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              
+              <CardHeader className="relative z-10">
+                <div className={`w-16 h-16 bg-gradient-to-br ${service.gradient} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-500 shadow-lg`}>
+                  <Icon name={service.icon as any} size={32} className="text-white" />
+                </div>
+                <CardTitle className="text-2xl md:text-3xl mb-3 group-hover:text-secondary transition-colors duration-300">
+                  {service.title}
+                </CardTitle>
+                <CardDescription className="text-base md:text-lg leading-relaxed">
+                  {service.description}
+                </CardDescription>
+              </CardHeader>
+
+              <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+            </Card>
+          ))}
         </div>
       </div>
     </section>

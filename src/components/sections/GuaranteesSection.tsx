@@ -4,50 +4,55 @@ import Icon from '@/components/ui/icon';
 
 const GuaranteesSection = () => {
   return (
-    <section id="guarantees" className="py-12 md:py-20">
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
-          <div>
-            <Badge className="mb-3 md:mb-4 bg-accent/20 text-accent border-accent/30 text-xs md:text-sm">
+    <section id="guarantees" className="py-12 md:py-24 relative overflow-hidden">
+      <div className="absolute top-20 left-10 w-72 h-72 bg-accent/5 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-20 right-10 w-96 h-96 bg-secondary/5 rounded-full blur-3xl"></div>
+      
+      <div className="container mx-auto px-4 md:px-6 relative z-10">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
+          <div className="animate-fade-in">
+            <Badge className="mb-4 md:mb-6 bg-accent/20 text-accent border-accent/30 text-xs md:text-sm font-semibold">
               Гарантии безопасности
             </Badge>
-            <h3 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6">Полная юридическая поддержка</h3>
-            <p className="text-base md:text-xl text-muted-foreground mb-6 md:mb-8">
+            <h3 className="text-4xl md:text-6xl font-bold mb-6 md:mb-8 leading-tight">
+              Полная юридическая поддержка
+            </h3>
+            <p className="text-lg md:text-xl text-muted-foreground mb-8 md:mb-12 leading-relaxed">
               Мы обеспечиваем максимальную безопасность каждой сделки через комплексное юридическое сопровождение
             </p>
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Icon name="FileText" size={24} className="text-accent" />
+            <div className="space-y-6 md:space-y-8">
+              <div className="flex items-start gap-4 group">
+                <div className="w-14 h-14 bg-gradient-to-br from-accent to-emerald-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+                  <Icon name="FileText" size={26} className="text-white" />
                 </div>
                 <div>
-                  <h4 className="text-xl font-semibold mb-2">Договор на каждую сделку</h4>
-                  <p className="text-muted-foreground">Юридически оформленный договор с печатью и подписями сторон</p>
+                  <h4 className="text-xl md:text-2xl font-semibold mb-2 group-hover:text-accent transition-colors">Договор на каждую сделку</h4>
+                  <p className="text-muted-foreground text-base md:text-lg">Юридически оформленный договор с печатью и подписями сторон</p>
                 </div>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Icon name="Scale" size={24} className="text-accent" />
+              <div className="flex items-start gap-4 group">
+                <div className="w-14 h-14 bg-gradient-to-br from-accent to-emerald-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+                  <Icon name="Scale" size={26} className="text-white" />
                 </div>
                 <div>
-                  <h4 className="text-xl font-semibold mb-2">Присутствие юриста</h4>
-                  <p className="text-muted-foreground">Опытный юрист контролирует каждый этап сделки</p>
+                  <h4 className="text-xl md:text-2xl font-semibold mb-2 group-hover:text-accent transition-colors">Присутствие юриста</h4>
+                  <p className="text-muted-foreground text-base md:text-lg">Опытный юрист контролирует каждый этап сделки</p>
                 </div>
               </div>
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Icon name="Lock" size={24} className="text-accent" />
+              <div className="flex items-start gap-4 group">
+                <div className="w-14 h-14 bg-gradient-to-br from-accent to-emerald-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300 shadow-lg">
+                  <Icon name="Lock" size={26} className="text-white" />
                 </div>
                 <div>
-                  <h4 className="text-xl font-semibold mb-2">Безопасное хранение</h4>
-                  <p className="text-muted-foreground">Активы находятся на защищенном эскроу-счете до завершения</p>
+                  <h4 className="text-xl md:text-2xl font-semibold mb-2 group-hover:text-accent transition-colors">Безопасное хранение</h4>
+                  <p className="text-muted-foreground text-base md:text-lg">Активы находятся на защищенном эскроу-счете до завершения</p>
                 </div>
               </div>
             </div>
           </div>
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-secondary/20 to-accent/20 rounded-3xl transform rotate-3"></div>
-            <Card className="relative bg-card border-secondary/50 p-8">
+          <div className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-br from-secondary/30 to-accent/30 rounded-3xl transform rotate-3 group-hover:rotate-6 transition-transform duration-500 blur-xl"></div>
+            <Card className="relative glass border-secondary/50 p-8 md:p-10 glow-hover">
               <CardContent className="space-y-6 pt-6">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Всего сделок</span>

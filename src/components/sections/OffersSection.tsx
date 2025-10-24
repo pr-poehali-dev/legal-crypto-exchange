@@ -175,45 +175,50 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
   };
 
   const renderOfferCard = (offer: Offer) => (
-    <Card key={offer.id} className="bg-card border-border hover:border-secondary transition-all">
-      <CardContent className="p-4 md:p-6">
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-secondary to-accent rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-primary font-bold">{offer.username?.[0] || 'U'}</span>
+    <Card key={offer.id} className="glass border-border hover:border-secondary/70 transition-all duration-300 group glow-hover overflow-hidden relative">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/5 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-500"></div>
+      
+      <CardContent className="p-5 md:p-7 relative z-10">
+        <div className="flex flex-col gap-5">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-gradient-to-br from-secondary via-amber-400 to-accent rounded-2xl flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+              <span className="text-primary font-bold text-lg">{offer.username?.[0] || 'U'}</span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-base truncate">{offer.username || 'Пользователь'}</p>
-              <p className="text-sm text-muted-foreground">{offer.deals_count} успешных сделок</p>
+              <p className="font-semibold text-base md:text-lg truncate">{offer.username || 'Пользователь'}</p>
+              <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <Icon name="CheckCircle2" size={14} className="text-accent" />
+                <span>{offer.deals_count} успешных сделок</span>
+              </div>
             </div>
           </div>
           
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-4 bg-background/50 rounded-xl p-4">
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Сумма</p>
-              <p className="text-base md:text-lg font-bold">{offer.amount.toLocaleString('ru-RU')} USDT</p>
+              <p className="text-xs text-muted-foreground mb-1.5 uppercase tracking-wide">Сумма</p>
+              <p className="text-base md:text-lg font-bold">{offer.amount.toLocaleString('ru-RU')} <span className="text-sm text-muted-foreground">USDT</span></p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Курс</p>
-              <p className="text-base md:text-lg font-bold text-secondary">{offer.rate.toFixed(2)} ₽</p>
+              <p className="text-xs text-muted-foreground mb-1.5 uppercase tracking-wide">Курс</p>
+              <p className="text-base md:text-lg font-bold text-secondary">{offer.rate.toFixed(2)} <span className="text-sm">₽</span></p>
             </div>
             <div>
-              <p className="text-xs text-muted-foreground mb-1">Встреча</p>
-              <p className="text-sm font-medium">Сегодня, {offer.meeting_time}</p>
+              <p className="text-xs text-muted-foreground mb-1.5 uppercase tracking-wide">Встреча</p>
+              <p className="text-sm font-medium">Сегодня<br/>{offer.meeting_time}</p>
             </div>
           </div>
           
           {!isOwnOffer(offer) && (
             <Button 
               onClick={() => handleContact(offer)}
-              className="bg-secondary text-primary hover:bg-secondary/90 w-full"
+              className="bg-secondary text-primary hover:bg-secondary/90 w-full shadow-lg shadow-secondary/20 hover:shadow-xl hover:shadow-secondary/30 transition-all duration-300 group/btn"
             >
-              <Icon name="MessageCircle" className="mr-2" size={16} />
+              <Icon name="MessageCircle" className="mr-2 group-hover/btn:scale-110 transition-transform" size={18} />
               Связаться
             </Button>
           )}
           {isOwnOffer(offer) && (
-            <div className="text-center py-2 text-sm text-muted-foreground">
+            <div className="text-center py-3 px-4 rounded-lg bg-accent/10 border border-accent/20 text-sm font-medium text-accent">
               Ваше объявление
             </div>
           )}
