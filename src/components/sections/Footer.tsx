@@ -9,12 +9,24 @@ const Footer = () => {
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid md:grid-cols-4 gap-10 mb-12">
           <div>
-            <div className="flex items-center space-x-2 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-secondary via-amber-400 to-accent rounded-2xl flex items-center justify-center shadow-lg">
-                <Icon name="Shield" size={24} className="text-primary" />
+            <a href="/" className="flex items-center space-x-2 mb-6 group cursor-pointer">
+              <div className="w-10 h-10 flex items-center justify-center flex-shrink-0 relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 rounded-2xl animate-spin-slow opacity-100 blur-[1px]"></div>
+                <div className="absolute inset-[1px] bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-violet-400 to-transparent animate-slide-in"></div>
+                  <div className="absolute bottom-0 right-0 w-full h-[2px] bg-gradient-to-r from-transparent via-fuchsia-400 to-transparent animate-slide-in [animation-delay:0.5s]"></div>
+                </div>
+                <div className="relative z-10 flex items-center justify-center">
+                  <span className="text-xs font-black bg-gradient-to-br from-violet-300 via-purple-200 to-fuchsia-300 bg-clip-text text-transparent drop-shadow-[0_0_12px_rgba(168,85,247,0.8)] tracking-tight">
+                    LCC
+                  </span>
+                </div>
+                <div className="absolute top-0.5 left-0.5 w-1 h-1 bg-violet-400 rounded-full animate-pulse shadow-[0_0_8px_rgba(168,85,247,1)]"></div>
+                <div className="absolute bottom-0.5 right-0.5 w-1 h-1 bg-fuchsia-400 rounded-full animate-pulse [animation-delay:0.3s] shadow-[0_0_8px_rgba(232,121,249,1)]"></div>
+                <div className="absolute -inset-1 bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 group-hover:from-violet-500/40 group-hover:to-fuchsia-500/40 rounded-2xl blur-lg transition-all duration-500"></div>
               </div>
-              <h4 className="text-xl font-bold">Legal Crypto</h4>
-            </div>
+              <h4 className="text-xl font-bold">Legal Crypto Change</h4>
+            </a>
             <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
               Безопасный обмен криптовалюты с юридической поддержкой
             </p>
@@ -22,28 +34,30 @@ const Footer = () => {
           <div>
             <h5 className="font-semibold mb-4">Услуги</h5>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">Покупка USDT</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Продажа USDT</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Юридическое сопровождение</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Оффлайн встречи</a></li>
+              <li><a href="/#services" className="hover:text-foreground transition-colors">Наши услуги</a></li>
+              <li><a href="/offers" className="hover:text-foreground transition-colors">Объявления</a></li>
+              <li><a href="/#guarantees" className="hover:text-foreground transition-colors">Гарантии</a></li>
+              <li><a href="/profile" className="hover:text-foreground transition-colors">Личный кабинет</a></li>
             </ul>
           </div>
           <div>
             <h5 className="font-semibold mb-4">Компания</h5>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">О нас</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Лицензии</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Безопасность</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Отзывы</a></li>
+              <li><a href="/#hero" className="hover:text-foreground transition-colors">О нас</a></li>
+              <li><a href="/#guarantees" className="hover:text-foreground transition-colors">Безопасность</a></li>
+              <li><a href="/#services" className="hover:text-foreground transition-colors">Преимущества</a></li>
+              <li><a href="/#contact" className="hover:text-foreground transition-colors">Контакты</a></li>
             </ul>
           </div>
           <div>
             <h5 className="font-semibold mb-4">Поддержка</h5>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">FAQ</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Контакты</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Политика конфиденциальности</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">Условия использования</a></li>
+              <li><a href="/#contact" className="hover:text-foreground transition-colors">Связаться с нами</a></li>
+              <li><a href="https://t.me/LegalCryptoExchangeBot" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors flex items-center gap-1">
+                <Icon name="MessageCircle" size={14} />
+                Telegram бот
+              </a></li>
+              <li><a href="/#guarantees" className="hover:text-foreground transition-colors">Правила обмена</a></li>
             </ul>
           </div>
         </div>
