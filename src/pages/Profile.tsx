@@ -400,6 +400,7 @@ const Profile = () => {
             phone={user.phone}
             deals={deals}
             offers={offers}
+            userId={user.id}
           />
 
           <TelegramSettings

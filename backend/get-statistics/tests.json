@@ -1,0 +1,31 @@
+{
+  "tests": [
+    {
+      "name": "Get statistics for all time",
+      "method": "GET",
+      "path": "/?period=all_time",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "statistics": {}
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Get statistics for today",
+      "method": "GET",
+      "path": "/?period=today&user_id=1",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Handle CORS preflight",
+      "method": "OPTIONS",
+      "path": "/",
+      "expectedStatus": 200
+    }
+  ]
+}
