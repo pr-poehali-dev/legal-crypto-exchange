@@ -17,6 +17,7 @@ interface DealsOffersTabProps {
 
 const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDeal, onCompleteOffer }: DealsOffersTabProps) => {
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState('');
 
   type CombinedItem = (Offer & { itemType: 'offer' }) | (Deal & { itemType: 'deal' });
   
@@ -25,7 +26,6 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
     ...deals.map(d => ({ ...d, itemType: 'deal' as const }))
   ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
-  // Filter by status
   if (filterStatus === 'reserved') {
     combinedItems = combinedItems.filter(item => 
       item.itemType === 'offer' && 'reserved_by' in item && item.reserved_by !== undefined && item.reserved_by !== null
@@ -34,22 +34,64 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
     combinedItems = combinedItems.filter(item => item.status === filterStatus);
   }
 
+  if (searchQuery.trim()) {
+    const query = searchQuery.toLowerCase();
+    combinedItems = combinedItems.filter(item => {
+      if (item.itemType === 'offer') {
+        const offer = item as Offer & { itemType: 'offer' };
+        return (
+          offer.username?.toLowerCase().includes(query) ||
+          offer.phone?.toLowerCase().includes(query) ||
+          offer.amount.toString().includes(query) ||
+          offer.rate.toString().includes(query)
+        );
+      } else {
+        const deal = item as Deal & { itemType: 'deal' };
+        return (
+          deal.username?.toLowerCase().includes(query) ||
+          deal.email?.toLowerCase().includes(query) ||
+          deal.phone?.toLowerCase().includes(query) ||
+          deal.amount.toString().includes(query)
+        );
+      }
+    });
+  }
+
+  const allCombinedItems = [
+    ...offers.map(o => ({ ...o, itemType: 'offer' as const })),
+    ...deals.map(d => ({ ...d, itemType: 'deal' as const }))
+  ];
+
   return (
     <div className="space-y-6">
-      <Card className="bg-card border-border">
-        <CardContent className="p-6">
-          <h3 className="text-sm font-medium mb-3">Фильтр по статусу</h3>
-          <Tabs value={filterStatus} onValueChange={setFilterStatus}>
+      <div className="space-y-4">
+        <div className="relative">
+          <Icon name="Search" size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Поиск по имени, телефону, сумме..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full pl-12 pr-4 py-3 bg-card border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-foreground"
+          />
+        </div>
+        
+        <div className="flex items-center justify-between gap-4 bg-card border border-border rounded-lg p-4">
+          <div className="flex items-center gap-2">
+            <Icon name="Filter" size={20} className="text-muted-foreground" />
+            <span className="text-sm font-medium">Статус:</span>
+          </div>
+          <Tabs value={filterStatus} onValueChange={setFilterStatus} className="flex-1">
             <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="all">Все</TabsTrigger>
-              <TabsTrigger value="active">Активные</TabsTrigger>
-              <TabsTrigger value="reserved">Зарезервированные</TabsTrigger>
-              <TabsTrigger value="inactive">Приостановленные</TabsTrigger>
-              <TabsTrigger value="completed">Завершенные</TabsTrigger>
+              <TabsTrigger value="all" className="text-xs">Все ({allCombinedItems.length})</TabsTrigger>
+              <TabsTrigger value="active" className="text-xs">Активные</TabsTrigger>
+              <TabsTrigger value="reserved" className="text-xs">Резерв</TabsTrigger>
+              <TabsTrigger value="inactive" className="text-xs">Пауза</TabsTrigger>
+              <TabsTrigger value="completed" className="text-xs">Завершены</TabsTrigger>
             </TabsList>
           </Tabs>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
       
       {combinedItems.length === 0 ? (
         <Card className="bg-card border-border">
@@ -81,9 +123,14 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
                         </Badge>
                       )}
                     </div>
-                    <p className="text-xl font-bold mb-2">
-                      {offer.amount.toLocaleString()} USDT по {offer.rate.toLocaleString()} ₽
-                    </p>
+                    <div className="mb-3">
+                      <p className="text-2xl font-bold">
+                        {offer.amount.toLocaleString()} USDT
+                      </p>
+                      <p className="text-lg text-muted-foreground">
+                        {offer.rate.toLocaleString()} ₽ за 1 USDT = <span className="text-accent font-bold">{(offer.amount * offer.rate).toLocaleString()} ₽</span>
+                      </p>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                       <div>
                         <p className="text-muted-foreground">Пользователь</p>
@@ -102,7 +149,7 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
                       Создано: {new Date(offer.created_at).toLocaleString('ru-RU')}
                     </p>
                   </div>
-                  <div className="flex flex-col gap-2 ml-4">
+                  <div className="flex flex-col gap-2 ml-4 min-w-[180px]">
                     {offer.status !== 'completed' && (
                       <>
                         <Button

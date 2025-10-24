@@ -77,8 +77,13 @@ const AdminStats = ({ users, offers, deals }: AdminStatsProps) => {
 
   return (
     <div className="space-y-6 mb-8">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-bold">Статистика платформы</h2>
+      <div className="flex justify-between items-center bg-gradient-to-r from-secondary/20 to-accent/20 p-4 rounded-lg border border-border">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-secondary to-accent rounded-lg flex items-center justify-center">
+            <Icon name="TrendingUp" size={20} className="text-primary" />
+          </div>
+          <h2 className="text-xl font-bold">Статистика платформы</h2>
+        </div>
         <PeriodFilter value={period} onPeriodChange={handlePeriodChange} />
       </div>
 
@@ -88,67 +93,71 @@ const AdminStats = ({ users, offers, deals }: AdminStatsProps) => {
         </div>
       )}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="bg-card border-border">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Icon name="Users" size={20} className="text-secondary" />
+        <Card className="bg-gradient-to-br from-card to-secondary/10 border-border hover:shadow-lg transition-all">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm flex items-center gap-2 text-muted-foreground">
+              <Icon name="Users" size={18} className="text-secondary" />
               Пользователей
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-bold text-secondary">{stats.totalUsers}</p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Заблокировано: {stats.blockedUsers}
-            </p>
+            <p className="text-5xl font-bold text-secondary mb-1">{stats.totalUsers}</p>
+            <div className="flex items-center gap-2 text-sm">
+              <Icon name="Ban" size={14} className="text-red-500" />
+              <span className="text-muted-foreground">Заблокировано: <strong>{stats.blockedUsers}</strong></span>
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-card border-border">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Icon name="MessageSquare" size={20} className="text-secondary" />
+        <Card className="bg-gradient-to-br from-card to-blue-500/10 border-border hover:shadow-lg transition-all">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm flex items-center gap-2 text-muted-foreground">
+              <Icon name="MessageSquare" size={18} className="text-blue-500" />
               Объявлений
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-bold text-secondary">{stats.totalOffers}</p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Активных: {stats.activeOffers}
-            </p>
+            <p className="text-5xl font-bold text-blue-500 mb-1">{stats.totalOffers}</p>
+            <div className="flex items-center gap-2 text-sm">
+              <Icon name="CheckCircle" size={14} className="text-green-500" />
+              <span className="text-muted-foreground">Активных: <strong>{stats.activeOffers}</strong></span>
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-card border-border">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Icon name="CheckCircle" size={20} className="text-green-500" />
+        <Card className="bg-gradient-to-br from-card to-green-500/10 border-border hover:shadow-lg transition-all">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm flex items-center gap-2 text-muted-foreground">
+              <Icon name="CheckCircle" size={18} className="text-green-500" />
               Завершённых сделок
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-bold text-green-500">
+            <p className="text-5xl font-bold text-green-500 mb-1">
               {stats.completedDeals}
             </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Всего операций: {stats.totalDeals}
-            </p>
+            <div className="flex items-center gap-2 text-sm">
+              <Icon name="Activity" size={14} className="text-muted-foreground" />
+              <span className="text-muted-foreground">Всего: <strong>{stats.totalDeals}</strong></span>
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-card border-border">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Icon name="TrendingUp" size={20} className="text-accent" />
+        <Card className="bg-gradient-to-br from-card to-accent/10 border-border hover:shadow-lg transition-all">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm flex items-center gap-2 text-muted-foreground">
+              <Icon name="TrendingUp" size={18} className="text-accent" />
               Общий объём
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="font-bold text-accent text-2xl">
+            <p className="font-bold text-accent text-4xl mb-1">
               {stats.totalVolume.toLocaleString('ru-RU')} ₽
             </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Средняя сделка: {Math.round(avgDealAmount).toLocaleString('ru-RU')} ₽
-            </p>
+            <div className="flex items-center gap-2 text-sm">
+              <Icon name="TrendingUp" size={14} className="text-green-500" />
+              <span className="text-muted-foreground">Средняя: <strong>{Math.round(avgDealAmount).toLocaleString('ru-RU')} ₽</strong></span>
+            </div>
           </CardContent>
         </Card>
       </div>

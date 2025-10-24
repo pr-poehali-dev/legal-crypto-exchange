@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -12,6 +13,7 @@ interface UsersTabProps {
 }
 
 const UsersTab = ({ users, offers, deals, onToggleBlock }: UsersTabProps) => {
+  const [searchQuery, setSearchQuery] = useState('');
   const getUserStats = (userId: number) => {
     const userDeals = deals.filter(d => d.user_id === userId);
     const userOffers = offers.filter(o => o.user_id === userId);
@@ -40,6 +42,16 @@ const UsersTab = ({ users, offers, deals, onToggleBlock }: UsersTabProps) => {
     };
   };
 
+  let filteredUsers = users;
+  if (searchQuery.trim()) {
+    const query = searchQuery.toLowerCase();
+    filteredUsers = users.filter(user => 
+      user.name?.toLowerCase().includes(query) ||
+      user.email?.toLowerCase().includes(query) ||
+      user.phone?.toLowerCase().includes(query)
+    );
+  }
+
   if (users.length === 0) {
     return (
       <Card className="bg-card border-border">
@@ -53,8 +65,27 @@ const UsersTab = ({ users, offers, deals, onToggleBlock }: UsersTabProps) => {
 
   return (
     <div className="space-y-4">
-      {users.map(user => {
-        const stats = getUserStats(user.id);
+      <div className="relative">
+        <Icon name="Search" size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
+        <input
+          type="text"
+          placeholder="Поиск по имени, email, телефону..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full pl-12 pr-4 py-3 bg-card border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-secondary text-foreground"
+        />
+      </div>
+
+      {filteredUsers.length === 0 ? (
+        <Card className="bg-card border-border">
+          <CardContent className="p-12 text-center">
+            <Icon name="Search" size={48} className="mx-auto mb-4 text-muted-foreground" />
+            <p className="text-muted-foreground">Ничего не найдено</p>
+          </CardContent>
+        </Card>
+      ) : (
+        filteredUsers.map(user => {
+          const stats = getUserStats(user.id);
         return (
           <Card key={user.id} className="bg-card border-border">
             <CardContent className="p-6">
@@ -138,7 +169,8 @@ const UsersTab = ({ users, offers, deals, onToggleBlock }: UsersTabProps) => {
             </CardContent>
           </Card>
         );
-      })}
+      })
+      )}
     </div>
   );
 };
