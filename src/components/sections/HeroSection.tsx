@@ -1,8 +1,8 @@
 import { Button } from '@/components/ui/button';
 
 const HeroSection = () => {
-  const scrollToOffers = () => {
-    document.getElementById('offers')?.scrollIntoView({ behavior: 'smooth' });
+  const goToOffers = () => {
+    window.location.href = '/offers';
   };
 
   return (
@@ -51,7 +51,7 @@ const HeroSection = () => {
                 <Button 
                   size="lg" 
                   className="bg-secondary text-primary hover:bg-secondary/90 text-base sm:text-lg px-6 py-5 sm:px-8 sm:py-6 shadow-lg shadow-secondary/20 hover:shadow-xl hover:shadow-secondary/30 transition-all duration-300 group"
-                  onClick={scrollToOffers}
+                  onClick={goToOffers}
                 >
                   Обменять
                   <span className="ml-2 group-hover:translate-x-1 transition-transform duration-300">→</span>

@@ -178,7 +178,7 @@ const Navigation = () => {
           <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-8 flex-shrink-0">
             <a href="/#services" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Услуги</a>
             <a href="/#guarantees" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Гарантии</a>
-            <a href="/#offers" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Объявления</a>
+            <a href="/offers" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Объявления</a>
             <a href="/#contact" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Контакты</a>
             
             {user ? (

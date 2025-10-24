@@ -228,11 +228,9 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
   );
 
   return (
-    <section id="offers" className="py-8 md:py-20 bg-card/30">
+    <section id="offers" className="py-8 md:py-12">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="text-center mb-6 md:mb-16">
-          <h3 className="text-2xl md:text-5xl font-bold mb-2 md:mb-4">Объявления</h3>
-          <p className="text-sm md:text-xl text-muted-foreground px-2">Актуальные предложения от проверенных пользователей</p>
+        <div className="text-center mb-6 md:mb-10">
           <div className="mt-3 md:mt-4 flex flex-col items-center gap-2">
             {currentRate && (
               <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-card border border-border rounded-lg px-2 sm:px-3 md:px-4 py-1.5 sm:py-2">
