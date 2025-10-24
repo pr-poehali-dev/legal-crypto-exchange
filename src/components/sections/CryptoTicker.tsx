@@ -23,16 +23,16 @@ const CryptoTicker = () => {
         const btcResponse = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BTCUSDT');
         const ethResponse = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=ETHUSDT');
         const bnbResponse = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=BNBUSDT');
-        const usdtResponse = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+        const usdtRubResponse = await fetch('https://functions.poehali.dev/f429c90b-c275-4b5d-bcd3-d3a69a15dea9');
         
-        const [btc, eth, bnb, usdtData] = await Promise.all([
+        const [btc, eth, bnb, usdtRubData] = await Promise.all([
           btcResponse.json(),
           ethResponse.json(),
           bnbResponse.json(),
-          usdtResponse.json(),
+          usdtRubResponse.json(),
         ]);
 
-        const rubRate = usdtData.rates?.RUB || 90;
+        const rubRate = usdtRubData.success && usdtRubData.rate ? usdtRubData.rate : 90;
 
         setRates([
           { 
