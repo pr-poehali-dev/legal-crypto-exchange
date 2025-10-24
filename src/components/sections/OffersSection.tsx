@@ -140,7 +140,13 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
       case 'amount-max':
         return sorted.sort((a, b) => b.amount - a.amount);
       case 'time':
-        return sorted.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        return sorted.sort((a, b) => {
+          const timeA = a.meeting_time.split(':').map(Number);
+          const timeB = b.meeting_time.split(':').map(Number);
+          const minutesA = timeA[0] * 60 + timeA[1];
+          const minutesB = timeB[0] * 60 + timeB[1];
+          return minutesA - minutesB;
+        });
       default:
         return sorted;
     }
