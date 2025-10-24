@@ -24,15 +24,16 @@ interface PeriodFilterProps {
 }
 
 const PeriodFilter = ({ value, onPeriodChange, className = '' }: PeriodFilterProps) => {
-  const [showCustom, setShowCustom] = useState(false);
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const handlePeriodSelect = (period: string) => {
     if (period === 'custom') {
-      setShowCustom(true);
+      setIsPopoverOpen(true);
     } else {
-      setShowCustom(false);
+      setStartDate(undefined);
+      setEndDate(undefined);
       onPeriodChange(period);
     }
   };
@@ -44,8 +45,13 @@ const PeriodFilter = ({ value, onPeriodChange, className = '' }: PeriodFilterPro
         format(startDate, 'yyyy-MM-dd'),
         format(endDate, 'yyyy-MM-dd')
       );
-      setShowCustom(false);
+      setIsPopoverOpen(false);
     }
+  };
+  
+  const handleReset = () => {
+    setStartDate(undefined);
+    setEndDate(undefined);
   };
 
   return (
@@ -63,8 +69,8 @@ const PeriodFilter = ({ value, onPeriodChange, className = '' }: PeriodFilterPro
         </SelectContent>
       </Select>
 
-      {showCustom && (
-        <Popover>
+      {value === 'custom' && (
+        <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
           <PopoverTrigger asChild>
             <Button variant="outline" size="sm">
               <Icon name="Calendar" size={16} className="mr-2" />
@@ -109,10 +115,7 @@ const PeriodFilter = ({ value, onPeriodChange, className = '' }: PeriodFilterPro
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={() => {
-                    setStartDate(undefined);
-                    setEndDate(undefined);
-                  }}
+                  onClick={handleReset}
                   className="flex-1"
                 >
                   Сбросить
