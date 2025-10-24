@@ -12,7 +12,7 @@ import psycopg2
 from psycopg2.extras import RealDictCursor
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
-    method: str = event.get('httpMethod', 'GET')
+    method: str = event.get('httpMethod', 'POST')
     
     if method == 'OPTIONS':
         return {
@@ -33,6 +33,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({'error': 'Method not allowed'})
         }
     
+    body_data = json.loads(event.get('body', '{}'))
+    clear_all = body_data.get('clear_all', False)
+    
     dsn = os.environ.get('DATABASE_URL')
     if not dsn:
         return {
@@ -48,53 +51,60 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     now_utc = datetime.now(timezone.utc)
     now_str = now_utc.strftime('%Y-%m-%d %H:%M:%S')
     
-    cursor.execute("""
-        SELECT id, status, meeting_time FROM t_p53513159_legal_crypto_exchang.offers 
-        WHERE status != 'completed'
-    """)
-    offers_to_check = cursor.fetchall()
-    
-    ids_to_delete = []
-    for offer in offers_to_check:
-        offer_id = offer['id']
-        status = offer['status']
-        meeting_time = offer['meeting_time']
+    if clear_all:
+        cursor.execute('SELECT COUNT(*) as count FROM t_p53513159_legal_crypto_exchang.offers')
+        count_result = cursor.fetchone()
+        deleted_count = count_result['count'] if count_result else 0
         
-        if status == 'reserved':
-            cursor.execute("""
-                SELECT reserved_at FROM t_p53513159_legal_crypto_exchang.offers 
-                WHERE id = %s AND reserved_at < (NOW() - INTERVAL '1 day')
-            """, (offer_id,))
-            if cursor.fetchone():
-                ids_to_delete.append(offer_id)
+        cursor.execute('DELETE FROM t_p53513159_legal_crypto_exchang.offers')
+        deleted_ids = []
+    else:
+        cursor.execute("""
+            SELECT id, status, meeting_time FROM t_p53513159_legal_crypto_exchang.offers 
+            WHERE status != 'completed'
+        """)
+        offers_to_check = cursor.fetchall()
         
-        elif status == 'active' and meeting_time:
-            try:
-                meeting_datetime_str = f"{now_utc.strftime('%Y-%m-%d')} {meeting_time}"
+        ids_to_delete = []
+        for offer in offers_to_check:
+            offer_id = offer['id']
+            status = offer['status']
+            meeting_time = offer['meeting_time']
+            
+            if status == 'reserved':
                 cursor.execute("""
-                    SELECT %s::timestamp < NOW()
-                """, (meeting_datetime_str,))
-                result = cursor.fetchone()
-                if result and result[0]:
+                    SELECT reserved_at FROM t_p53513159_legal_crypto_exchang.offers 
+                    WHERE id = %s AND reserved_at < (NOW() - INTERVAL '1 day')
+                """, (offer_id,))
+                if cursor.fetchone():
                     ids_to_delete.append(offer_id)
-            except:
-                pass
-    
-    deleted_rows = []
-    if ids_to_delete:
-        for offer_id in ids_to_delete:
-            cursor.execute("""
-                DELETE FROM t_p53513159_legal_crypto_exchang.offers 
-                WHERE id = %s
-                RETURNING id, status
-            """, (offer_id,))
-            deleted_row = cursor.fetchone()
-            if deleted_row:
-                deleted_rows.append(deleted_row)
-    
-    deleted_rows = cursor.fetchall()
-    deleted_ids = [row['id'] for row in deleted_rows]
-    deleted_count = len(deleted_ids)
+            
+            elif status == 'active' and meeting_time:
+                try:
+                    meeting_datetime_str = f"{now_utc.strftime('%Y-%m-%d')} {meeting_time}"
+                    cursor.execute("""
+                        SELECT %s::timestamp < NOW()
+                    """, (meeting_datetime_str,))
+                    result = cursor.fetchone()
+                    if result and result[0]:
+                        ids_to_delete.append(offer_id)
+                except:
+                    pass
+        
+        deleted_rows = []
+        if ids_to_delete:
+            for offer_id in ids_to_delete:
+                cursor.execute("""
+                    DELETE FROM t_p53513159_legal_crypto_exchang.offers 
+                    WHERE id = %s
+                    RETURNING id, status
+                """, (offer_id,))
+                deleted_row = cursor.fetchone()
+                if deleted_row:
+                    deleted_rows.append(deleted_row)
+        
+        deleted_ids = [row['id'] for row in deleted_rows]
+        deleted_count = len(deleted_ids)
     
     conn.commit()
     cursor.close()
