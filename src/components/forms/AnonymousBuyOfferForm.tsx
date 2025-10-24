@@ -16,9 +16,52 @@ const AnonymousBuyOfferForm = ({ onSuccess }: AnonymousBuyOfferFormProps) => {
   const [phone, setPhone] = useState('');
   const [amount, setAmount] = useState('');
   const [rate, setRate] = useState('');
+  const [rubles, setRubles] = useState('');
+  const [lastEditedField, setLastEditedField] = useState<'usdt' | 'rubles'>('usdt');
   const [meetingHour, setMeetingHour] = useState('');
   const [meetingMinute, setMeetingMinute] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const calculateRubles = (usdtAmount: string, exchangeRate: string) => {
+    const usdt = parseFloat(usdtAmount);
+    const rateNum = parseFloat(exchangeRate);
+    if (!isNaN(usdt) && !isNaN(rateNum) && usdt > 0 && rateNum > 0) {
+      setRubles((usdt * rateNum).toFixed(2));
+    } else {
+      setRubles('');
+    }
+  };
+
+  const calculateUsdt = (rublesAmount: string, exchangeRate: string) => {
+    const rub = parseFloat(rublesAmount);
+    const rateNum = parseFloat(exchangeRate);
+    if (!isNaN(rub) && !isNaN(rateNum) && rub > 0 && rateNum > 0) {
+      setAmount((rub / rateNum).toFixed(2));
+    } else {
+      setAmount('');
+    }
+  };
+
+  const handleAmountChange = (value: string) => {
+    setAmount(value);
+    setLastEditedField('usdt');
+    calculateRubles(value, rate);
+  };
+
+  const handleRublesChange = (value: string) => {
+    setRubles(value);
+    setLastEditedField('rubles');
+    calculateUsdt(value, rate);
+  };
+
+  const handleRateChange = (value: string) => {
+    setRate(value);
+    if (lastEditedField === 'usdt') {
+      calculateRubles(amount, value);
+    } else {
+      calculateUsdt(rubles, value);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,6 +104,7 @@ const AnonymousBuyOfferForm = ({ onSuccess }: AnonymousBuyOfferFormProps) => {
         setPhone('');
         setAmount('');
         setRate('');
+        setRubles('');
         setMeetingHour('');
         setMeetingMinute('');
         
@@ -113,6 +157,19 @@ const AnonymousBuyOfferForm = ({ onSuccess }: AnonymousBuyOfferFormProps) => {
             </div>
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="rate">Курс (₽ за 1 USDT) *</Label>
+            <Input
+              id="rate"
+              type="number"
+              step="0.01"
+              value={rate}
+              onChange={(e) => handleRateChange(e.target.value)}
+              placeholder="95.50"
+              required
+            />
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="amount">Сумма в USDT *</Label>
@@ -121,21 +178,21 @@ const AnonymousBuyOfferForm = ({ onSuccess }: AnonymousBuyOfferFormProps) => {
                 type="number"
                 step="0.01"
                 value={amount}
-                onChange={(e) => setAmount(e.target.value)}
+                onChange={(e) => handleAmountChange(e.target.value)}
                 placeholder="1000"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="rate">Курс (₽ за 1 USDT) *</Label>
+              <Label htmlFor="rubles">Сумма в рублях *</Label>
               <Input
-                id="rate"
+                id="rubles"
                 type="number"
                 step="0.01"
-                value={rate}
-                onChange={(e) => setRate(e.target.value)}
-                placeholder="95.50"
+                value={rubles}
+                onChange={(e) => handleRublesChange(e.target.value)}
+                placeholder="95500"
                 required
               />
             </div>

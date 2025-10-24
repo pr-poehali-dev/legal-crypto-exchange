@@ -215,18 +215,19 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
             </div>
           </div>
           
-          <div className="grid grid-cols-3 gap-4 bg-background/50 rounded-xl p-4">
+          <div className="grid grid-cols-2 gap-4 bg-background/50 rounded-xl p-4">
             <div>
               <p className="text-xs text-muted-foreground mb-1.5 uppercase tracking-wide">Сумма</p>
               <p className="text-base md:text-lg font-bold">{offer.amount.toLocaleString('ru-RU')} <span className="text-sm text-muted-foreground">USDT</span></p>
+              <p className="text-sm text-accent font-semibold mt-1">{(offer.amount * offer.rate).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₽</p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground mb-1.5 uppercase tracking-wide">Курс</p>
               <p className="text-base md:text-lg font-bold text-secondary">{offer.rate.toFixed(2)} <span className="text-sm">₽</span></p>
             </div>
-            <div>
+            <div className="col-span-2">
               <p className="text-xs text-muted-foreground mb-1.5 uppercase tracking-wide">Встреча</p>
-              <p className="text-sm font-medium">Сегодня<br/>{offer.meeting_time}</p>
+              <p className="text-sm font-medium">Сегодня {offer.meeting_time}</p>
             </div>
           </div>
           

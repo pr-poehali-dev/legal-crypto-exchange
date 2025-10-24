@@ -41,6 +41,8 @@ const CreateOfferDialog = ({
 }: CreateOfferDialogProps) => {
   const [currentRate, setCurrentRate] = useState<number | null>(null);
   const [isLoadingRate, setIsLoadingRate] = useState(false);
+  const [rubles, setRubles] = useState<string>('');
+  const [lastEditedField, setLastEditedField] = useState<'usdt' | 'rubles'>('usdt');
 
   useEffect(() => {
     if (isOpen) {
@@ -67,6 +69,48 @@ const CreateOfferDialog = ({
   const useCurrentRate = () => {
     if (currentRate) {
       setRate(currentRate.toFixed(2));
+      calculateRubles(amount, currentRate.toFixed(2));
+    }
+  };
+
+  const calculateRubles = (usdtAmount: string, exchangeRate: string) => {
+    const usdt = parseFloat(usdtAmount);
+    const rateNum = parseFloat(exchangeRate);
+    if (!isNaN(usdt) && !isNaN(rateNum) && usdt > 0 && rateNum > 0) {
+      setRubles((usdt * rateNum).toFixed(2));
+    } else {
+      setRubles('');
+    }
+  };
+
+  const calculateUsdt = (rublesAmount: string, exchangeRate: string) => {
+    const rub = parseFloat(rublesAmount);
+    const rateNum = parseFloat(exchangeRate);
+    if (!isNaN(rub) && !isNaN(rateNum) && rub > 0 && rateNum > 0) {
+      setAmount((rub / rateNum).toFixed(2));
+    } else {
+      setAmount('');
+    }
+  };
+
+  const handleAmountChange = (value: string) => {
+    setAmount(value);
+    setLastEditedField('usdt');
+    calculateRubles(value, rate);
+  };
+
+  const handleRublesChange = (value: string) => {
+    setRubles(value);
+    setLastEditedField('rubles');
+    calculateUsdt(value, rate);
+  };
+
+  const handleRateChange = (value: string) => {
+    setRate(value);
+    if (lastEditedField === 'usdt') {
+      calculateRubles(amount, value);
+    } else {
+      calculateUsdt(rubles, value);
     }
   };
 
@@ -108,16 +152,31 @@ const CreateOfferDialog = ({
               </SelectContent>
             </Select>
           </div>
-          <div>
-            <Label htmlFor="amount">Сумма (USDT)</Label>
-            <Input
-              id="amount"
-              type="number"
-              placeholder="Например: 1000"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="bg-background"
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="amount">Сумма (USDT)</Label>
+              <Input
+                id="amount"
+                type="number"
+                step="0.01"
+                placeholder="1000"
+                value={amount}
+                onChange={(e) => handleAmountChange(e.target.value)}
+                className="bg-background"
+              />
+            </div>
+            <div>
+              <Label htmlFor="rubles">Сумма (₽)</Label>
+              <Input
+                id="rubles"
+                type="number"
+                step="0.01"
+                placeholder="95500"
+                value={rubles}
+                onChange={(e) => handleRublesChange(e.target.value)}
+                className="bg-background"
+              />
+            </div>
           </div>
           <div>
             <div className="flex items-center justify-between mb-2">
@@ -146,9 +205,9 @@ const CreateOfferDialog = ({
               id="rate"
               type="number"
               step="0.01"
-              placeholder="Например: 95.50"
+              placeholder="95.50"
               value={rate}
-              onChange={(e) => setRate(e.target.value)}
+              onChange={(e) => handleRateChange(e.target.value)}
               className="bg-background"
             />
           </div>

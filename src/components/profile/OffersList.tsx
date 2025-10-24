@@ -184,7 +184,10 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                         )}
                       </div>
                       <p className="text-sm text-muted-foreground">
-                        Курс: {offer.rate.toFixed(2)} ₽ • {offer.meeting_time}
+                        Курс: {offer.rate.toFixed(2)} ₽ • Итого: {(offer.amount * offer.rate).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₽
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Встреча: {offer.meeting_time}
                       </p>
                       {offer.relation_type === 'reserved' && offer.owner_username && (
                         <p className="text-sm text-blue-500 mt-1">
