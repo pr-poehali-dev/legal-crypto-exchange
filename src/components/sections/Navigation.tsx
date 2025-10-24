@@ -146,8 +146,8 @@ const Navigation = () => {
 
   return (
     <nav className="border-b border-border/50 glass sticky top-0 z-50 shadow-lg shadow-black/5">
-      <div className="container mx-auto px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4">
-        <div className="flex items-center justify-between gap-1 sm:gap-2">
+      <div className="container mx-auto px-2 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4">
+        <div className="flex items-center justify-between gap-1">
           <a href="/" className="flex items-center space-x-1 sm:space-x-1.5 md:space-x-2 cursor-pointer group">
             <div className="w-8 h-8 sm:w-9 sm:h-9 md:w-12 md:h-12 flex items-center justify-center flex-shrink-0 relative">
               {/* Фоновый градиент с вращением */}
@@ -222,7 +222,7 @@ const Navigation = () => {
               <>
                 <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
                   <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="border-secondary">
+                    <Button variant="outline" size="sm" className="border-secondary text-xs sm:text-sm px-2 sm:px-4">
                       Войти
                     </Button>
                   </DialogTrigger>
@@ -280,7 +280,7 @@ const Navigation = () => {
 
                 <Dialog open={isRegisterOpen} onOpenChange={setIsRegisterOpen}>
                   <DialogTrigger asChild>
-                    <Button size="sm" className="bg-secondary text-primary hover:bg-secondary/90">
+                    <Button size="sm" className="bg-secondary text-primary hover:bg-secondary/90 text-xs sm:text-sm px-2 sm:px-4 whitespace-nowrap">
                       Регистрация
                     </Button>
                   </DialogTrigger>
