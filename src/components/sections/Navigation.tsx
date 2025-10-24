@@ -178,12 +178,13 @@ const Navigation = () => {
           </a>
           <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-8 flex-shrink-0">
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
-              className="md:hidden p-1"
+              className="md:hidden border-secondary/50 bg-secondary/5 hover:bg-secondary/10 px-3 py-2 flex items-center gap-2"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-              <Icon name={isMobileMenuOpen ? "X" : "Menu"} size={24} />
+              <Icon name={isMobileMenuOpen ? "X" : "Menu"} size={20} />
+              <span className="text-xs font-medium">{isMobileMenuOpen ? "Закрыть" : "Меню"}</span>
             </Button>
 
             <a href="/#services" className="hidden md:inline text-muted-foreground hover:text-foreground transition-colors">Услуги</a>
