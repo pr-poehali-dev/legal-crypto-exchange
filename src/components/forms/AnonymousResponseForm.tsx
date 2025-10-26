@@ -12,6 +12,8 @@ interface AnonymousResponseFormProps {
   offerId: number;
   offerOffices?: string[];
   offerCity?: string;
+  offerAmount?: number;
+  currentRate?: number;
   onSuccess?: () => void;
 }
 
@@ -37,7 +39,7 @@ const CITIES_OFFICES: Record<string, string[]> = {
   ],
 };
 
-const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Москва', onSuccess }: AnonymousResponseFormProps) => {
+const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Москва', offerAmount = 0, currentRate = 100, onSuccess }: AnonymousResponseFormProps) => {
   const { toast } = useToast();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -46,6 +48,10 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
   const [meetingHour, setMeetingHour] = useState('');
   const [meetingMinute, setMeetingMinute] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [exchangeAmount, setExchangeAmount] = useState(offerAmount.toString());
+
+  const calculatedRub = parseFloat(exchangeAmount) * currentRate;
+  const calculatedUsdt = parseFloat(exchangeAmount);
 
   const firstOfferOffice = offerOffices && offerOffices.length > 0 ? offerOffices[0] : '';
   const cityOffices = CITIES_OFFICES[offerCity || 'Москва'] || MOSCOW_OFFICES;
@@ -179,6 +185,47 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
               </SelectContent>
             </Select>
           )}
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Текущий курс</Label>
+        <div className="p-3 bg-muted rounded-lg">
+          <p className="text-sm font-medium">
+            1 USDT = {currentRate.toFixed(2)} ₽
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="exchange-amount">Сумма обмена (USDT)</Label>
+        <Input
+          id="exchange-amount"
+          type="number"
+          step="0.01"
+          min="0"
+          placeholder="Введите сумму в USDT"
+          value={exchangeAmount}
+          onChange={(e) => setExchangeAmount(e.target.value)}
+          disabled={isSubmitting}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Предполагаемая сумма обмена</Label>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="p-3 bg-muted rounded-lg">
+            <p className="text-xs text-muted-foreground mb-1">В рублях</p>
+            <p className="text-lg font-semibold">
+              {isNaN(calculatedRub) ? '0.00' : calculatedRub.toFixed(2)} ₽
+            </p>
+          </div>
+          <div className="p-3 bg-muted rounded-lg">
+            <p className="text-xs text-muted-foreground mb-1">В USDT</p>
+            <p className="text-lg font-semibold">
+              {isNaN(calculatedUsdt) ? '0.00' : calculatedUsdt.toFixed(2)} USDT
+            </p>
+          </div>
         </div>
       </div>
 

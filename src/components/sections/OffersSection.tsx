@@ -398,6 +398,8 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
                 username={currentUser.name || currentUser.username || 'Пользователь'}
                 offerOffices={selectedOffer.offices}
                 offerCity={selectedOffer.city}
+                offerAmount={selectedOffer.amount}
+                currentRate={selectedOffer.rate}
                 onSuccess={() => {
                   setResponseDialogOpen(false);
                   setSelectedOffer(null);
@@ -409,6 +411,8 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
                 offerId={selectedOffer.id}
                 offerOffices={selectedOffer.offices}
                 offerCity={selectedOffer.city}
+                offerAmount={selectedOffer.amount}
+                currentRate={selectedOffer.rate}
                 onSuccess={() => {
                   setResponseDialogOpen(false);
                   setSelectedOffer(null);
