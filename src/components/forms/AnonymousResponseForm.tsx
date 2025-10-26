@@ -42,7 +42,6 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [selectedOffice, setSelectedOffice] = useState('');
-  const [customOffice, setCustomOffice] = useState('');
   const [meetingHour, setMeetingHour] = useState('');
   const [meetingMinute, setMeetingMinute] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -61,10 +60,10 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
       return;
     }
 
-    if (!selectedOffice && !customOffice) {
+    if (!selectedOffice) {
       toast({
         title: 'Ошибка',
-        description: 'Выберите офис или укажите свой вариант',
+        description: 'Выберите офис для встречи',
         variant: 'destructive',
       });
       return;
@@ -80,7 +79,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
       return;
     }
 
-    const finalOffice = customOffice || selectedOffice;
+    const finalOffice = selectedOffice;
     const meetingTime = `${meetingHour}:${meetingMinute}`;
 
     setIsSubmitting(true);
@@ -106,12 +105,11 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
       if (data.success) {
         toast({
           title: 'Успешно!',
-          description: 'Объявление зарезервировано. Продавец свяжется с вами для завершения сделки.',
+          description: 'Мы получили вашу заявку и свяжемся с вами для завершения сделки.',
         });
         setName('');
         setPhone('');
         setSelectedOffice('');
-        setCustomOffice('');
         setMeetingHour('');
         setMeetingMinute('');
         onSuccess?.();
@@ -137,58 +135,31 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-3">
+      <div className="space-y-2">
         <Label>Адрес офиса для встречи</Label>
-        {offerOffices.length > 0 && (
-          <div className="bg-secondary/10 rounded-lg p-3 mb-3">
-            <p className="text-xs text-muted-foreground mb-2 font-semibold">Офисы из объявления:</p>
-            <div className="space-y-2">
-              {offerOffices.map((office, idx) => (
-                <div key={idx} className="flex items-start gap-2">
-                  <Checkbox
-                    id={`offer-office-${idx}`}
-                    checked={selectedOffice === office}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        setSelectedOffice(office);
-                        setCustomOffice('');
-                      } else {
-                        setSelectedOffice('');
-                      }
-                    }}
-                    disabled={isSubmitting}
-                  />
-                  <Label htmlFor={`offer-office-${idx}`} className="text-sm leading-relaxed cursor-pointer">
-                    {office}
-                  </Label>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-        <p className="text-xs text-muted-foreground mb-2 font-semibold">Или выберите другой офис:</p>
-        <Select value={selectedOffice} onValueChange={(value) => {
-          setSelectedOffice(value);
-          setCustomOffice('');
-        }} disabled={isSubmitting}>
+        <Select value={selectedOffice} onValueChange={setSelectedOffice} disabled={isSubmitting}>
           <SelectTrigger>
             <SelectValue placeholder="Выберите офис" />
           </SelectTrigger>
           <SelectContent>
+            {offerOffices.length > 0 && (
+              <>
+                <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+                  Офисы из объявления:
+                </div>
+                {offerOffices.map((office, idx) => (
+                  <SelectItem key={`offer-${idx}`} value={office}>{office}</SelectItem>
+                ))}
+                <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1">
+                  Наши офисы:
+                </div>
+              </>
+            )}
             {availableOffices.map((office, idx) => (
               <SelectItem key={idx} value={office}>{office}</SelectItem>
             ))}
           </SelectContent>
         </Select>
-        <Input
-          placeholder="Или укажите свой адрес"
-          value={customOffice}
-          onChange={(e) => {
-            setCustomOffice(e.target.value);
-            setSelectedOffice('');
-          }}
-          disabled={isSubmitting}
-        />
       </div>
 
       <div className="space-y-2">
@@ -259,7 +230,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
       </Button>
 
       <p className="text-xs text-muted-foreground text-center">
-        * Объявление будет зарезервировано за вами. Продавец свяжется с вами для завершения сделки.
+        * Мы получим вашу заявку и свяжемся с вами для завершения сделки.
       </p>
     </form>
   );
