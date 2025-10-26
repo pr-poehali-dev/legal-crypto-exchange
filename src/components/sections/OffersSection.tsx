@@ -226,12 +226,18 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
             </div>
             <div className="flex-1 min-w-0">
               <p className="font-semibold text-base md:text-lg truncate">{offer.username || 'Пользователь'}</p>
-              {!offer.is_anonymous && (
-                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <Icon name="CheckCircle2" size={14} className="text-accent" />
-                  <span>{offer.deals_count} успешных сделок</span>
+              <div className="flex items-center gap-2 flex-wrap">
+                {!offer.is_anonymous && (
+                  <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                    <Icon name="CheckCircle2" size={14} className="text-accent" />
+                    <span>{offer.deals_count} успешных сделок</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-1.5 text-sm">
+                  <Icon name="MapPin" size={14} className="text-secondary" />
+                  <span className="font-medium text-secondary">{offer.city || 'Москва'}</span>
                 </div>
-              )}
+              </div>
             </div>
           </div>
           
