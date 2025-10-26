@@ -251,8 +251,8 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
               onClick={() => handleContact(offer)}
               className="bg-secondary text-primary hover:bg-secondary/90 w-full shadow-lg shadow-secondary/20 hover:shadow-xl hover:shadow-secondary/30 transition-all duration-300 group/btn"
             >
-              <Icon name="MessageCircle" className="mr-2 group-hover/btn:scale-110 transition-transform" size={18} />
-              Связаться
+              <Icon name="Handshake" className="mr-2 group-hover/btn:scale-110 transition-transform" size={18} />
+              Создать сделку
             </Button>
           )}
           {isOwnOffer(offer) && (
