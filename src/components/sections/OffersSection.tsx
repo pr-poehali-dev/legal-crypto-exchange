@@ -271,41 +271,38 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
           </div>
         </div>
         <div className="max-w-5xl mx-auto">
-          <div className="mb-4 md:mb-6">
-            <div className="flex items-center gap-2 mb-3">
-              <Icon name="MapPin" size={18} className="text-secondary" />
-              <span className="text-sm md:text-base font-semibold">Выберите город</span>
-            </div>
-            <Select value={selectedCity} onValueChange={setSelectedCity}>
-              <SelectTrigger className="w-full md:w-64">
-                <SelectValue placeholder="Все города" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Все города</SelectItem>
-                <SelectItem value="Москва">Москва</SelectItem>
-                <SelectItem value="Санкт-Петербург">Санкт-Петербург</SelectItem>
-                <SelectItem value="Сочи">Сочи</SelectItem>
-                <SelectItem value="Омск">Омск</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 md:mb-6 gap-3">
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <Icon name="ArrowUpDown" size={16} className="text-muted-foreground sm:w-[18px] sm:h-[18px]" />
-              <span className="text-[11px] sm:text-xs md:text-sm text-muted-foreground">Сортировать:</span>
+            <div className="w-full md:w-auto flex flex-col sm:flex-row gap-3">
+              <div className="flex items-center gap-2">
+                <Icon name="MapPin" size={16} className="text-muted-foreground sm:w-[18px] sm:h-[18px]" />
+                <Select value={selectedCity} onValueChange={setSelectedCity}>
+                  <SelectTrigger className="w-full sm:w-[200px] bg-card border-border text-xs sm:text-sm">
+                    <SelectValue placeholder="Все города" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Все города</SelectItem>
+                    <SelectItem value="Москва">Москва</SelectItem>
+                    <SelectItem value="Санкт-Петербург">Санкт-Петербург</SelectItem>
+                    <SelectItem value="Сочи">Сочи</SelectItem>
+                    <SelectItem value="Омск">Омск</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex items-center gap-2">
+                <Icon name="ArrowUpDown" size={16} className="text-muted-foreground sm:w-[18px] sm:h-[18px]" />
+                <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+                  <SelectTrigger className="w-full sm:w-[220px] bg-card border-border text-xs sm:text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="rate">По курсу (от меньшего)</SelectItem>
+                    <SelectItem value="time">По времени (от ближайшего)</SelectItem>
+                    <SelectItem value="amount-min">По сумме (от минимальной)</SelectItem>
+                    <SelectItem value="amount-max">По сумме (от максимальной)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-            <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
-              <SelectTrigger className="w-full md:w-[220px] bg-card border-border text-xs sm:text-sm">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="rate">По курсу (от меньшего)</SelectItem>
-                <SelectItem value="time">По времени (от ближайшего)</SelectItem>
-                <SelectItem value="amount-min">По сумме (от минимальной)</SelectItem>
-                <SelectItem value="amount-max">По сумме (от максимальной)</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
