@@ -53,10 +53,28 @@ const RegisteredResponseForm = ({
   const { toast } = useToast();
   const [useOfferOffice, setUseOfferOffice] = useState(true);
   const [customOffice, setCustomOffice] = useState('');
-  const [exchangeAmount, setExchangeAmount] = useState(offerAmount.toString());
+  const [usdtAmount, setUsdtAmount] = useState(offerAmount.toString());
+  const [rubAmount, setRubAmount] = useState((offerAmount * currentRate).toString());
 
-  const calculatedRub = parseFloat(exchangeAmount) * currentRate;
-  const calculatedUsdt = parseFloat(exchangeAmount);
+  const handleUsdtChange = (value: string) => {
+    setUsdtAmount(value);
+    const usdt = parseFloat(value);
+    if (!isNaN(usdt)) {
+      setRubAmount((usdt * currentRate).toFixed(2));
+    } else {
+      setRubAmount('');
+    }
+  };
+
+  const handleRubChange = (value: string) => {
+    setRubAmount(value);
+    const rub = parseFloat(value);
+    if (!isNaN(rub)) {
+      setUsdtAmount((rub / currentRate).toFixed(2));
+    } else {
+      setUsdtAmount('');
+    }
+  };
   const [meetingHour, setMeetingHour] = useState('');
   const [meetingMinute, setMeetingMinute] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -147,33 +165,33 @@ const RegisteredResponseForm = ({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="exchange-amount">Сумма обмена (USDT)</Label>
-        <Input
-          id="exchange-amount"
-          type="number"
-          step="0.01"
-          min="0"
-          placeholder="Введите сумму в USDT"
-          value={exchangeAmount}
-          onChange={(e) => setExchangeAmount(e.target.value)}
-          disabled={isSubmitting}
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label>Предполагаемая сумма обмена</Label>
+        <Label>Сумма обмена</Label>
         <div className="grid grid-cols-2 gap-3">
-          <div className="p-3 bg-muted rounded-lg">
-            <p className="text-xs text-muted-foreground mb-1">В рублях</p>
-            <p className="text-lg font-semibold">
-              {isNaN(calculatedRub) ? '0.00' : calculatedRub.toFixed(2)} ₽
-            </p>
+          <div className="space-y-1.5">
+            <Label htmlFor="rub-amount" className="text-xs text-muted-foreground">В рублях (₽)</Label>
+            <Input
+              id="rub-amount"
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="0.00"
+              value={rubAmount}
+              onChange={(e) => handleRubChange(e.target.value)}
+              disabled={isSubmitting}
+            />
           </div>
-          <div className="p-3 bg-muted rounded-lg">
-            <p className="text-xs text-muted-foreground mb-1">В USDT</p>
-            <p className="text-lg font-semibold">
-              {isNaN(calculatedUsdt) ? '0.00' : calculatedUsdt.toFixed(2)} USDT
-            </p>
+          <div className="space-y-1.5">
+            <Label htmlFor="usdt-amount" className="text-xs text-muted-foreground">В USDT</Label>
+            <Input
+              id="usdt-amount"
+              type="number"
+              step="0.01"
+              min="0"
+              placeholder="0.00"
+              value={usdtAmount}
+              onChange={(e) => handleUsdtChange(e.target.value)}
+              disabled={isSubmitting}
+            />
           </div>
         </div>
       </div>
