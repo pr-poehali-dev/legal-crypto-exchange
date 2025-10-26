@@ -341,28 +341,17 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
               <Icon name="ArrowUpDown" size={16} className="text-muted-foreground sm:w-[18px] sm:h-[18px]" />
               <span className="text-[11px] sm:text-xs md:text-sm text-muted-foreground">Сортировать:</span>
             </div>
-            <div className="flex gap-3 items-center">
-              {currentUser && (
-                <Button
-                  onClick={() => setIsCreateDialogOpen(true)}
-                  className="bg-secondary text-primary hover:bg-secondary/90"
-                >
-                  <Icon name="Plus" className="mr-2" size={18} />
-                  Создать объявление
-                </Button>
-              )}
-              <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
-                <SelectTrigger className="w-full md:w-[220px] bg-card border-border text-xs sm:text-sm">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="rate">По курсу (от меньшего)</SelectItem>
-                  <SelectItem value="time">По времени (от ближайшего)</SelectItem>
-                  <SelectItem value="amount-min">По сумме (от минимальной)</SelectItem>
-                  <SelectItem value="amount-max">По сумме (от максимальной)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+              <SelectTrigger className="w-full md:w-[220px] bg-card border-border text-xs sm:text-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="rate">По курсу (от меньшего)</SelectItem>
+                <SelectItem value="time">По времени (от ближайшего)</SelectItem>
+                <SelectItem value="amount-min">По сумме (от минимальной)</SelectItem>
+                <SelectItem value="amount-max">По сумме (от максимальной)</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
