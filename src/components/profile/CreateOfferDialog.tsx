@@ -163,14 +163,14 @@ const CreateOfferDialog = ({
           Создать объявление
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-card">
+      <DialogContent className="bg-card max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl">{isEditing ? 'Редактировать объявление' : 'Новое объявление'}</DialogTitle>
           <DialogDescription>
             {isEditing ? 'Измените данные объявления' : 'Заполните данные для создания объявления'}
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-4">
+        <div className="space-y-4 pb-4">
           <div>
             <Label htmlFor="offer-type">Тип объявления</Label>
             <Select value={offerType} onValueChange={(value: 'buy' | 'sell') => setOfferType(value)}>
