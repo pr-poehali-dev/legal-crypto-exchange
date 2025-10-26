@@ -180,7 +180,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         # Send notification to deals bot
         bot_token_deals = os.environ.get('TELEGRAM_BOT_TOKEN_DEALS')
-        if bot_token_deals:
+        chat_id = os.environ.get('TELEGRAM_CHAT_ID')
+        if bot_token_deals and chat_id:
             contact_details = f"\n📞 Телефон клиента: {buyer_phone}" if is_anonymous else ""
             admin_message = f"""📅 Новая встреча!
 
@@ -197,7 +198,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 telegram_api_url = f'https://api.telegram.org/bot{bot_token_deals}/sendMessage'
                 requests.post(
                     telegram_api_url,
-                    json={'chat_id': bot_token_deals.split(':')[0], 'text': admin_message},
+                    json={'chat_id': chat_id, 'text': admin_message},
                     timeout=5
                 )
             except Exception as e:
