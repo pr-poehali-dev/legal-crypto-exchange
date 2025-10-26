@@ -44,7 +44,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     cur.execute(f"""
         SELECT o.id, o.user_id, o.offer_type, o.amount, o.rate, o.meeting_time, o.created_at, 
-               u.username, u.phone, o.is_anonymous, o.anonymous_name, o.anonymous_phone, o.city
+               u.username, u.phone, o.is_anonymous, o.anonymous_name, o.anonymous_phone, o.city, o.offices
         FROM t_p53513159_legal_crypto_exchang.offers o 
         LEFT JOIN t_p53513159_legal_crypto_exchang.users u ON o.user_id = u.id 
         WHERE {where_clause}
@@ -74,7 +74,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'phone': phone,
             'is_anonymous': is_anonymous,
             'deals_count': 0,
-            'city': row[12] if len(row) > 12 else 'Москва'
+            'city': row[12] if len(row) > 12 else 'Москва',
+            'offices': row[13] if len(row) > 13 and row[13] else []
         })
     
     cur.close()

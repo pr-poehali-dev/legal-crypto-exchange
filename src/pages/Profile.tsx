@@ -49,6 +49,7 @@ const Profile = () => {
   const [meetingHour, setMeetingHour] = useState('');
   const [meetingMinute, setMeetingMinute] = useState('');
   const [city, setCity] = useState('Москва');
+  const [selectedOffices, setSelectedOffices] = useState<string[]>([]);
   const [editingOffer, setEditingOffer] = useState<Offer | null>(null);
 
   useEffect(() => {
@@ -150,7 +151,7 @@ const Profile = () => {
   };
 
   const handleCreateOffer = async () => {
-    if (!amount || !rate || !meetingHour || !meetingMinute || !city) {
+    if (!amount || !rate || !meetingHour || !meetingMinute || !city || selectedOffices.length === 0) {
       toast({
         title: 'Ошибка',
         description: 'Заполните все поля',
@@ -174,6 +175,7 @@ const Profile = () => {
             rate: parseFloat(rate),
             meeting_time: fullMeetingTime,
             city: city,
+            offices: selectedOffices,
           }),
         });
 
@@ -205,6 +207,7 @@ const Profile = () => {
             rate: parseFloat(rate),
             meeting_time: fullMeetingTime,
             city: city,
+            offices: selectedOffices,
           }),
         });
 
@@ -241,6 +244,7 @@ const Profile = () => {
     setMeetingHour('');
     setMeetingMinute('');
     setCity('Москва');
+    setSelectedOffices([]);
     setEditingOffer(null);
   };
 
@@ -396,6 +400,8 @@ const Profile = () => {
               setMeetingMinute={setMeetingMinute}
               city={city}
               setCity={setCity}
+              selectedOffices={selectedOffices}
+              setSelectedOffices={setSelectedOffices}
               onSubmit={handleCreateOffer}
               isEditing={!!editingOffer}
             />

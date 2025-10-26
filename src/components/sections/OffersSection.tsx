@@ -23,6 +23,7 @@ interface Offer {
   created_at: string;
   is_anonymous?: boolean;
   city: string;
+  offices: string[];
 }
 
 interface OffersSectionProps {
@@ -256,6 +257,23 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
               <p className="text-sm font-medium break-words">Сегодня {offer.meeting_time}</p>
             </div>
           </div>
+
+          {offer.offices && offer.offices.length > 0 && (
+            <div className="bg-background/30 rounded-lg p-3">
+              <div className="flex items-center gap-2 mb-2">
+                <Icon name="Building2" size={16} className="text-secondary" />
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Офисы для встречи</p>
+              </div>
+              <div className="space-y-1.5">
+                {offer.offices.map((office, index) => (
+                  <div key={index} className="flex items-start gap-2">
+                    <Icon name="MapPin" size={14} className="text-accent mt-0.5 flex-shrink-0" />
+                    <p className="text-xs md:text-sm leading-relaxed">{office}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           
           {!isOwnOffer(offer) && (
             <Button 

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import Icon from '@/components/ui/icon';
 
 interface CreateOfferDialogProps {
@@ -21,6 +22,8 @@ interface CreateOfferDialogProps {
   setMeetingMinute: (value: string) => void;
   city: string;
   setCity: (value: string) => void;
+  selectedOffices: string[];
+  setSelectedOffices: (offices: string[]) => void;
   onSubmit: () => void;
   isEditing?: boolean;
 }
@@ -40,6 +43,8 @@ const CreateOfferDialog = ({
   setMeetingMinute,
   city,
   setCity,
+  selectedOffices,
+  setSelectedOffices,
   onSubmit,
   isEditing = false
 }: CreateOfferDialogProps) => {
@@ -115,6 +120,38 @@ const CreateOfferDialog = ({
       calculateRubles(amount, value);
     } else {
       calculateUsdt(rubles, value);
+    }
+  };
+
+  const cityOffices: Record<string, string[]> = {
+    'Москва': [
+      'ул. Нефтезаводская, д.9/2, 12 этаж',
+      'ул. Кирова, д.19/3, 33 этаж',
+      'ул. Московская, д.159, 1 этаж'
+    ],
+    'Санкт-Петербург': [
+      'Невский проспект, д.190, 23 этаж',
+      'ул. Московская, д.459, 3 этаж',
+      'ул. Центральная, д.166, 17 этаж'
+    ],
+    'Сочи': [
+      'ул. Солнечная, д.78, 1 этаж',
+      'ул. Виноградная, д.99, 8 этаж',
+      'ул. Пляжная, д.1, 77 этаж'
+    ],
+    'Омск': [
+      'ул. Ленина, д.99, 19 этаж',
+      'ул. Химик, д.11, 5 этаж'
+    ]
+  };
+
+  const currentCityOffices = cityOffices[city] || [];
+
+  const handleOfficeToggle = (office: string) => {
+    if (selectedOffices.includes(office)) {
+      setSelectedOffices(selectedOffices.filter(o => o !== office));
+    } else {
+      setSelectedOffices([...selectedOffices, office]);
     }
   };
 
@@ -217,7 +254,10 @@ const CreateOfferDialog = ({
           </div>
           <div>
             <Label htmlFor="city">Город</Label>
-            <Select value={city} onValueChange={setCity}>
+            <Select value={city} onValueChange={(value) => {
+              setCity(value);
+              setSelectedOffices([]);
+            }}>
               <SelectTrigger id="city" className="bg-background">
                 <SelectValue />
               </SelectTrigger>
@@ -228,6 +268,29 @@ const CreateOfferDialog = ({
                 <SelectItem value="Омск">Омск</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+          <div>
+            <Label>Выберите офисы для встречи</Label>
+            <div className="space-y-2 mt-2 max-h-[200px] overflow-y-auto bg-background/50 rounded-lg p-3">
+              {currentCityOffices.map((office) => (
+                <div key={office} className="flex items-start space-x-2">
+                  <Checkbox
+                    id={office}
+                    checked={selectedOffices.includes(office)}
+                    onCheckedChange={() => handleOfficeToggle(office)}
+                  />
+                  <label
+                    htmlFor={office}
+                    className="text-sm leading-relaxed cursor-pointer select-none"
+                  >
+                    {office}
+                  </label>
+                </div>
+              ))}
+            </div>
+            {selectedOffices.length === 0 && (
+              <p className="text-xs text-muted-foreground mt-2">Выберите хотя бы один офис</p>
+            )}
           </div>
           <div>
             <Label>Время встречи</Label>
