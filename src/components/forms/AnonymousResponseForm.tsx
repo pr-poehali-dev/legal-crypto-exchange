@@ -15,6 +15,28 @@ interface AnonymousResponseFormProps {
   onSuccess?: () => void;
 }
 
+const MOSCOW_OFFICES = [
+  'Москва, ул. Арбат, 10',
+  'Москва, Тверская ул., 15',
+  'Москва, ул. Ленина, 25',
+];
+
+const CITIES_OFFICES: Record<string, string[]> = {
+  'Москва': MOSCOW_OFFICES,
+  'Санкт-Петербург': [
+    'Санкт-Петербург, Невский пр., 28',
+    'Санкт-Петербург, ул. Рубинштейна, 15',
+  ],
+  'Сочи': [
+    'Сочи, ул. Навагинская, 12',
+    'Сочи, Курортный пр., 75',
+  ],
+  'Омск': [
+    'Омск, ул. Ленина, 18',
+    'Омск, пр. Мира, 32',
+  ],
+};
+
 const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Москва', onSuccess }: AnonymousResponseFormProps) => {
   const { toast } = useToast();
   const [name, setName] = useState('');
@@ -26,6 +48,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const firstOfferOffice = offerOffices && offerOffices.length > 0 ? offerOffices[0] : '';
+  const cityOffices = CITIES_OFFICES[offerCity || 'Москва'] || MOSCOW_OFFICES;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -145,13 +168,16 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
             </Label>
           </div>
           {!useOfferOffice && (
-            <Input
-              placeholder="Введите адрес"
-              value={customOffice}
-              onChange={(e) => setCustomOffice(e.target.value)}
-              disabled={isSubmitting}
-              className="mt-2"
-            />
+            <Select value={customOffice} onValueChange={setCustomOffice} disabled={isSubmitting}>
+              <SelectTrigger className="mt-2">
+                <SelectValue placeholder="Выберите адрес" />
+              </SelectTrigger>
+              <SelectContent>
+                {cityOffices.map((office, idx) => (
+                  <SelectItem key={idx} value={office}>{office}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           )}
         </div>
       </div>
