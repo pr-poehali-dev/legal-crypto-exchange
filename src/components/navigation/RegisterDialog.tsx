@@ -36,6 +36,8 @@ export const RegisterDialog = ({ isOpen, setIsOpen }: RegisterDialogProps) => {
     setIsSubmitting(true);
     setSubmitStatus('idle');
     setErrorMessage('');
+    
+    console.log('Register data:', registerData);
 
     if (registerData.first_name.trim().length < 2) {
       setErrorMessage('Имя должно содержать минимум 2 символа');
