@@ -62,11 +62,13 @@ const Navigation = () => {
                       Личный кабинет
                     </Button>
                   </a>
-                  <a href="/admin">
-                    <Button variant="outline" size="sm" className="border-secondary/50 bg-secondary/5 hover:bg-secondary/10 hidden lg:inline-flex text-xs lg:text-sm">
-                      Панель управления
-                    </Button>
-                  </a>
+                  {user.is_admin && (
+                    <a href="/admin">
+                      <Button variant="outline" size="sm" className="border-secondary/50 bg-secondary/5 hover:bg-secondary/10 hidden lg:inline-flex text-xs lg:text-sm">
+                        Панель управления
+                      </Button>
+                    </a>
+                  )}
                   <Button 
                     variant="outline" 
                     size="sm" 

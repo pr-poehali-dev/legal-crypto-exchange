@@ -38,11 +38,13 @@ export const MobileMenu = ({ isOpen, user, onLoginClick, onRegisterClick, onLogo
                   Личный кабинет
                 </Button>
               </a>
-              <a href="/admin" className="block">
-                <Button variant="outline" size="sm" className="w-full border-secondary/50 bg-secondary/5 hover:bg-secondary/10 text-xs">
-                  Панель управления
-                </Button>
-              </a>
+              {user.is_admin && (
+                <a href="/admin" className="block">
+                  <Button variant="outline" size="sm" className="w-full border-secondary/50 bg-secondary/5 hover:bg-secondary/10 text-xs">
+                    Панель управления
+                  </Button>
+                </a>
+              )}
               <Button 
                 variant="outline" 
                 size="sm" 
