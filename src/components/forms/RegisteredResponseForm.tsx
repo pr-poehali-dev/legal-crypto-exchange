@@ -232,7 +232,7 @@ const RegisteredResponseForm = ({
                 disabled={isSubmitting}
               />
               <Label htmlFor="use-offer-office" className="text-sm leading-relaxed cursor-pointer font-normal">
-                {firstOfferOffice}
+                {offerCity}, {firstOfferOffice}
               </Label>
             </div>
           </div>
