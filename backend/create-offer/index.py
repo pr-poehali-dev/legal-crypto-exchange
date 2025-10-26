@@ -91,8 +91,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         conn.close()
         
         bot_token = os.environ.get('TELEGRAM_BOT_TOKEN_OFFERS')
+        chat_id = os.environ.get('TELEGRAM_CHAT_ID')
         
-        if bot_token:
+        if bot_token and chat_id:
             offer_type_text = 'Покупка' if offer_type == 'buy' else 'Продажа'
             message = f"""📝 Новое объявление!
 
@@ -108,7 +109,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 telegram_api_url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
                 requests.post(
                     telegram_api_url,
-                    json={'chat_id': bot_token.split(':')[0], 'text': message},
+                    json={'chat_id': chat_id, 'text': message},
                     timeout=5
                 )
             except Exception as e:
