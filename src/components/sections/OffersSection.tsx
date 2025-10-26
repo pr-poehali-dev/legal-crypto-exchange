@@ -91,7 +91,6 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
       }
       
       const data = await response.json();
-      console.log('Loaded offers:', data.offers);
       
       if (data.success) {
         setOffers(data.offers);
