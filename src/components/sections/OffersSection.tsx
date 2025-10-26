@@ -342,13 +342,15 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
               <span className="text-[11px] sm:text-xs md:text-sm text-muted-foreground">Сортировать:</span>
             </div>
             <div className="flex gap-3 items-center">
-              <Button
-                onClick={() => setIsCreateDialogOpen(true)}
-                className="bg-secondary text-primary hover:bg-secondary/90"
-              >
-                <Icon name="Plus" className="mr-2" size={18} />
-                Создать объявление
-              </Button>
+              {currentUser && (
+                <Button
+                  onClick={() => setIsCreateDialogOpen(true)}
+                  className="bg-secondary text-primary hover:bg-secondary/90"
+                >
+                  <Icon name="Plus" className="mr-2" size={18} />
+                  Создать объявление
+                </Button>
+              )}
               <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
                 <SelectTrigger className="w-full md:w-[220px] bg-card border-border text-xs sm:text-sm">
                   <SelectValue />
