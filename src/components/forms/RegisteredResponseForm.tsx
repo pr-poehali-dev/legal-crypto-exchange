@@ -137,6 +137,47 @@ const RegisteredResponseForm = ({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label>Текущий курс</Label>
+        <div className="p-3 bg-muted rounded-lg">
+          <p className="text-sm font-medium">
+            1 USDT = {currentRate.toFixed(2)} ₽
+          </p>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="exchange-amount">Сумма обмена (USDT)</Label>
+        <Input
+          id="exchange-amount"
+          type="number"
+          step="0.01"
+          min="0"
+          placeholder="Введите сумму в USDT"
+          value={exchangeAmount}
+          onChange={(e) => setExchangeAmount(e.target.value)}
+          disabled={isSubmitting}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Предполагаемая сумма обмена</Label>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="p-3 bg-muted rounded-lg">
+            <p className="text-xs text-muted-foreground mb-1">В рублях</p>
+            <p className="text-lg font-semibold">
+              {isNaN(calculatedRub) ? '0.00' : calculatedRub.toFixed(2)} ₽
+            </p>
+          </div>
+          <div className="p-3 bg-muted rounded-lg">
+            <p className="text-xs text-muted-foreground mb-1">В USDT</p>
+            <p className="text-lg font-semibold">
+              {isNaN(calculatedUsdt) ? '0.00' : calculatedUsdt.toFixed(2)} USDT
+            </p>
+          </div>
+        </div>
+      </div>
+
       <div className="space-y-3">
         <Label>Адрес для встречи</Label>
         {firstOfferOffice && (
@@ -178,47 +219,6 @@ const RegisteredResponseForm = ({
               </SelectContent>
             </Select>
           )}
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label>Текущий курс</Label>
-        <div className="p-3 bg-muted rounded-lg">
-          <p className="text-sm font-medium">
-            1 USDT = {currentRate.toFixed(2)} ₽
-          </p>
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="exchange-amount">Сумма обмена (USDT)</Label>
-        <Input
-          id="exchange-amount"
-          type="number"
-          step="0.01"
-          min="0"
-          placeholder="Введите сумму в USDT"
-          value={exchangeAmount}
-          onChange={(e) => setExchangeAmount(e.target.value)}
-          disabled={isSubmitting}
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label>Предполагаемая сумма обмена</Label>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="p-3 bg-muted rounded-lg">
-            <p className="text-xs text-muted-foreground mb-1">В рублях</p>
-            <p className="text-lg font-semibold">
-              {isNaN(calculatedRub) ? '0.00' : calculatedRub.toFixed(2)} ₽
-            </p>
-          </div>
-          <div className="p-3 bg-muted rounded-lg">
-            <p className="text-xs text-muted-foreground mb-1">В USDT</p>
-            <p className="text-lg font-semibold">
-              {isNaN(calculatedUsdt) ? '0.00' : calculatedUsdt.toFixed(2)} USDT
-            </p>
-          </div>
         </div>
       </div>
 
