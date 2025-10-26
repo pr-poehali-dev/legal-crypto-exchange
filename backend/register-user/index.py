@@ -160,8 +160,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         username = f"{first_name} {last_name}"
         cursor.execute(
-            "INSERT INTO t_p53513159_legal_crypto_exchang.users (username, first_name, last_name, email, phone, password_hash) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",
-            (username, first_name, last_name, email, phone, password_hash)
+            "INSERT INTO t_p53513159_legal_crypto_exchang.users (name, username, first_name, last_name, email, phone, password_hash) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id",
+            (username, username, first_name, last_name, email, phone, password_hash)
         )
         user_id = cursor.fetchone()[0]
         conn.commit()
