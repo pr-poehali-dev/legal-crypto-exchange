@@ -11,7 +11,8 @@
       "method": "POST",
       "path": "/",
       "body": {
-        "name": "Иван Тестов",
+        "first_name": "Иван",
+        "last_name": "Тестов",
         "email": "test@example.com",
         "phone": "+7 (999) 888-88-88",
         "password": "test123"
@@ -27,7 +28,8 @@
       "method": "POST",
       "path": "/",
       "body": {
-        "name": "Петр Тестов",
+        "first_name": "Петр",
+        "last_name": "Тестов",
         "email": "newuser@example.com",
         "phone": "+7 (999) 111-22-33",
         "password": "test123"

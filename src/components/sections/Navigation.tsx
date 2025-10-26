@@ -18,7 +18,8 @@ const Navigation = () => {
     }
   }, []);
   const [registerData, setRegisterData] = useState({
-    name: '',
+    first_name: '',
+    last_name: '',
     email: '',
     phone: '',
     password: ''
@@ -52,8 +53,15 @@ const Navigation = () => {
     setSubmitStatus('idle');
     setErrorMessage('');
 
-    if (registerData.name.trim().length < 2) {
+    if (registerData.first_name.trim().length < 2) {
       setErrorMessage('Имя должно содержать минимум 2 символа');
+      setSubmitStatus('error');
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (registerData.last_name.trim().length < 2) {
+      setErrorMessage('Фамилия должна содержать минимум 2 символа');
       setSubmitStatus('error');
       setIsSubmitting(false);
       return;
@@ -93,7 +101,7 @@ const Navigation = () => {
 
       if (response.ok) {
         setSubmitStatus('success');
-        setRegisterData({ name: '', email: '', phone: '', password: '' });
+        setRegisterData({ first_name: '', last_name: '', email: '', phone: '', password: '' });
         setTimeout(() => {
           setIsRegisterOpen(false);
           setSubmitStatus('idle');
@@ -293,16 +301,29 @@ const Navigation = () => {
                     </DialogHeader>
                     <form onSubmit={handleRegister} className="space-y-4">
                       <div>
-                        <Label htmlFor="name">Имя и фамилия</Label>
+                        <Label htmlFor="first_name">Имя</Label>
                         <Input 
-                          id="name" 
-                          placeholder="Иван Иванов" 
+                          id="first_name" 
+                          placeholder="Иван" 
                           className="bg-background border-border"
-                          value={registerData.name}
-                          onChange={(e) => setRegisterData({...registerData, name: e.target.value})}
+                          value={registerData.first_name}
+                          onChange={(e) => setRegisterData({...registerData, first_name: e.target.value})}
                           required
                           minLength={2}
-                          maxLength={100}
+                          maxLength={50}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="last_name">Фамилия</Label>
+                        <Input 
+                          id="last_name" 
+                          placeholder="Иванов" 
+                          className="bg-background border-border"
+                          value={registerData.last_name}
+                          onChange={(e) => setRegisterData({...registerData, last_name: e.target.value})}
+                          required
+                          minLength={2}
+                          maxLength={50}
                         />
                       </div>
                       <div>

@@ -38,12 +38,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         }
     
     body_data = json.loads(event.get('body', '{}'))
-    name = body_data.get('name', '')
+    first_name = body_data.get('first_name', '')
+    last_name = body_data.get('last_name', '')
     email = body_data.get('email', '')
     phone = body_data.get('phone', '')
     password = body_data.get('password', '')
     
-    if not all([name, email, phone, password]):
+    if not all([first_name, last_name, email, phone, password]):
         return {
             'statusCode': 400,
             'headers': {
@@ -79,8 +80,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({'error': 'Введите корректный номер телефона (формат: +7XXXXXXXXXX или 8XXXXXXXXXX)'})
         }
     
-    # Validate name length
-    if len(name.strip()) < 2:
+    # Validate first_name and last_name length
+    if len(first_name.strip()) < 2:
         return {
             'statusCode': 400,
             'headers': {
@@ -88,6 +89,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'Access-Control-Allow-Origin': '*'
             },
             'body': json.dumps({'error': 'Имя должно содержать минимум 2 символа'})
+        }
+    
+    if len(last_name.strip()) < 2:
+        return {
+            'statusCode': 400,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
+            },
+            'body': json.dumps({'error': 'Фамилия должна содержать минимум 2 символа'})
         }
     
     # Validate password strength
@@ -120,7 +131,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         cursor = conn.cursor()
         
         # Check if email already exists
-        cursor.execute("SELECT id FROM users WHERE email = %s", (email,))
+        cursor.execute("SELECT id FROM t_p53513159_legal_crypto_exchang.users WHERE email = %s", (email,))
         if cursor.fetchone():
             cursor.close()
             conn.close()
@@ -134,7 +145,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         # Check if phone already exists
-        cursor.execute("SELECT id FROM users WHERE phone = %s", (phone,))
+        cursor.execute("SELECT id FROM t_p53513159_legal_crypto_exchang.users WHERE phone = %s", (phone,))
         if cursor.fetchone():
             cursor.close()
             conn.close()
@@ -147,9 +158,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'Этот номер телефона уже зарегистрирован'})
             }
         
+        username = f"{first_name} {last_name}"
         cursor.execute(
-            "INSERT INTO users (name, email, phone, password_hash) VALUES (%s, %s, %s, %s) RETURNING id",
-            (name, email, phone, password_hash)
+            "INSERT INTO t_p53513159_legal_crypto_exchang.users (username, first_name, last_name, email, phone, password_hash) VALUES (%s, %s, %s, %s, %s, %s) RETURNING id",
+            (username, first_name, last_name, email, phone, password_hash)
         )
         user_id = cursor.fetchone()[0]
         conn.commit()
@@ -162,7 +174,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         if bot_token and chat_id:
             telegram_message = f"""🎉 Новая регистрация на Legal Crypto Change!
 
-👤 Имя: {name}
+👤 Имя: {first_name} {last_name}
 📧 Email: {email}
 📱 Телефон: {phone}
 🆔 ID: {user_id}

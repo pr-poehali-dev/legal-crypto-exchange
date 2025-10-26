@@ -44,7 +44,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     cur.execute(f"""
         SELECT o.id, o.user_id, o.offer_type, o.amount, o.rate, o.meeting_time, o.created_at, 
-               u.username, u.phone, o.is_anonymous, o.anonymous_name, o.anonymous_phone, o.city, o.offices
+               u.username, u.phone, o.is_anonymous, o.anonymous_name, o.anonymous_phone, o.city, o.offices,
+               u.first_name, u.last_name
         FROM t_p53513159_legal_crypto_exchang.offers o 
         LEFT JOIN t_p53513159_legal_crypto_exchang.users u ON o.user_id = u.id 
         WHERE {where_clause}
@@ -58,9 +59,21 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         is_anonymous = row[9] if len(row) > 9 and row[9] else False
         
         # For anonymous offers, use anonymous_name and anonymous_phone
-        # For registered offers, use username and phone from users table
-        username = row[10] if is_anonymous and row[10] else (row[7] if not is_anonymous else 'Аноним')
-        phone = row[11] if is_anonymous and row[11] else (row[8] if not is_anonymous else '')
+        # For registered offers, use first_name + last_name or username
+        first_name = row[14] if len(row) > 14 else None
+        last_name = row[15] if len(row) > 15 else None
+        
+        if is_anonymous:
+            username = row[10] if row[10] else 'Аноним'
+            phone = row[11] if row[11] else ''
+        else:
+            if first_name and last_name:
+                username = f"{first_name} {last_name}"
+            elif first_name:
+                username = first_name
+            else:
+                username = row[7] if row[7] else 'Пользователь'
+            phone = row[8] if row[8] else ''
         
         offers.append({
             'id': row[0],
