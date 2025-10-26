@@ -9,6 +9,7 @@ import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 import AnonymousBuyOfferForm from '@/components/forms/AnonymousBuyOfferForm';
 import AnonymousResponseForm from '@/components/forms/AnonymousResponseForm';
+import RegisteredResponseForm from '@/components/forms/RegisteredResponseForm';
 
 interface Offer {
   id: number;
@@ -177,38 +178,8 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
       return;
     }
 
-    try {
-      const response = await fetch('https://functions.poehali.dev/9c031941-05ab-46ce-9781-3bd0b4c6974f', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          offer_id: offer.id,
-          user_id: currentUser.id,
-          username: currentUser.name || currentUser.username || 'Пользователь',
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        toast({
-          title: 'Успешно!',
-          description: 'Владелец объявления получил уведомление о вашем интересе',
-        });
-      } else {
-        toast({
-          title: 'Ошибка',
-          description: data.error || 'Не удалось отправить уведомление',
-          variant: 'destructive',
-        });
-      }
-    } catch (error) {
-      toast({
-        title: 'Ошибка',
-        description: 'Не удалось отправить уведомление',
-        variant: 'destructive',
-      });
-    }
+    setSelectedOffer(offer);
+    setResponseDialogOpen(true);
   };
 
   const isOwnOffer = (offer: Offer) => {
@@ -424,22 +395,42 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Icon name="Lock" className="text-primary" />
-              Зарезервировать объявление
+              <Icon name={currentUser ? "Handshake" : "Lock"} className="text-primary" />
+              {currentUser ? 'Откликнуться на объявление' : 'Зарезервировать объявление'}
             </DialogTitle>
             <DialogDescription>
-              Объявление будет зарезервировано за вами, и продавец свяжется с вами для завершения сделки.
+              {currentUser 
+                ? 'Выберите удобный офис и время встречи. Владелец объявления получит уведомление.'
+                : 'Объявление будет зарезервировано за вами, и продавец свяжется с вами для завершения сделки.'
+              }
             </DialogDescription>
           </DialogHeader>
           {selectedOffer && (
-            <AnonymousResponseForm 
-              offerId={selectedOffer.id} 
-              onSuccess={() => {
-                setResponseDialogOpen(false);
-                setSelectedOffer(null);
-                loadOffers();
-              }} 
-            />
+            currentUser ? (
+              <RegisteredResponseForm 
+                offerId={selectedOffer.id}
+                userId={currentUser.id}
+                username={currentUser.name || currentUser.username || 'Пользователь'}
+                offerOffices={selectedOffer.offices}
+                offerCity={selectedOffer.city}
+                onSuccess={() => {
+                  setResponseDialogOpen(false);
+                  setSelectedOffer(null);
+                  loadOffers();
+                }} 
+              />
+            ) : (
+              <AnonymousResponseForm 
+                offerId={selectedOffer.id}
+                offerOffices={selectedOffer.offices}
+                offerCity={selectedOffer.city}
+                onSuccess={() => {
+                  setResponseDialogOpen(false);
+                  setSelectedOffer(null);
+                  loadOffers();
+                }} 
+              />
+            )
           )}
         </DialogContent>
       </Dialog>

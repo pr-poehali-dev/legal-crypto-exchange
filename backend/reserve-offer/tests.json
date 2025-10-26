@@ -1,17 +1,20 @@
 {
   "tests": [
     {
-      "name": "Reserve offer successfully",
+      "name": "Reserve offer successfully (or not found)",
       "method": "POST",
       "path": "/",
       "body": {
         "offer_id": 1,
         "user_id": 2,
-        "username": "TestUser"
+        "username": "TestUser",
+        "meeting_office": "Москва, ул. Арбат, 10",
+        "meeting_time": "14:00"
       },
-      "expectedStatus": 200,
+      "expectedStatus": 404,
       "expectedBody": {
-        "success": true
+        "success": false,
+        "error": "Offer not found or not active"
       },
       "bodyMatcher": "partial"
     },

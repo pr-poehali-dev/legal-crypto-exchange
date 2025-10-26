@@ -43,6 +43,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     username = body_data.get('username')
     buyer_name = body_data.get('buyer_name')
     buyer_phone = body_data.get('buyer_phone')
+    meeting_office = body_data.get('meeting_office')
+    meeting_time = body_data.get('meeting_time')
     is_anonymous = body_data.get('is_anonymous', False)
     
     if not offer_id:
@@ -51,6 +53,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'isBase64Encoded': False,
             'body': json.dumps({'success': False, 'error': 'Missing offer_id'})
+        }
+    
+    if not meeting_office or not meeting_time:
+        return {
+            'statusCode': 400,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
+            'body': json.dumps({'success': False, 'error': 'Missing meeting_office or meeting_time'})
         }
     
     if is_anonymous:
@@ -131,6 +141,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             )
             display_name = username
         
+        cur.execute(
+            "INSERT INTO deals (offer_id, buyer_id, buyer_name, buyer_phone, meeting_office, meeting_time, status, created_at) VALUES (%s, %s, %s, %s, %s, %s, 'pending', NOW())",
+            (offer_id, user_id if not is_anonymous else None, display_name, buyer_phone if is_anonymous else None, meeting_office, meeting_time)
+        )
+        
         conn.commit()
         
         offer_type_text = 'Покупка' if offer_type == 'buy' else 'Продажа'
@@ -144,6 +159,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 📝 Тип: {offer_type_text}
 💰 Сумма: {amount} USDT
 💱 Курс: {rate} ₽
+📍 Офис: {meeting_office}
 ⏰ Время встречи: {meeting_time}
 
 Пожалуйста, приходите в офис в указанное время."""
@@ -171,6 +187,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 📝 Тип: {offer_type_text}
 💰 Сумма: {amount} USDT
 💱 Курс: {rate} ₽
+📍 Офис: {meeting_office}
 ⏰ Время встречи: {meeting_time}
 💵 Итого: {float(amount) * float(rate):,.2f} ₽"""
             

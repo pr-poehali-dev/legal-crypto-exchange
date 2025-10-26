@@ -6,10 +6,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
-import func2url from '../../../backend/func2url.json';
 
-interface AnonymousResponseFormProps {
+interface RegisteredResponseFormProps {
   offerId: number;
+  userId: number;
+  username: string;
   offerOffices?: string[];
   offerCity?: string;
   onSuccess?: () => void;
@@ -37,10 +38,15 @@ const CITIES_OFFICES: Record<string, string[]> = {
   ],
 };
 
-const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Москва', onSuccess }: AnonymousResponseFormProps) => {
+const RegisteredResponseForm = ({ 
+  offerId, 
+  userId, 
+  username, 
+  offerOffices = [], 
+  offerCity = 'Москва', 
+  onSuccess 
+}: RegisteredResponseFormProps) => {
   const { toast } = useToast();
-  const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
   const [selectedOffice, setSelectedOffice] = useState('');
   const [customOffice, setCustomOffice] = useState('');
   const [meetingHour, setMeetingHour] = useState('');
@@ -52,10 +58,10 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!name || !phone || !meetingHour || !meetingMinute) {
+    if (!meetingHour || !meetingMinute) {
       toast({
         title: 'Ошибка',
-        description: 'Заполните все обязательные поля',
+        description: 'Выберите время встречи',
         variant: 'destructive',
       });
       return;
@@ -70,34 +76,21 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
       return;
     }
 
-    const phoneRegex = /^\+?[0-9\s\-\(\)]{10,}$/;
-    if (!phoneRegex.test(phone)) {
-      toast({
-        title: 'Ошибка',
-        description: 'Введите корректный номер телефона',
-        variant: 'destructive',
-      });
-      return;
-    }
-
     const finalOffice = customOffice || selectedOffice;
     const meetingTime = `${meetingHour}:${meetingMinute}`;
 
     setIsSubmitting(true);
 
     try {
-      const reserveUrl = func2url['reserve-offer'] || 'https://functions.poehali.dev/9c031941-05ab-46ce-9781-3bd0b4c6974f';
-      
-      const response = await fetch(reserveUrl, {
+      const response = await fetch('https://functions.poehali.dev/9c031941-05ab-46ce-9781-3bd0b4c6974f', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           offer_id: offerId,
-          buyer_name: name,
-          buyer_phone: phone,
+          user_id: userId,
+          username: username,
           meeting_office: finalOffice,
           meeting_time: meetingTime,
-          is_anonymous: true,
         }),
       });
 
@@ -106,10 +99,8 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
       if (data.success) {
         toast({
           title: 'Успешно!',
-          description: 'Объявление зарезервировано. Продавец свяжется с вами для завершения сделки.',
+          description: 'Владелец объявления получил уведомление о вашем интересе.',
         });
-        setName('');
-        setPhone('');
         setSelectedOffice('');
         setCustomOffice('');
         setMeetingHour('');
@@ -119,7 +110,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
         console.error('Reserve offer error:', data);
         toast({
           title: 'Ошибка',
-          description: data.error || 'Не удалось зарезервировать объявление',
+          description: data.error || 'Не удалось отправить отклик',
           variant: 'destructive',
         });
       }
@@ -127,7 +118,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
       console.error('Reserve offer fetch error:', error);
       toast({
         title: 'Ошибка',
-        description: 'Не удалось зарезервировать объявление. Проверьте подключение к интернету.',
+        description: 'Не удалось отправить отклик. Проверьте подключение к интернету.',
         variant: 'destructive',
       });
     } finally {
@@ -220,49 +211,25 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
         </div>
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="name">Имя и фамилия</Label>
-        <Input
-          id="name"
-          type="text"
-          placeholder="Иван Иванов"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          disabled={isSubmitting}
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label htmlFor="phone">Номер телефона</Label>
-        <Input
-          id="phone"
-          type="tel"
-          placeholder="+7 (999) 123-45-67"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          disabled={isSubmitting}
-        />
-      </div>
-
       <Button type="submit" className="w-full" disabled={isSubmitting}>
         {isSubmitting ? (
           <>
             <Icon name="Loader2" className="mr-2 animate-spin" />
-            Резервирование...
+            Отправка...
           </>
         ) : (
           <>
-            <Icon name="Lock" className="mr-2" />
-            Зарезервировать
+            <Icon name="Handshake" className="mr-2" />
+            Откликнуться
           </>
         )}
       </Button>
 
       <p className="text-xs text-muted-foreground text-center">
-        * Объявление будет зарезервировано за вами. Продавец свяжется с вами для завершения сделки.
+        * Владелец объявления получит уведомление и свяжется с вами для подтверждения встречи.
       </p>
     </form>
   );
 };
 
-export default AnonymousResponseForm;
+export default RegisteredResponseForm;
