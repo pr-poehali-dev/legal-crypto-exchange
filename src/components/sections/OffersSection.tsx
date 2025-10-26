@@ -22,6 +22,7 @@ interface Offer {
   deals_count: number;
   created_at: string;
   is_anonymous?: boolean;
+  city: string;
 }
 
 interface OffersSectionProps {
@@ -33,6 +34,7 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
   const { toast } = useToast();
   const [offers, setOffers] = useState<Offer[]>([]);
   const [sortBy, setSortBy] = useState<'rate' | 'amount-min' | 'amount-max' | 'time'>('rate');
+  const [selectedCity, setSelectedCity] = useState<string>('all');
   const [isLoading, setIsLoading] = useState(true);
   const [currentRate, setCurrentRate] = useState<number | null>(null);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
@@ -70,14 +72,17 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
       clearInterval(offersInterval);
       clearInterval(cleanupInterval);
     };
-  }, []);
+  }, [selectedCity]);
 
   const loadOffers = async (silent = false) => {
     if (!silent) {
       setIsLoading(true);
     }
     try {
-      const response = await fetch('https://functions.poehali.dev/85034798-463f-4b9f-b879-43364e8c40ff');
+      const url = selectedCity === 'all' 
+        ? 'https://functions.poehali.dev/85034798-463f-4b9f-b879-43364e8c40ff'
+        : `https://functions.poehali.dev/85034798-463f-4b9f-b879-43364e8c40ff?city=${encodeURIComponent(selectedCity)}`;
+      const response = await fetch(url);
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
@@ -286,6 +291,27 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
           </div>
         </div>
         <div className="max-w-5xl mx-auto">
+          <div className="mb-4 md:mb-6">
+            <div className="flex items-center gap-2 mb-3">
+              <Icon name="MapPin" size={18} className="text-secondary" />
+              <span className="text-sm md:text-base font-semibold">Выберите город</span>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+              {['all', 'Москва', 'Санкт-Петербург', 'Сочи', 'Омск'].map((city) => (
+                <Button
+                  key={city}
+                  onClick={() => setSelectedCity(city)}
+                  variant={selectedCity === city ? 'default' : 'outline'}
+                  className={selectedCity === city 
+                    ? 'bg-secondary text-primary hover:bg-secondary/90' 
+                    : 'border-border hover:border-secondary'}
+                >
+                  {city === 'all' ? 'Все города' : city}
+                </Button>
+              ))}
+            </div>
+          </div>
+
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 md:mb-6 gap-3">
             <div className="flex items-center gap-1.5 sm:gap-2">
               <Icon name="ArrowUpDown" size={16} className="text-muted-foreground sm:w-[18px] sm:h-[18px]" />

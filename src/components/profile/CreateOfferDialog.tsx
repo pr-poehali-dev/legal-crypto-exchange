@@ -19,6 +19,8 @@ interface CreateOfferDialogProps {
   setMeetingHour: (value: string) => void;
   meetingMinute: string;
   setMeetingMinute: (value: string) => void;
+  city: string;
+  setCity: (value: string) => void;
   onSubmit: () => void;
   isEditing?: boolean;
 }
@@ -36,6 +38,8 @@ const CreateOfferDialog = ({
   setMeetingHour,
   meetingMinute,
   setMeetingMinute,
+  city,
+  setCity,
   onSubmit,
   isEditing = false
 }: CreateOfferDialogProps) => {
@@ -210,6 +214,20 @@ const CreateOfferDialog = ({
               onChange={(e) => handleRateChange(e.target.value)}
               className="bg-background"
             />
+          </div>
+          <div>
+            <Label htmlFor="city">Город</Label>
+            <Select value={city} onValueChange={setCity}>
+              <SelectTrigger id="city" className="bg-background">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Москва">Москва</SelectItem>
+                <SelectItem value="Санкт-Петербург">Санкт-Петербург</SelectItem>
+                <SelectItem value="Сочи">Сочи</SelectItem>
+                <SelectItem value="Омск">Омск</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div>
             <Label>Время встречи</Label>

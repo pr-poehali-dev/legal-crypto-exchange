@@ -41,6 +41,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         amount = body_data.get('amount')
         rate = body_data.get('rate')
         meeting_time = body_data.get('meeting_time')
+        city = body_data.get('city', 'Москва')
         
         if not all([user_id, offer_type, amount, rate, meeting_time]):
             return {
@@ -73,10 +74,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         cursor.execute('''
             INSERT INTO t_p53513159_legal_crypto_exchang.offers 
-            (user_id, offer_type, amount, rate, meeting_time, status, expires_at)
-            VALUES (%s, %s, %s, %s, %s, 'active', NOW() + INTERVAL '24 hours')
+            (user_id, offer_type, amount, rate, meeting_time, city, status, expires_at)
+            VALUES (%s, %s, %s, %s, %s, %s, 'active', NOW() + INTERVAL '24 hours')
             RETURNING id
-        ''', (user_id, offer_type, float(amount), float(rate), meeting_time))
+        ''', (user_id, offer_type, float(amount), float(rate), meeting_time, city))
         
         offer_id = cursor.fetchone()[0]
         
@@ -95,6 +96,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             message = f"""📝 Новое объявление!
 
 👤 Пользователь: {username}
+🏙️ Город: {city}
 📝 Тип: {offer_type_text}
 💰 Сумма: {float(amount)} USDT
 💱 Курс: {float(rate)} ₽

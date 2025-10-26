@@ -25,30 +25,31 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     params = event.get('queryStringParameters') or {}
     offer_type = params.get('offer_type')
+    city = params.get('city')
     
     dsn = os.environ.get('DATABASE_URL')
     
     conn = psycopg2.connect(dsn)
     cur = conn.cursor()
     
+    where_conditions = ["o.status = 'active'", "o.reserved_by IS NULL"]
+    
     if offer_type:
-        cur.execute(f"""
-            SELECT o.id, o.user_id, o.offer_type, o.amount, o.rate, o.meeting_time, o.created_at, 
-                   u.username, u.phone, o.is_anonymous, o.anonymous_name, o.anonymous_phone
-            FROM t_p53513159_legal_crypto_exchang.offers o 
-            LEFT JOIN t_p53513159_legal_crypto_exchang.users u ON o.user_id = u.id 
-            WHERE o.status = 'active' AND o.reserved_by IS NULL AND o.offer_type = '{offer_type}'
-            ORDER BY o.created_at DESC
-        """)
-    else:
-        cur.execute("""
-            SELECT o.id, o.user_id, o.offer_type, o.amount, o.rate, o.meeting_time, o.created_at, 
-                   u.username, u.phone, o.is_anonymous, o.anonymous_name, o.anonymous_phone
-            FROM t_p53513159_legal_crypto_exchang.offers o 
-            LEFT JOIN t_p53513159_legal_crypto_exchang.users u ON o.user_id = u.id 
-            WHERE o.status = 'active' AND o.reserved_by IS NULL
-            ORDER BY o.created_at DESC
-        """)
+        where_conditions.append(f"o.offer_type = '{offer_type}'")
+    
+    if city:
+        where_conditions.append(f"o.city = '{city}'")
+    
+    where_clause = " AND ".join(where_conditions)
+    
+    cur.execute(f"""
+        SELECT o.id, o.user_id, o.offer_type, o.amount, o.rate, o.meeting_time, o.created_at, 
+               u.username, u.phone, o.is_anonymous, o.anonymous_name, o.anonymous_phone, o.city
+        FROM t_p53513159_legal_crypto_exchang.offers o 
+        LEFT JOIN t_p53513159_legal_crypto_exchang.users u ON o.user_id = u.id 
+        WHERE {where_clause}
+        ORDER BY o.created_at DESC
+    """)
     
     rows = cur.fetchall()
     
@@ -72,7 +73,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'username': username,
             'phone': phone,
             'is_anonymous': is_anonymous,
-            'deals_count': 0
+            'deals_count': 0,
+            'city': row[12] if len(row) > 12 else 'Москва'
         })
     
     cur.close()

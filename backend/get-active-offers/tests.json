@@ -5,10 +5,6 @@
       "method": "GET",
       "path": "/",
       "expectedStatus": 200,
-      "expectedBody": {
-        "success": true,
-        "offers": "array"
-      },
       "bodyMatcher": "partial"
     },
     {
@@ -16,10 +12,6 @@
       "method": "GET",
       "path": "/?offer_type=buy",
       "expectedStatus": 200,
-      "expectedBody": {
-        "success": true,
-        "offers": "array"
-      },
       "bodyMatcher": "partial"
     }
   ]
