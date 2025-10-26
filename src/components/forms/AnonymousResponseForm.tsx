@@ -15,38 +15,17 @@ interface AnonymousResponseFormProps {
   onSuccess?: () => void;
 }
 
-const MOSCOW_OFFICES = [
-  'Москва, ул. Арбат, 10',
-  'Москва, Тверская ул., 15',
-  'Москва, ул. Ленина, 25',
-];
-
-const CITIES_OFFICES: Record<string, string[]> = {
-  'Москва': MOSCOW_OFFICES,
-  'Санкт-Петербург': [
-    'Санкт-Петербург, Невский пр., 28',
-    'Санкт-Петербург, ул. Рубинштейна, 15',
-  ],
-  'Сочи': [
-    'Сочи, ул. Навагинская, 12',
-    'Сочи, Курортный пр., 75',
-  ],
-  'Омск': [
-    'Омск, ул. Ленина, 18',
-    'Омск, пр. Мира, 32',
-  ],
-};
-
 const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Москва', onSuccess }: AnonymousResponseFormProps) => {
   const { toast } = useToast();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [selectedOffice, setSelectedOffice] = useState('');
+  const [useOfferOffice, setUseOfferOffice] = useState(true);
+  const [customOffice, setCustomOffice] = useState('');
   const [meetingHour, setMeetingHour] = useState('');
   const [meetingMinute, setMeetingMinute] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const availableOffices = CITIES_OFFICES[offerCity] || MOSCOW_OFFICES;
+  const firstOfferOffice = offerOffices && offerOffices.length > 0 ? offerOffices[0] : '';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,10 +39,12 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
       return;
     }
 
-    if (!selectedOffice) {
+    const finalOffice = useOfferOffice ? firstOfferOffice : customOffice;
+    
+    if (!finalOffice) {
       toast({
         title: 'Ошибка',
-        description: 'Выберите офис для встречи',
+        description: 'Укажите адрес для встречи',
         variant: 'destructive',
       });
       return;
@@ -78,8 +59,6 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
       });
       return;
     }
-
-    const finalOffice = selectedOffice;
     const meetingTime = `${meetingHour}:${meetingMinute}`;
 
     setIsSubmitting(true);
@@ -109,7 +88,8 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
         });
         setName('');
         setPhone('');
-        setSelectedOffice('');
+        setUseOfferOffice(true);
+        setCustomOffice('');
         setMeetingHour('');
         setMeetingMinute('');
         onSuccess?.();
@@ -135,31 +115,45 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label>Адрес офиса для встречи</Label>
-        <Select value={selectedOffice} onValueChange={setSelectedOffice} disabled={isSubmitting}>
-          <SelectTrigger>
-            <SelectValue placeholder="Выберите офис" />
-          </SelectTrigger>
-          <SelectContent>
-            {offerOffices.length > 0 && (
-              <>
-                <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
-                  Офисы из объявления:
-                </div>
-                {offerOffices.map((office, idx) => (
-                  <SelectItem key={`offer-${idx}`} value={office}>{office}</SelectItem>
-                ))}
-                <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground border-t mt-1">
-                  Наши офисы:
-                </div>
-              </>
-            )}
-            {availableOffices.map((office, idx) => (
-              <SelectItem key={idx} value={office}>{office}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="space-y-3">
+        <Label>Адрес для встречи</Label>
+        {firstOfferOffice && (
+          <div className="space-y-2">
+            <div className="flex items-start gap-2">
+              <Checkbox
+                id="use-offer-office"
+                checked={useOfferOffice}
+                onCheckedChange={(checked) => setUseOfferOffice(checked === true)}
+                disabled={isSubmitting}
+              />
+              <Label htmlFor="use-offer-office" className="text-sm leading-relaxed cursor-pointer font-normal">
+                {firstOfferOffice}
+              </Label>
+            </div>
+          </div>
+        )}
+        <div className="space-y-2">
+          <div className="flex items-start gap-2">
+            <Checkbox
+              id="use-custom-office"
+              checked={!useOfferOffice}
+              onCheckedChange={(checked) => setUseOfferOffice(checked !== true)}
+              disabled={isSubmitting}
+            />
+            <Label htmlFor="use-custom-office" className="text-sm leading-relaxed cursor-pointer font-normal">
+              Укажите свой адрес
+            </Label>
+          </div>
+          {!useOfferOffice && (
+            <Input
+              placeholder="Введите адрес"
+              value={customOffice}
+              onChange={(e) => setCustomOffice(e.target.value)}
+              disabled={isSubmitting}
+              className="mt-2"
+            />
+          )}
+        </div>
       </div>
 
       <div className="space-y-2">
