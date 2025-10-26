@@ -67,7 +67,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         cursor = conn.cursor()
         
         cursor.execute(
-            "SELECT id, name, email, phone FROM users WHERE email = %s AND password_hash = %s",
+            "SELECT id, name, email, phone, username, role FROM users WHERE email = %s AND password_hash = %s",
             (email, password_hash)
         )
         user = cursor.fetchone()
@@ -97,7 +97,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'id': user[0],
                     'name': user[1],
                     'email': user[2],
-                    'phone': user[3]
+                    'phone': user[3],
+                    'username': user[4],
+                    'is_admin': user[5] == 'admin'
                 }
             })
         }
