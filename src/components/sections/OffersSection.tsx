@@ -276,20 +276,18 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
               <Icon name="MapPin" size={18} className="text-secondary" />
               <span className="text-sm md:text-base font-semibold">Выберите город</span>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-              {['all', 'Москва', 'Санкт-Петербург', 'Сочи', 'Омск'].map((city) => (
-                <Button
-                  key={city}
-                  onClick={() => setSelectedCity(city)}
-                  variant={selectedCity === city ? 'default' : 'outline'}
-                  className={selectedCity === city 
-                    ? 'bg-secondary text-primary hover:bg-secondary/90' 
-                    : 'border-border hover:border-secondary'}
-                >
-                  {city === 'all' ? 'Все города' : city}
-                </Button>
-              ))}
-            </div>
+            <Select value={selectedCity} onValueChange={setSelectedCity}>
+              <SelectTrigger className="w-full md:w-64">
+                <SelectValue placeholder="Все города" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Все города</SelectItem>
+                <SelectItem value="Москва">Москва</SelectItem>
+                <SelectItem value="Санкт-Петербург">Санкт-Петербург</SelectItem>
+                <SelectItem value="Сочи">Сочи</SelectItem>
+                <SelectItem value="Омск">Омск</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 md:mb-6 gap-3">
