@@ -52,8 +52,16 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
   const [rubAmount, setRubAmount] = useState((offerAmount * currentRate).toString());
 
   const handleUsdtChange = (value: string) => {
-    setUsdtAmount(value);
     const usdt = parseFloat(value);
+    if (!isNaN(usdt) && usdt > offerAmount) {
+      toast({
+        title: 'Превышен лимит',
+        description: `Максимальная сумма: ${offerAmount} USDT`,
+        variant: 'destructive',
+      });
+      return;
+    }
+    setUsdtAmount(value);
     if (!isNaN(usdt)) {
       setRubAmount((usdt * currentRate).toFixed(2));
     } else {
@@ -62,8 +70,17 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
   };
 
   const handleRubChange = (value: string) => {
-    setRubAmount(value);
     const rub = parseFloat(value);
+    const maxRub = offerAmount * currentRate;
+    if (!isNaN(rub) && rub > maxRub) {
+      toast({
+        title: 'Превышен лимит',
+        description: `Максимальная сумма: ${maxRub.toFixed(2)} ₽`,
+        variant: 'destructive',
+      });
+      return;
+    }
+    setRubAmount(value);
     if (!isNaN(rub)) {
       setUsdtAmount((rub / currentRate).toFixed(2));
     } else {
@@ -172,7 +189,12 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
       </div>
 
       <div className="space-y-2">
-        <Label>Сумма обмена</Label>
+        <div className="flex items-center justify-between">
+          <Label>Сумма обмена</Label>
+          <span className="text-xs text-muted-foreground">
+            Макс: {offerAmount} USDT ({(offerAmount * currentRate).toFixed(2)} ₽)
+          </span>
+        </div>
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1.5">
             <Label htmlFor="rub-amount" className="text-xs text-muted-foreground">В рублях (₽)</Label>
@@ -181,6 +203,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
               type="number"
               step="0.01"
               min="0"
+              max={(offerAmount * currentRate).toFixed(2)}
               placeholder="0.00"
               value={rubAmount}
               onChange={(e) => handleRubChange(e.target.value)}
@@ -194,6 +217,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
               type="number"
               step="0.01"
               min="0"
+              max={offerAmount}
               placeholder="0.00"
               value={usdtAmount}
               onChange={(e) => handleUsdtChange(e.target.value)}
