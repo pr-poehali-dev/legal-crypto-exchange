@@ -151,7 +151,7 @@ const AdminStats = ({ users, offers, deals }: AdminStatsProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="font-bold text-accent text-3xl mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
+            <p className="font-bold text-accent text-2xl mb-1 whitespace-nowrap">
               {stats.totalVolume.toLocaleString('ru-RU')} ₽
             </p>
             <div className="flex items-center gap-2 text-sm">
