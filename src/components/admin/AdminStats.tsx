@@ -101,9 +101,9 @@ const AdminStats = ({ users, offers, deals }: AdminStatsProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-5xl font-bold text-secondary mb-1">{stats.totalUsers}</p>
-            <div className="flex items-center gap-2 text-sm">
-              <Icon name="Ban" size={14} className="text-red-500" />
+            <p className="text-3xl font-bold text-secondary mb-1">{stats.totalUsers}</p>
+            <div className="flex items-center gap-2 text-xs">
+              <Icon name="Ban" size={12} className="text-red-500" />
               <span className="text-muted-foreground">Заблокировано: <strong>{stats.blockedUsers}</strong></span>
             </div>
           </CardContent>
@@ -117,9 +117,9 @@ const AdminStats = ({ users, offers, deals }: AdminStatsProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-5xl font-bold text-blue-500 mb-1">{stats.totalOffers}</p>
-            <div className="flex items-center gap-2 text-sm">
-              <Icon name="CheckCircle" size={14} className="text-green-500" />
+            <p className="text-3xl font-bold text-blue-500 mb-1">{stats.totalOffers}</p>
+            <div className="flex items-center gap-2 text-xs">
+              <Icon name="CheckCircle" size={12} className="text-green-500" />
               <span className="text-muted-foreground">Активных: <strong>{stats.activeOffers}</strong></span>
             </div>
           </CardContent>
@@ -133,11 +133,11 @@ const AdminStats = ({ users, offers, deals }: AdminStatsProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-5xl font-bold text-green-500 mb-1">
+            <p className="text-3xl font-bold text-green-500 mb-1">
               {stats.completedDeals}
             </p>
-            <div className="flex items-center gap-2 text-sm">
-              <Icon name="Activity" size={14} className="text-muted-foreground" />
+            <div className="flex items-center gap-2 text-xs">
+              <Icon name="Activity" size={12} className="text-muted-foreground" />
               <span className="text-muted-foreground">Всего: <strong>{stats.totalDeals}</strong></span>
             </div>
           </CardContent>
@@ -154,9 +154,9 @@ const AdminStats = ({ users, offers, deals }: AdminStatsProps) => {
             <p className="font-bold text-accent text-2xl mb-1 whitespace-nowrap">
               {stats.totalVolume.toLocaleString('ru-RU')} ₽
             </p>
-            <div className="flex items-center gap-2 text-sm">
-              <Icon name="TrendingUp" size={14} className="text-green-500" />
-              <span className="text-muted-foreground text-xs">Средняя: <strong>{Math.round(avgDealAmount).toLocaleString('ru-RU')} ₽</strong></span>
+            <div className="flex items-center gap-2 text-xs">
+              <Icon name="TrendingUp" size={12} className="text-green-500" />
+              <span className="text-muted-foreground">Средняя: <strong>{Math.round(avgDealAmount).toLocaleString('ru-RU')} ₽</strong></span>
             </div>
           </CardContent>
         </Card>
