@@ -151,12 +151,12 @@ const AdminStats = ({ users, offers, deals }: AdminStatsProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="font-bold text-accent text-4xl mb-1">
+            <p className="font-bold text-accent text-3xl mb-1 break-words">
               {stats.totalVolume.toLocaleString('ru-RU')} ₽
             </p>
             <div className="flex items-center gap-2 text-sm">
               <Icon name="TrendingUp" size={14} className="text-green-500" />
-              <span className="text-muted-foreground">Средняя: <strong>{Math.round(avgDealAmount).toLocaleString('ru-RU')} ₽</strong></span>
+              <span className="text-muted-foreground text-xs">Средняя: <strong>{Math.round(avgDealAmount).toLocaleString('ru-RU')} ₽</strong></span>
             </div>
           </CardContent>
         </Card>
