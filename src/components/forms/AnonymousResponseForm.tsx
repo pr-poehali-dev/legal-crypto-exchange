@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -48,6 +48,34 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
   const [meetingHour, setMeetingHour] = useState('');
   const [meetingMinute, setMeetingMinute] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    
+    const intervals = [0, 15, 30, 45];
+    let nextMinute = intervals.find(m => m > currentMinute) ?? 0;
+    let nextHour = currentHour;
+    
+    if (nextMinute === 0) {
+      nextHour = currentHour + 1;
+    }
+    
+    if (nextHour < 9) {
+      nextHour = 9;
+      nextMinute = 0;
+    } else if (nextHour > 21) {
+      nextHour = 9;
+      nextMinute = 0;
+    } else if (nextHour === 21 && nextMinute > 0) {
+      nextHour = 9;
+      nextMinute = 0;
+    }
+    
+    setMeetingHour(String(nextHour).padStart(2, '0'));
+    setMeetingMinute(String(nextMinute).padStart(2, '0'));
+  }, []);
   const [usdtAmount, setUsdtAmount] = useState(offerAmount.toString());
   const [rubAmount, setRubAmount] = useState((offerAmount * currentRate).toString());
 
