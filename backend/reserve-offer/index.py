@@ -130,10 +130,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         display_name = buyer_name if is_anonymous else username
         
-        cur.execute(
-            "UPDATE offers SET status = 'reserved', reserved_by = %s, reserved_at = NOW() WHERE id = %s",
-            (user_id if not is_anonymous else None, offer_id)
-        )
+        if is_anonymous:
+            cur.execute(
+                "UPDATE offers SET status = 'reserved', reserved_at = NOW() WHERE id = %s",
+                (offer_id,)
+            )
+        else:
+            cur.execute(
+                "UPDATE offers SET status = 'reserved', reserved_by = %s, reserved_at = NOW() WHERE id = %s",
+                (user_id, offer_id)
+            )
         
         cur.execute(
             "INSERT INTO reservations (offer_id, buyer_name, buyer_phone, buyer_user_id, meeting_office, meeting_time) VALUES (%s, %s, %s, %s, %s, %s)",
