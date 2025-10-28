@@ -128,18 +128,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'success': False, 'error': 'Offer already reserved'})
             }
         
-        if is_anonymous:
-            display_name = buyer_name
-            cur.execute(
-                "UPDATE offers SET status = 'reserved', reserved_by = NULL, reserved_at = NOW(), buyer_name = %s, buyer_phone = %s, meeting_time = %s WHERE id = %s",
-                (buyer_name, buyer_phone, meeting_time, offer_id)
-            )
-        else:
-            display_name = username
-            cur.execute(
-                "UPDATE offers SET status = 'reserved', reserved_by = %s, reserved_at = NOW(), buyer_id = %s, meeting_time = %s WHERE id = %s",
-                (user_id, user_id, meeting_time, offer_id)
-            )
+        display_name = buyer_name if is_anonymous else username
+        
+        cur.execute(
+            "UPDATE offers SET status = 'reserved', reserved_by = %s, reserved_at = NOW() WHERE id = %s",
+            (user_id if not is_anonymous else None, offer_id)
+        )
+        
+        cur.execute(
+            "INSERT INTO reservations (offer_id, buyer_name, buyer_phone, buyer_user_id, meeting_office, meeting_time) VALUES (%s, %s, %s, %s, %s, %s)",
+            (offer_id, buyer_name if is_anonymous else None, buyer_phone if is_anonymous else None, user_id if not is_anonymous else None, meeting_office, meeting_time)
+        )
         
         total_amount = float(amount) * float(rate)
         
