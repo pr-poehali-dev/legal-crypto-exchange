@@ -31,12 +31,12 @@ const HeroSection = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-8 sm:gap-12 items-center">
             <div className="text-left space-y-6 sm:space-y-8 animate-fade-in order-2 md:order-1">
-              <div className="inline-flex items-center gap-2 sm:gap-2.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-xs sm:text-sm font-semibold backdrop-blur-sm tracking-wide uppercase">
+              <div className="inline-flex items-center gap-2 sm:gap-2.5 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-xs sm:text-sm font-semibold backdrop-blur-sm tracking-wide uppercase" style={{fontFamily: 'Orbitron, sans-serif'}}>
                 <span className="w-2 h-2 bg-secondary rounded-full animate-pulse shadow-lg shadow-secondary/50"></span>
                 Безопасный обмен с гарантией
               </div>
               
-              <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold leading-[1.1] tracking-tight">
+              <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold leading-[1.1] tracking-tight" style={{fontFamily: 'Orbitron, sans-serif'}}>
                 <span className="block text-foreground mb-2 sm:mb-3 text-3xl sm:text-6xl">Обмен USDT</span>
                 <span className="block bg-gradient-to-r from-secondary via-accent to-secondary bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient font-black text-3xl sm:text-6xl">
                   с юридической защитой
@@ -50,6 +50,7 @@ const HeroSection = () => {
                   size="lg" 
                   className="bg-secondary text-primary hover:bg-secondary/90 text-lg sm:text-xl font-bold px-8 py-6 sm:px-10 sm:py-7 shadow-2xl shadow-secondary/30 hover:shadow-secondary/50 transition-all duration-300 group tracking-wide"
                   onClick={goToOffers}
+                  style={{fontFamily: 'Orbitron, sans-serif'}}
                 >
                   Обменять
                   <span className="ml-3 text-2xl group-hover:translate-x-1 transition-transform duration-300">→</span>
