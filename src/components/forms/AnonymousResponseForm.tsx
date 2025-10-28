@@ -355,7 +355,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="name">Имя и фамилия *</Label>
+        <Label htmlFor="name">Ваше Имя</Label>
         <Input
           id="name"
           type="text"
