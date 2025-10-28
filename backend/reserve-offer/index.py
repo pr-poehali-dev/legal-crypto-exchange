@@ -130,24 +130,22 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         if is_anonymous:
             cur.execute(
-                "UPDATE offers SET reserved_by = NULL, reserved_at = NOW(), anonymous_name = %s, anonymous_phone = %s, is_anonymous = TRUE WHERE id = %s",
-                (buyer_name, buyer_phone, offer_id)
+                "UPDATE offers SET reserved_by = NULL, reserved_at = NOW(), anonymous_name = %s, anonymous_phone = %s, is_anonymous = TRUE, meeting_office = %s, meeting_time = %s WHERE id = %s",
+                (buyer_name, buyer_phone, meeting_office, meeting_time, offer_id)
             )
             display_name = buyer_name
         else:
             cur.execute(
-                "UPDATE offers SET reserved_by = %s, reserved_at = NOW() WHERE id = %s",
-                (user_id, offer_id)
+                "UPDATE offers SET reserved_by = %s, reserved_at = NOW(), meeting_office = %s, meeting_time = %s WHERE id = %s",
+                (user_id, meeting_office, meeting_time, offer_id)
             )
             display_name = username
         
         total_amount = float(amount) * float(rate)
         
-        deal_type = 'sell' if offer_type == 'buy' else 'buy'
-        
         cur.execute(
-            "INSERT INTO deals (offer_id, buyer_id, buyer_name, buyer_phone, meeting_office, meeting_time, user_id, deal_type, amount, rate, total, status, created_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'pending', NOW())",
-            (offer_id, user_id if not is_anonymous else None, display_name, buyer_phone if is_anonymous else None, meeting_office, meeting_time, owner_id, deal_type, amount, rate, total_amount)
+            "UPDATE offers SET status = 'reserved' WHERE id = %s",
+            (offer_id,)
         )
         
         conn.commit()
