@@ -228,6 +228,10 @@ const AnonymousBuyOfferForm = ({ onSuccess }: AnonymousBuyOfferFormProps) => {
                 </SelectContent>
               </Select>
             </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              <Icon name="Info" size={12} className="inline mr-1" />
+              Обратите внимание: курс обмена актуален в течение часа
+            </p>
           </div>
 
           <Button type="submit" className="w-full bg-secondary text-primary hover:bg-secondary/90" disabled={isSubmitting}>

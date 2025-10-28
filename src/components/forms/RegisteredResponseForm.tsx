@@ -291,6 +291,10 @@ const RegisteredResponseForm = ({
             </SelectContent>
           </Select>
         </div>
+        <p className="text-xs text-muted-foreground mt-1">
+          <Icon name="Info" size={12} className="inline mr-1" />
+          Обратите внимание: курс обмена актуален в течение часа
+        </p>
       </div>
 
       <Button type="submit" className="w-full" disabled={isSubmitting}>
