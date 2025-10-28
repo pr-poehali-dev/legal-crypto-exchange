@@ -143,9 +143,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         total_amount = float(amount) * float(rate)
         
+        deal_type = 'sell' if offer_type == 'buy' else 'buy'
+        
         cur.execute(
             "INSERT INTO deals (offer_id, buyer_id, buyer_name, buyer_phone, meeting_office, meeting_time, user_id, deal_type, amount, rate, total, status, created_at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 'pending', NOW())",
-            (offer_id, user_id if not is_anonymous else None, display_name, buyer_phone if is_anonymous else None, meeting_office, meeting_time, owner_id, offer_type, amount, rate, total_amount)
+            (offer_id, user_id if not is_anonymous else None, display_name, buyer_phone if is_anonymous else None, meeting_office, meeting_time, owner_id, deal_type, amount, rate, total_amount)
         )
         
         conn.commit()
