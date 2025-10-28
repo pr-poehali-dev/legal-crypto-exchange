@@ -47,8 +47,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
   const [email, setEmail] = useState('');
   const [useOfferOffice, setUseOfferOffice] = useState(true);
   const [customOffice, setCustomOffice] = useState('');
-  const [meetingHour, setMeetingHour] = useState('');
-  const [meetingMinute, setMeetingMinute] = useState('');
+  const [meetingTime, setMeetingTime] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -72,8 +71,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
       nextMinute = 0;
     }
     
-    setMeetingHour(String(currentHour).padStart(2, '0'));
-    setMeetingMinute(String(nextMinute).padStart(2, '0'));
+    setMeetingTime(`${String(currentHour).padStart(2, '0')}:${String(nextMinute).padStart(2, '0')}`);
   }, []);
   const [usdtAmount, setUsdtAmount] = useState(offerAmount.toString());
   const [rubAmount, setRubAmount] = useState((offerAmount * currentRate).toString());
@@ -119,7 +117,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
   const cityOffices = CITIES_OFFICES[offerCity || 'Москва'] || MOSCOW_OFFICES;
 
   const handleNextStep = () => {
-    if (!meetingHour || !meetingMinute) {
+    if (!meetingTime) {
       toast({
         title: 'Ошибка',
         description: 'Выберите время встречи',
@@ -165,7 +163,6 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
     }
 
     const finalOffice = useOfferOffice ? firstOfferOffice : customOffice;
-    const meetingTime = `${meetingHour}:${meetingMinute}`;
 
     setIsSubmitting(true);
 
@@ -198,8 +195,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
         setEmail('');
         setUseOfferOffice(true);
         setCustomOffice('');
-        setMeetingHour('');
-        setMeetingMinute('');
+        setMeetingTime('');
         setStep(1);
         onSuccess?.();
       } else {
@@ -309,31 +305,23 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
 
         <div className="space-y-2">
           <Label>Выберите время встречи</Label>
-          <div className="flex gap-2">
-            <Select value={meetingHour} onValueChange={setMeetingHour}>
-              <SelectTrigger className="flex-1">
-                <SelectValue placeholder="Часы" />
-              </SelectTrigger>
-              <SelectContent>
-                {Array.from({ length: 13 }, (_, i) => i + 9).map((hour) => (
-                  <SelectItem key={hour} value={hour.toString().padStart(2, '0')}>
-                    {hour.toString().padStart(2, '0')}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <span className="text-2xl font-bold flex items-center">:</span>
-            <Select value={meetingMinute} onValueChange={setMeetingMinute}>
-              <SelectTrigger className="flex-1">
-                <SelectValue placeholder="Минуты" />
-              </SelectTrigger>
-              <SelectContent>
-                {['00', '15', '30', '45'].map((minute) => (
-                  <SelectItem key={minute} value={minute}>{minute}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <Select value={meetingTime} onValueChange={setMeetingTime}>
+            <SelectTrigger>
+              <SelectValue placeholder="Выберите время" />
+            </SelectTrigger>
+            <SelectContent>
+              {Array.from({ length: 13 }, (_, i) => i + 9).flatMap((hour) => 
+                ['00', '15', '30', '45'].map((minute) => {
+                  const time = `${hour.toString().padStart(2, '0')}:${minute}`;
+                  return (
+                    <SelectItem key={time} value={time}>
+                      {time}
+                    </SelectItem>
+                  );
+                })
+              )}
+            </SelectContent>
+          </Select>
           <p className="text-xs text-muted-foreground mt-1">
             <Icon name="Info" size={12} className="inline mr-1" />
             Обратите внимание: курс обмена актуален в течение трех часов и может измениться
