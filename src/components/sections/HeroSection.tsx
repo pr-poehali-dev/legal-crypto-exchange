@@ -38,12 +38,12 @@ const HeroSection = () => {
               
               <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold leading-[1.1] tracking-tight" style={{fontFamily: 'Orbitron, sans-serif'}}>
                 <span className="block text-foreground mb-2 sm:mb-3 text-3xl sm:text-6xl">Обмен USDT</span>
-                <span className="block bg-gradient-to-r from-secondary via-accent to-secondary bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient font-black text-3xl sm:text-6xl" style={{fontFamily: 'Orbitron, sans-serif'}}>
+                <span className="block bg-gradient-to-r from-secondary via-accent to-secondary bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient font-black text-3xl sm:text-6xl" style={{fontFamily: '"Exo 2", sans-serif', fontWeight: 800}}>
                   с юридической защитой
                 </span>
               </h1>
               
-              <p className="text-sm sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-2xl leading-relaxed font-light tracking-wide" style={{fontFamily: 'Orbitron, sans-serif'}}>Легализованный обмен наделенным правом в соответствии с Законом №&nbsp;259-ФЗ</p>
+              <p className="text-sm sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-2xl leading-relaxed tracking-wide" style={{fontFamily: '"Exo 2", sans-serif', fontWeight: 600}}>Легализованный обмен наделенным правом в соответствии с Законом №&nbsp;259-ФЗ</p>
               
               <div className="flex flex-col sm:flex-row gap-4 pt-4 sm:pt-6">
                 <Button 
