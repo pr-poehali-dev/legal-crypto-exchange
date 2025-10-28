@@ -48,8 +48,7 @@ const ContactSection = () => {
   };
 
   return (
-    <section ref={elementRef} id="contact" className="py-12 md:py-24 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-secondary/5 to-transparent"></div>
+    <section ref={elementRef} id="contact" className="py-12 md:py-24 relative overflow-hidden bg-background">
       <div className="absolute top-1/3 left-10 w-80 h-80 bg-secondary/5 rounded-full blur-3xl animate-float"></div>
       <div className="absolute bottom-1/3 right-10 w-72 h-72 bg-accent/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '2.5s' }}></div>
       
