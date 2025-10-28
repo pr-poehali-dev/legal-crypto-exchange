@@ -314,6 +314,16 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
                 ['00', '15', '30', '45'].map((minute) => {
                   if (hour > 21) return null;
                   if (hour === 21 && minute !== '00') return null;
+                  
+                  const now = new Date();
+                  const currentHour = now.getHours();
+                  const currentMinute = now.getMinutes();
+                  const slotHour = hour;
+                  const slotMinute = parseInt(minute);
+                  
+                  if (slotHour < currentHour) return null;
+                  if (slotHour === currentHour && slotMinute <= currentMinute) return null;
+                  
                   const time = `${hour.toString().padStart(2, '0')}:${minute}`;
                   return (
                     <SelectItem key={time} value={time}>

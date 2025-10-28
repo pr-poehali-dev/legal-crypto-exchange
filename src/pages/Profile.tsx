@@ -46,8 +46,7 @@ const Profile = () => {
   const [offerType, setOfferType] = useState<'buy' | 'sell'>('buy');
   const [amount, setAmount] = useState('');
   const [rate, setRate] = useState('');
-  const [meetingHour, setMeetingHour] = useState('');
-  const [meetingMinute, setMeetingMinute] = useState('');
+  const [meetingTime, setMeetingTime] = useState('');
   const [city, setCity] = useState('Москва');
   const [selectedOffices, setSelectedOffices] = useState<string[]>([]);
   const [editingOffer, setEditingOffer] = useState<Offer | null>(null);
@@ -73,8 +72,7 @@ const Profile = () => {
       nextMinute = 0;
     }
     
-    setMeetingHour(String(currentHour).padStart(2, '0'));
-    setMeetingMinute(String(nextMinute).padStart(2, '0'));
+    setMeetingTime(`${String(currentHour).padStart(2, '0')}:${String(nextMinute).padStart(2, '0')}`);
   }, []);
 
   useEffect(() => {
@@ -176,7 +174,7 @@ const Profile = () => {
   };
 
   const handleCreateOffer = async () => {
-    if (!amount || !rate || !meetingHour || !meetingMinute || !city || selectedOffices.length === 0) {
+    if (!amount || !rate || !meetingTime || !city || selectedOffices.length === 0) {
       toast({
         title: 'Ошибка',
         description: 'Заполните все поля',
@@ -184,8 +182,6 @@ const Profile = () => {
       });
       return;
     }
-
-    const fullMeetingTime = `${meetingHour}:${meetingMinute}`;
 
     try {
       if (editingOffer) {
@@ -198,7 +194,7 @@ const Profile = () => {
             offer_type: offerType,
             amount: parseFloat(amount),
             rate: parseFloat(rate),
-            meeting_time: fullMeetingTime,
+            meeting_time: meetingTime,
             city: city,
             offices: selectedOffices,
           }),
@@ -230,7 +226,7 @@ const Profile = () => {
             offer_type: offerType,
             amount: parseFloat(amount),
             rate: parseFloat(rate),
-            meeting_time: fullMeetingTime,
+            meeting_time: meetingTime,
             city: city,
             offices: selectedOffices,
           }),
@@ -266,8 +262,7 @@ const Profile = () => {
   const resetForm = () => {
     setAmount('');
     setRate('');
-    setMeetingHour('');
-    setMeetingMinute('');
+    setMeetingTime('');
     setCity('Москва');
     setSelectedOffices([]);
     setEditingOffer(null);
@@ -278,9 +273,7 @@ const Profile = () => {
     setOfferType(offer.offer_type as 'buy' | 'sell');
     setAmount(offer.amount.toString());
     setRate(offer.rate.toString());
-    const [hour, minute] = offer.meeting_time.split(':');
-    setMeetingHour(hour);
-    setMeetingMinute(minute);
+    setMeetingTime(offer.meeting_time);
     setIsCreateDialogOpen(true);
   };
 
@@ -419,10 +412,8 @@ const Profile = () => {
               setAmount={setAmount}
               rate={rate}
               setRate={setRate}
-              meetingHour={meetingHour}
-              setMeetingHour={setMeetingHour}
-              meetingMinute={meetingMinute}
-              setMeetingMinute={setMeetingMinute}
+              meetingTime={meetingTime}
+              setMeetingTime={setMeetingTime}
               city={city}
               setCity={setCity}
               selectedOffices={selectedOffices}

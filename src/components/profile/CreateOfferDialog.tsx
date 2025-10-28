@@ -16,10 +16,8 @@ interface CreateOfferDialogProps {
   setAmount: (value: string) => void;
   rate: string;
   setRate: (value: string) => void;
-  meetingHour: string;
-  setMeetingHour: (value: string) => void;
-  meetingMinute: string;
-  setMeetingMinute: (value: string) => void;
+  meetingTime: string;
+  setMeetingTime: (value: string) => void;
   city: string;
   setCity: (value: string) => void;
   selectedOffices: string[];
@@ -37,10 +35,8 @@ const CreateOfferDialog = ({
   setAmount,
   rate,
   setRate,
-  meetingHour,
-  setMeetingHour,
-  meetingMinute,
-  setMeetingMinute,
+  meetingTime,
+  setMeetingTime,
   city,
   setCity,
   selectedOffices,
@@ -153,6 +149,29 @@ const CreateOfferDialog = ({
     } else {
       setSelectedOffices([...selectedOffices, office]);
     }
+  };
+
+  const generateTimeSlots = () => {
+    const slots: string[] = [];
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    
+    // Generate all time slots from 9:00 to 21:00 with 15-minute intervals
+    for (let hour = 9; hour <= 21; hour++) {
+      for (let minute = 0; minute < 60; minute += 15) {
+        const timeSlot = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+        
+        // Filter out past times
+        const isPastTime = hour < currentHour || (hour === currentHour && minute <= currentMinute);
+        
+        if (!isPastTime) {
+          slots.push(timeSlot);
+        }
+      }
+    }
+    
+    return slots;
   };
 
   return (
@@ -294,33 +313,18 @@ const CreateOfferDialog = ({
           </div>
           <div>
             <Label>Время встречи</Label>
-            <div className="flex gap-2">
-              <Select value={meetingHour} onValueChange={setMeetingHour}>
-                <SelectTrigger className="flex-1 bg-background">
-                  <SelectValue placeholder="Час" />
-                </SelectTrigger>
-                <SelectContent className="max-h-[200px]">
-                  {Array.from({ length: 13 }, (_, i) => i + 9).map(hour => (
-                    <SelectItem key={hour} value={String(hour).padStart(2, '0')}>
-                      {String(hour).padStart(2, '0')}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <span className="flex items-center text-2xl font-bold">:</span>
-              <Select value={meetingMinute} onValueChange={setMeetingMinute}>
-                <SelectTrigger className="flex-1 bg-background">
-                  <SelectValue placeholder="Минуты" />
-                </SelectTrigger>
-                <SelectContent className="max-h-[200px]">
-                  {['00', '15', '30', '45'].map(minute => (
-                    <SelectItem key={minute} value={minute}>
-                      {minute}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <Select value={meetingTime} onValueChange={setMeetingTime}>
+              <SelectTrigger className="bg-background">
+                <SelectValue placeholder="Выберите время" />
+              </SelectTrigger>
+              <SelectContent className="max-h-[200px]">
+                {generateTimeSlots().map(time => (
+                  <SelectItem key={time} value={time}>
+                    {time}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <p className="text-xs text-muted-foreground mt-1">
               <Icon name="Info" size={12} className="inline mr-1" />
               Обратите внимание: курс обмена актуален в течение трех часов и может измениться
