@@ -293,7 +293,7 @@ const RegisteredResponseForm = ({
         </div>
         <p className="text-xs text-muted-foreground mt-1">
           <Icon name="Info" size={12} className="inline mr-1" />
-          Обратите внимание: курс обмена актуален в течение часа
+          Обратите внимание: курс обмена актуален в течение трех часов и может измениться
         </p>
       </div>
 
