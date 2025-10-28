@@ -13,8 +13,10 @@ interface AnonymousBuyOfferFormProps {
 
 const AnonymousBuyOfferForm = ({ onSuccess }: AnonymousBuyOfferFormProps) => {
   const { toast } = useToast();
+  const [step, setStep] = useState<1 | 2>(1);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [amount, setAmount] = useState('');
   const [rate, setRate] = useState('');
   const [rubles, setRubles] = useState('');
@@ -64,13 +66,25 @@ const AnonymousBuyOfferForm = ({ onSuccess }: AnonymousBuyOfferFormProps) => {
     }
   };
 
+  const handleNextStep = () => {
+    if (!amount || !rate || !meetingHour || !meetingMinute) {
+      toast({
+        title: 'Ошибка',
+        description: 'Заполните все обязательные поля',
+        variant: 'destructive',
+      });
+      return;
+    }
+    setStep(2);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!name || !phone || !amount || !rate || !meetingHour || !meetingMinute) {
+    if (!name || !phone) {
       toast({
         title: 'Ошибка',
-        description: 'Заполните все поля',
+        description: 'Заполните имя и телефон',
         variant: 'destructive',
       });
       return;
@@ -87,6 +101,7 @@ const AnonymousBuyOfferForm = ({ onSuccess }: AnonymousBuyOfferFormProps) => {
         body: JSON.stringify({
           name,
           phone,
+          email: email || undefined,
           amount: parseFloat(amount),
           rate: parseFloat(rate),
           meeting_time: meetingTime,
@@ -103,11 +118,13 @@ const AnonymousBuyOfferForm = ({ onSuccess }: AnonymousBuyOfferFormProps) => {
         
         setName('');
         setPhone('');
+        setEmail('');
         setAmount('');
         setRate('');
         setRubles('');
         setMeetingHour('');
         setMeetingMinute('');
+        setStep(1);
         
         if (onSuccess) {
           onSuccess();
@@ -130,128 +147,167 @@ const AnonymousBuyOfferForm = ({ onSuccess }: AnonymousBuyOfferFormProps) => {
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Фамилия Имя *</Label>
-              <Input
-                id="name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Иванов Иван"
-                required
-              />
-            </div>
+  if (step === 1) {
+    return (
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="rate">Курс (₽ за 1 USDT) *</Label>
+          <Input
+            id="rate"
+            type="number"
+            step="0.01"
+            value={rate}
+            onChange={(e) => handleRateChange(e.target.value)}
+            placeholder="95.50"
+            required
+          />
+        </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="phone">Номер телефона *</Label>
-              <Input
-                id="phone"
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+7 999 123-45-67"
-                required
-              />
-            </div>
-          </div>
-
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="rate">Курс (₽ за 1 USDT) *</Label>
+            <Label htmlFor="amount">Сумма в USDT *</Label>
             <Input
-              id="rate"
+              id="amount"
               type="number"
               step="0.01"
-              value={rate}
-              onChange={(e) => handleRateChange(e.target.value)}
-              placeholder="95.50"
+              value={amount}
+              onChange={(e) => handleAmountChange(e.target.value)}
+              placeholder="1000"
               required
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="amount">Сумма в USDT *</Label>
-              <Input
-                id="amount"
-                type="number"
-                step="0.01"
-                value={amount}
-                onChange={(e) => handleAmountChange(e.target.value)}
-                placeholder="1000"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="rubles">Сумма в рублях *</Label>
-              <Input
-                id="rubles"
-                type="number"
-                step="0.01"
-                value={rubles}
-                onChange={(e) => handleRublesChange(e.target.value)}
-                placeholder="95500"
-                required
-              />
-            </div>
-          </div>
-
           <div className="space-y-2">
-            <Label>Время обмена *</Label>
-            <div className="flex gap-2">
-              <Select value={meetingHour} onValueChange={setMeetingHour} required>
-                <SelectTrigger className="flex-1">
-                  <SelectValue placeholder="Часы" />
-                </SelectTrigger>
-                <SelectContent className="max-h-[200px]">
-                  {Array.from({ length: 13 }, (_, i) => i + 9).map(hour => (
-                    <SelectItem key={hour} value={String(hour).padStart(2, '0')}>
-                      {String(hour).padStart(2, '0')}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <span className="flex items-center text-2xl font-bold">:</span>
-              <Select value={meetingMinute} onValueChange={setMeetingMinute} required>
-                <SelectTrigger className="flex-1">
-                  <SelectValue placeholder="Минуты" />
-                </SelectTrigger>
-                <SelectContent className="max-h-[200px]">
-                  {['00', '15', '30', '45'].map(minute => (
-                    <SelectItem key={minute} value={minute}>
-                      {minute}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              <Icon name="Info" size={12} className="inline mr-1" />
-              Обратите внимание: курс обмена актуален в течение трех часов и может измениться
-            </p>
+            <Label htmlFor="rubles">Сумма в рублях *</Label>
+            <Input
+              id="rubles"
+              type="number"
+              step="0.01"
+              value={rubles}
+              onChange={(e) => handleRublesChange(e.target.value)}
+              placeholder="95500"
+              required
+            />
           </div>
+        </div>
 
-          <Button type="submit" className="w-full bg-secondary text-primary hover:bg-secondary/90" disabled={isSubmitting}>
-            {isSubmitting ? (
-              <>
-                <Icon name="Loader2" className="mr-2 animate-spin" />
-                Создаём объявление...
-              </>
-            ) : (
-              <>
-                <Icon name="ShoppingCart" className="mr-2" />
-                Создать объявление о покупке USDT
-              </>
-            )}
-          </Button>
+        <div className="space-y-2">
+          <Label>Время обмена *</Label>
+          <div className="flex gap-2">
+            <Select value={meetingHour} onValueChange={setMeetingHour} required>
+              <SelectTrigger className="flex-1">
+                <SelectValue placeholder="Часы" />
+              </SelectTrigger>
+              <SelectContent className="max-h-[200px]">
+                {Array.from({ length: 13 }, (_, i) => i + 9).map(hour => (
+                  <SelectItem key={hour} value={String(hour).padStart(2, '0')}>
+                    {String(hour).padStart(2, '0')}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <span className="flex items-center text-2xl font-bold">:</span>
+            <Select value={meetingMinute} onValueChange={setMeetingMinute} required>
+              <SelectTrigger className="flex-1">
+                <SelectValue placeholder="Минуты" />
+              </SelectTrigger>
+              <SelectContent className="max-h-[200px]">
+                {['00', '15', '30', '45'].map(minute => (
+                  <SelectItem key={minute} value={minute}>
+                    {minute}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            <Icon name="Info" size={12} className="inline mr-1" />
+            Обратите внимание: курс обмена актуален в течение трех часов и может измениться
+          </p>
+        </div>
+
+        <Button 
+          type="button" 
+          onClick={handleNextStep}
+          className="w-full bg-secondary text-primary hover:bg-secondary/90"
+        >
+          Далее
+          <Icon name="ArrowRight" className="ml-2" />
+        </Button>
 
         <p className="text-xs text-muted-foreground text-center">
-          * Регистрация не требуется. Ваше объявление попадёт в раздел "Продать USDT", где его увидят продавцы.
+          * Регистрация не требуется
         </p>
-      </form>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="name">Имя и фамилия *</Label>
+        <Input
+          id="name"
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Иван Иванов"
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="phone">Номер телефона *</Label>
+        <Input
+          id="phone"
+          type="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="+7 999 123-45-67"
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="email">Почта (необязательно)</Label>
+        <Input
+          id="email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="example@mail.com"
+        />
+      </div>
+
+      <div className="flex gap-3">
+        <Button
+          type="button"
+          onClick={() => setStep(1)}
+          variant="outline"
+          className="flex-1"
+        >
+          <Icon name="ArrowLeft" className="mr-2" />
+          Назад
+        </Button>
+        <Button 
+          type="submit" 
+          className="flex-1 bg-secondary text-primary hover:bg-secondary/90" 
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <>
+              <Icon name="Loader2" className="mr-2 animate-spin" />
+              Создаём...
+            </>
+          ) : (
+            <>
+              <Icon name="ShoppingCart" className="mr-2" />
+              Создать объявление
+            </>
+          )}
+        </Button>
+      </div>
+    </form>
   );
 };
 
