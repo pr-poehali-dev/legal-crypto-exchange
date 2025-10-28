@@ -313,7 +313,7 @@ const CreateOfferDialog = ({
                   <SelectValue placeholder="Минуты" />
                 </SelectTrigger>
                 <SelectContent className="max-h-[200px]">
-                  {['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'].map(minute => (
+                  {['00', '15', '30', '45'].map(minute => (
                     <SelectItem key={minute} value={minute}>
                       {minute}
                     </SelectItem>

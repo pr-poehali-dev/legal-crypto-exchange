@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 import func2url from '../../../backend/func2url.json';
@@ -200,29 +201,32 @@ const AnonymousBuyOfferForm = ({ onSuccess }: AnonymousBuyOfferFormProps) => {
 
           <div className="space-y-2">
             <Label>Время обмена *</Label>
-            <div className="flex items-center gap-2">
-              <Input
-                type="number"
-                min="9"
-                max="21"
-                value={meetingHour}
-                onChange={(e) => setMeetingHour(e.target.value)}
-                placeholder="14"
-                className="w-20"
-                required
-              />
-              <span>:</span>
-              <Input
-                type="number"
-                min="0"
-                max="59"
-                value={meetingMinute}
-                onChange={(e) => setMeetingMinute(e.target.value)}
-                placeholder="30"
-                className="w-20"
-                required
-              />
-              <span className="text-sm text-muted-foreground">(часы : минуты)</span>
+            <div className="flex gap-2">
+              <Select value={meetingHour} onValueChange={setMeetingHour} required>
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="Часы" />
+                </SelectTrigger>
+                <SelectContent className="max-h-[200px]">
+                  {Array.from({ length: 13 }, (_, i) => i + 9).map(hour => (
+                    <SelectItem key={hour} value={String(hour).padStart(2, '0')}>
+                      {String(hour).padStart(2, '0')}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <span className="flex items-center text-2xl font-bold">:</span>
+              <Select value={meetingMinute} onValueChange={setMeetingMinute} required>
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="Минуты" />
+                </SelectTrigger>
+                <SelectContent className="max-h-[200px]">
+                  {['00', '15', '30', '45'].map(minute => (
+                    <SelectItem key={minute} value={minute}>
+                      {minute}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
