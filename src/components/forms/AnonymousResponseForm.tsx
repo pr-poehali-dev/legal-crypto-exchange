@@ -49,6 +49,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
   const [customOffice, setCustomOffice] = useState('');
   const [meetingTime, setMeetingTime] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [occupiedTimes, setOccupiedTimes] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const now = new Date();
@@ -115,6 +116,34 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
 
   const firstOfferOffice = offerOffices && offerOffices.length > 0 ? offerOffices[0] : '';
   const cityOffices = CITIES_OFFICES[offerCity || 'Москва'] || MOSCOW_OFFICES;
+  const selectedOffice = useOfferOffice ? firstOfferOffice : customOffice;
+
+  useEffect(() => {
+    if (!selectedOffice) return;
+    
+    const fetchOccupiedTimes = async () => {
+      try {
+        const response = await fetch(func2url['get-all-offers'] || 'https://functions.poehali.dev/24cbcabc-c4e4-496b-a820-0315a576e32e');
+        const data = await response.json();
+        
+        if (data.success && data.offers) {
+          const occupied = new Set<string>();
+          data.offers.forEach((offer: any) => {
+            if ((offer.status === 'active' || offer.status === 'reserved') && offer.offices) {
+              if (offer.offices.includes(selectedOffice)) {
+                occupied.add(offer.meeting_time);
+              }
+            }
+          });
+          setOccupiedTimes(occupied);
+        }
+      } catch (error) {
+        console.error('Failed to load occupied times:', error);
+      }
+    };
+    
+    fetchOccupiedTimes();
+  }, [selectedOffice]);
 
   const handleNextStep = () => {
     if (!meetingTime) {
@@ -325,9 +354,11 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
                   if (slotHour === currentHour && slotMinute <= currentMinute) return null;
                   
                   const time = `${hour.toString().padStart(2, '0')}:${minute}`;
+                  const isOccupied = occupiedTimes.has(time);
+                  
                   return (
-                    <SelectItem key={time} value={time}>
-                      {time}
+                    <SelectItem key={time} value={time} disabled={isOccupied}>
+                      {time} {isOccupied && '(Забронировано)'}
                     </SelectItem>
                   );
                 })

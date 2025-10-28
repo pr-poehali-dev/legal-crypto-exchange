@@ -48,12 +48,40 @@ const CreateOfferDialog = ({
   const [isLoadingRate, setIsLoadingRate] = useState(false);
   const [rubles, setRubles] = useState<string>('');
   const [lastEditedField, setLastEditedField] = useState<'usdt' | 'rubles'>('usdt');
+  const [occupiedTimesByOffice, setOccupiedTimesByOffice] = useState<Map<string, Set<string>>>(new Map());
 
   useEffect(() => {
     if (isOpen) {
       fetchCurrentRate();
+      fetchOccupiedTimes();
     }
   }, [isOpen]);
+
+  const fetchOccupiedTimes = async () => {
+    try {
+      const response = await fetch('https://functions.poehali.dev/24cbcabc-c4e4-496b-a820-0315a576e32e');
+      const data = await response.json();
+      
+      if (data.success && data.offers) {
+        const occupiedMap = new Map<string, Set<string>>();
+        
+        data.offers.forEach((offer: any) => {
+          if ((offer.status === 'active' || offer.status === 'reserved') && offer.offices && offer.meeting_time) {
+            offer.offices.forEach((office: string) => {
+              if (!occupiedMap.has(office)) {
+                occupiedMap.set(office, new Set());
+              }
+              occupiedMap.get(office)!.add(offer.meeting_time);
+            });
+          }
+        });
+        
+        setOccupiedTimesByOffice(occupiedMap);
+      }
+    } catch (error) {
+      console.error('Failed to load occupied times:', error);
+    }
+  };
 
   const fetchCurrentRate = async () => {
     setIsLoadingRate(true);
@@ -152,7 +180,7 @@ const CreateOfferDialog = ({
   };
 
   const generateTimeSlots = () => {
-    const slots: string[] = [];
+    const slots: Array<{ time: string; isOccupied: boolean; offices: string[] }> = [];
     const now = new Date();
     const currentHour = now.getHours();
     const currentMinute = now.getMinutes();
@@ -160,13 +188,30 @@ const CreateOfferDialog = ({
     // Generate all time slots from 9:00 to 21:00 with 15-minute intervals
     for (let hour = 9; hour <= 21; hour++) {
       for (let minute = 0; minute < 60; minute += 15) {
+        if (hour === 21 && minute > 0) break;
+        
         const timeSlot = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
         
         // Filter out past times
         const isPastTime = hour < currentHour || (hour === currentHour && minute <= currentMinute);
         
         if (!isPastTime) {
-          slots.push(timeSlot);
+          // Check if this time is occupied for any selected office
+          const occupiedOffices: string[] = [];
+          selectedOffices.forEach(office => {
+            const occupiedTimes = occupiedTimesByOffice.get(office);
+            if (occupiedTimes && occupiedTimes.has(timeSlot)) {
+              occupiedOffices.push(office);
+            }
+          });
+          
+          const isFullyOccupied = selectedOffices.length > 0 && occupiedOffices.length === selectedOffices.length;
+          
+          slots.push({
+            time: timeSlot,
+            isOccupied: isFullyOccupied,
+            offices: occupiedOffices
+          });
         }
       }
     }
@@ -318,9 +363,9 @@ const CreateOfferDialog = ({
                 <SelectValue placeholder="Выберите время" />
               </SelectTrigger>
               <SelectContent className="max-h-[200px]">
-                {generateTimeSlots().map(time => (
-                  <SelectItem key={time} value={time}>
-                    {time}
+                {generateTimeSlots().map(slot => (
+                  <SelectItem key={slot.time} value={slot.time} disabled={slot.isOccupied}>
+                    {slot.time} {slot.isOccupied && '(Все офисы заняты)'}
                   </SelectItem>
                 ))}
               </SelectContent>
