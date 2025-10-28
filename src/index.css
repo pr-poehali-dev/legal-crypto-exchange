@@ -48,18 +48,6 @@
     font-family: "Exo 2", sans-serif;
     font-feature-settings: "cv11", "ss01";
     letter-spacing: -0.01em;
-    background-image:
-      radial-gradient(
-        circle at 20% 50%,
-        rgba(45, 100, 65, 0.03) 0%,
-        transparent 50%
-      ),
-      radial-gradient(
-        circle at 80% 80%,
-        rgba(255, 215, 77, 0.03) 0%,
-        transparent 50%
-      );
-    background-attachment: fixed;
     overflow-x: hidden;
   }
 
