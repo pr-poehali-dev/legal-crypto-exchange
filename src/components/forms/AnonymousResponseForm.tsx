@@ -7,6 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
 import func2url from '../../../backend/func2url.json';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface AnonymousResponseFormProps {
   offerId: number;
@@ -339,30 +340,43 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
               <SelectValue placeholder="Выберите время" />
             </SelectTrigger>
             <SelectContent>
-              {Array.from({ length: 13 }, (_, i) => i + 9).flatMap((hour) => 
-                ['00', '15', '30', '45'].map((minute) => {
-                  if (hour > 21) return null;
-                  if (hour === 21 && minute !== '00') return null;
-                  
-                  const now = new Date();
-                  const currentHour = now.getHours();
-                  const currentMinute = now.getMinutes();
-                  const slotHour = hour;
-                  const slotMinute = parseInt(minute);
-                  
-                  if (slotHour < currentHour) return null;
-                  if (slotHour === currentHour && slotMinute <= currentMinute) return null;
-                  
-                  const time = `${hour.toString().padStart(2, '0')}:${minute}`;
-                  const isOccupied = occupiedTimes.has(time);
-                  
-                  return (
-                    <SelectItem key={time} value={time} disabled={isOccupied}>
-                      {time} {isOccupied && '(Забронировано)'}
-                    </SelectItem>
-                  );
-                })
-              ).filter(Boolean)}
+              <TooltipProvider>
+                {Array.from({ length: 13 }, (_, i) => i + 9).flatMap((hour) => 
+                  ['00', '15', '30', '45'].map((minute) => {
+                    if (hour > 21) return null;
+                    if (hour === 21 && minute !== '00') return null;
+                    
+                    const now = new Date();
+                    const currentHour = now.getHours();
+                    const currentMinute = now.getMinutes();
+                    const slotHour = hour;
+                    const slotMinute = parseInt(minute);
+                    
+                    if (slotHour < currentHour) return null;
+                    if (slotHour === currentHour && slotMinute <= currentMinute) return null;
+                    
+                    const time = `${hour.toString().padStart(2, '0')}:${minute}`;
+                    const isOccupied = occupiedTimes.has(time);
+                    
+                    return (
+                      <Tooltip key={time} delayDuration={200}>
+                        <TooltipTrigger asChild>
+                          <SelectItem value={time} disabled={isOccupied}>
+                            {time} {isOccupied && '(Забронировано)'}
+                          </SelectItem>
+                        </TooltipTrigger>
+                        {isOccupied && (
+                          <TooltipContent side="left" className="max-w-xs">
+                            <div className="text-xs">
+                              <p className="font-semibold">Это время уже занято для выбранного офиса</p>
+                            </div>
+                          </TooltipContent>
+                        )}
+                      </Tooltip>
+                    );
+                  })
+                ).filter(Boolean)}
+              </TooltipProvider>
             </SelectContent>
           </Select>
           <p className="text-xs text-muted-foreground mt-1">

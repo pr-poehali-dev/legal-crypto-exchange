@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import Icon from '@/components/ui/icon';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface CreateOfferDialogProps {
   isOpen: boolean;
@@ -363,11 +364,29 @@ const CreateOfferDialog = ({
                 <SelectValue placeholder="Выберите время" />
               </SelectTrigger>
               <SelectContent className="max-h-[200px]">
-                {generateTimeSlots().map(slot => (
-                  <SelectItem key={slot.time} value={slot.time} disabled={slot.isOccupied}>
-                    {slot.time} {slot.isOccupied && '(Все офисы заняты)'}
-                  </SelectItem>
-                ))}
+                <TooltipProvider>
+                  {generateTimeSlots().map(slot => (
+                    <Tooltip key={slot.time} delayDuration={200}>
+                      <TooltipTrigger asChild>
+                        <SelectItem value={slot.time} disabled={slot.isOccupied}>
+                          {slot.time} {slot.isOccupied && '(Все офисы заняты)'}
+                        </SelectItem>
+                      </TooltipTrigger>
+                      {slot.offices.length > 0 && (
+                        <TooltipContent side="left" className="max-w-xs">
+                          <div className="text-xs">
+                            <p className="font-semibold mb-1">Занятые офисы:</p>
+                            <ul className="list-disc pl-4 space-y-0.5">
+                              {slot.offices.map(office => (
+                                <li key={office}>{office}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </TooltipContent>
+                      )}
+                    </Tooltip>
+                  ))}
+                </TooltipProvider>
               </SelectContent>
             </Select>
             <p className="text-xs text-muted-foreground mt-1">
