@@ -312,6 +312,8 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
             <SelectContent>
               {Array.from({ length: 13 }, (_, i) => i + 9).flatMap((hour) => 
                 ['00', '15', '30', '45'].map((minute) => {
+                  if (hour > 21) return null;
+                  if (hour === 21 && minute !== '00') return null;
                   const time = `${hour.toString().padStart(2, '0')}:${minute}`;
                   return (
                     <SelectItem key={time} value={time}>
@@ -319,7 +321,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
                     </SelectItem>
                   );
                 })
-              )}
+              ).filter(Boolean)}
             </SelectContent>
           </Select>
           <p className="text-xs text-muted-foreground mt-1">
