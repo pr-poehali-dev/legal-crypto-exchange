@@ -129,24 +129,19 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         if is_anonymous:
+            display_name = buyer_name
             cur.execute(
-                "UPDATE offers SET reserved_by = NULL, reserved_at = NOW(), anonymous_name = %s, anonymous_phone = %s, is_anonymous = TRUE, meeting_time = %s WHERE id = %s",
+                "UPDATE offers SET status = 'reserved', reserved_by = NULL, reserved_at = NOW(), anonymous_name = %s, anonymous_phone = %s, is_anonymous = TRUE, meeting_time = %s WHERE id = %s",
                 (buyer_name, buyer_phone, meeting_time, offer_id)
             )
-            display_name = buyer_name
         else:
+            display_name = username
             cur.execute(
-                "UPDATE offers SET reserved_by = %s, reserved_at = NOW(), meeting_time = %s WHERE id = %s",
+                "UPDATE offers SET status = 'reserved', reserved_by = %s, reserved_at = NOW(), meeting_time = %s WHERE id = %s",
                 (user_id, meeting_time, offer_id)
             )
-            display_name = username
         
         total_amount = float(amount) * float(rate)
-        
-        cur.execute(
-            "UPDATE offers SET status = 'reserved' WHERE id = %s",
-            (offer_id,)
-        )
         
         conn.commit()
         
