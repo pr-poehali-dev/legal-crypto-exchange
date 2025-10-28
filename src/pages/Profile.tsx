@@ -54,29 +54,26 @@ const Profile = () => {
 
   useEffect(() => {
     const now = new Date();
-    const currentHour = now.getHours();
+    let currentHour = now.getHours();
     const currentMinute = now.getMinutes();
     
     const intervals = [0, 15, 30, 45];
-    let nextMinute = intervals.find(m => m > currentMinute) ?? 0;
-    let nextHour = currentHour;
+    let nextMinute = intervals.find(m => m >= currentMinute);
     
-    if (nextMinute === 0) {
-      nextHour = currentHour + 1;
-    }
-    
-    if (nextHour < 9) {
-      nextHour = 9;
-      nextMinute = 0;
-    } else if (nextHour > 21) {
-      nextHour = 9;
-      nextMinute = 0;
-    } else if (nextHour === 21 && nextMinute > 0) {
-      nextHour = 9;
+    if (nextMinute === undefined) {
+      currentHour = currentHour + 1;
       nextMinute = 0;
     }
     
-    setMeetingHour(String(nextHour).padStart(2, '0'));
+    if (currentHour < 9) {
+      currentHour = 9;
+      nextMinute = 0;
+    } else if (currentHour > 21 || (currentHour === 21 && nextMinute > 0)) {
+      currentHour = 9;
+      nextMinute = 0;
+    }
+    
+    setMeetingHour(String(currentHour).padStart(2, '0'));
     setMeetingMinute(String(nextMinute).padStart(2, '0'));
   }, []);
 
