@@ -130,14 +130,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         if is_anonymous:
             cur.execute(
-                "UPDATE offers SET reserved_by = NULL, reserved_at = NOW(), anonymous_name = %s, anonymous_phone = %s, is_anonymous = TRUE, meeting_office = %s, meeting_time = %s WHERE id = %s",
-                (buyer_name, buyer_phone, meeting_office, meeting_time, offer_id)
+                "UPDATE offers SET reserved_by = NULL, reserved_at = NOW(), anonymous_name = %s, anonymous_phone = %s, is_anonymous = TRUE, meeting_time = %s WHERE id = %s",
+                (buyer_name, buyer_phone, meeting_time, offer_id)
             )
             display_name = buyer_name
         else:
             cur.execute(
-                "UPDATE offers SET reserved_by = %s, reserved_at = NOW(), meeting_office = %s, meeting_time = %s WHERE id = %s",
-                (user_id, meeting_office, meeting_time, offer_id)
+                "UPDATE offers SET reserved_by = %s, reserved_at = NOW(), meeting_time = %s WHERE id = %s",
+                (user_id, meeting_time, offer_id)
             )
             display_name = username
         
