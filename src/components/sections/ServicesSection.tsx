@@ -27,8 +27,7 @@ const ServicesSection = () => {
   ];
 
   return (
-    <section ref={elementRef} id="services" className="py-12 md:py-24 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-card/20 to-transparent"></div>
+    <section ref={elementRef} id="services" className="py-12 md:py-24 relative overflow-hidden bg-background">
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-float"></div>
       <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent/5 rounded-full blur-3xl animate-float" style={{ animationDelay: '3s' }}></div>
       
