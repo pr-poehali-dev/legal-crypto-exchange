@@ -137,7 +137,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         else:
             display_name = username
             cur.execute(
-                "UPDATE offers SET status = 'reserved', reserved_by = %s, reserved_at = NOW(), meeting_time = %s WHERE id = %s",
+                "UPDATE offers SET status = 'reserved', reserved_by = %s, reserved_at = NOW(), is_anonymous = FALSE, anonymous_name = NULL, anonymous_phone = NULL, meeting_time = %s WHERE id = %s",
                 (user_id, meeting_time, offer_id)
             )
         
