@@ -279,7 +279,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
               <SelectValue placeholder="Часы" />
             </SelectTrigger>
             <SelectContent>
-              {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
+              {Array.from({ length: 13 }, (_, i) => i + 9).map((hour) => (
                 <SelectItem key={hour} value={hour.toString().padStart(2, '0')}>
                   {hour.toString().padStart(2, '0')}
                 </SelectItem>

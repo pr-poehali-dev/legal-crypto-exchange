@@ -203,8 +203,8 @@ const AnonymousBuyOfferForm = ({ onSuccess }: AnonymousBuyOfferFormProps) => {
             <div className="flex items-center gap-2">
               <Input
                 type="number"
-                min="0"
-                max="23"
+                min="9"
+                max="21"
                 value={meetingHour}
                 onChange={(e) => setMeetingHour(e.target.value)}
                 placeholder="14"

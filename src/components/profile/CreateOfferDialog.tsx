@@ -300,7 +300,7 @@ const CreateOfferDialog = ({
                   <SelectValue placeholder="Час" />
                 </SelectTrigger>
                 <SelectContent className="max-h-[200px]">
-                  {Array.from({ length: 24 }, (_, i) => i).map(hour => (
+                  {Array.from({ length: 13 }, (_, i) => i + 9).map(hour => (
                     <SelectItem key={hour} value={String(hour).padStart(2, '0')}>
                       {String(hour).padStart(2, '0')}
                     </SelectItem>
