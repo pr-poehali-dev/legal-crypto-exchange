@@ -41,8 +41,10 @@ const CITIES_OFFICES: Record<string, string[]> = {
 
 const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Москва', offerAmount = 0, currentRate = 100, onSuccess }: AnonymousResponseFormProps) => {
   const { toast } = useToast();
+  const [step, setStep] = useState<1 | 2>(1);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [useOfferOffice, setUseOfferOffice] = useState(true);
   const [customOffice, setCustomOffice] = useState('');
   const [meetingHour, setMeetingHour] = useState('');
@@ -116,13 +118,11 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
   const firstOfferOffice = offerOffices && offerOffices.length > 0 ? offerOffices[0] : '';
   const cityOffices = CITIES_OFFICES[offerCity || 'Москва'] || MOSCOW_OFFICES;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!name || !phone || !meetingHour || !meetingMinute) {
+  const handleNextStep = () => {
+    if (!meetingHour || !meetingMinute) {
       toast({
         title: 'Ошибка',
-        description: 'Заполните все обязательные поля',
+        description: 'Выберите время встречи',
         variant: 'destructive',
       });
       return;
@@ -139,6 +139,21 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
       return;
     }
 
+    setStep(2);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!name || !phone) {
+      toast({
+        title: 'Ошибка',
+        description: 'Заполните имя и телефон',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     const phoneRegex = /^\+?[0-9\s\-\(\)]{10,}$/;
     if (!phoneRegex.test(phone)) {
       toast({
@@ -148,6 +163,8 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
       });
       return;
     }
+
+    const finalOffice = useOfferOffice ? firstOfferOffice : customOffice;
     const meetingTime = `${meetingHour}:${meetingMinute}`;
 
     setIsSubmitting(true);
@@ -162,6 +179,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
           offer_id: offerId,
           buyer_name: name,
           buyer_phone: phone,
+          buyer_email: email || undefined,
           meeting_office: finalOffice,
           meeting_time: meetingTime,
           is_anonymous: true,
@@ -177,10 +195,12 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
         });
         setName('');
         setPhone('');
+        setEmail('');
         setUseOfferOffice(true);
         setCustomOffice('');
         setMeetingHour('');
         setMeetingMinute('');
+        setStep(1);
         onSuccess?.();
       } else {
         console.error('Reserve offer error:', data);
@@ -202,135 +222,140 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label>Текущий курс</Label>
-        <div className="p-3 bg-muted rounded-lg">
-          <p className="text-sm font-medium">
-            1 USDT = {currentRate.toFixed(2)} ₽
-          </p>
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label>Сумма обмена</Label>
-          <span className="text-xs text-muted-foreground">
-            Макс: {offerAmount} USDT ({(offerAmount * currentRate).toFixed(2)} ₽)
-          </span>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1.5">
-            <Label htmlFor="rub-amount" className="text-xs text-muted-foreground">В рублях (₽)</Label>
-            <Input
-              id="rub-amount"
-              type="number"
-              step="0.01"
-              min="0"
-              max={(offerAmount * currentRate).toFixed(2)}
-              placeholder="0.00"
-              value={rubAmount}
-              onChange={(e) => handleRubChange(e.target.value)}
-              disabled={isSubmitting}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="usdt-amount" className="text-xs text-muted-foreground">В USDT</Label>
-            <Input
-              id="usdt-amount"
-              type="number"
-              step="0.01"
-              min="0"
-              max={offerAmount}
-              placeholder="0.00"
-              value={usdtAmount}
-              onChange={(e) => handleUsdtChange(e.target.value)}
-              disabled={isSubmitting}
-            />
+  if (step === 1) {
+    return (
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Label>Текущий курс</Label>
+          <div className="p-3 bg-muted rounded-lg">
+            <p className="text-sm font-medium">
+              1 USDT = {currentRate.toFixed(2)} ₽
+            </p>
           </div>
         </div>
-      </div>
 
-      <div className="space-y-3">
-        <Label>Адрес для встречи</Label>
-        {firstOfferOffice && (
-          <div className="space-y-2">
-            <div className="flex items-start gap-2">
-              <Checkbox
-                id="use-offer-office"
-                checked={useOfferOffice}
-                onCheckedChange={(checked) => setUseOfferOffice(checked === true)}
-                disabled={isSubmitting}
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label>Сумма обмена</Label>
+            <span className="text-xs text-muted-foreground">
+              Макс: {offerAmount} USDT ({(offerAmount * currentRate).toFixed(2)} ₽)
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="rub-amount" className="text-xs text-muted-foreground">В рублях (₽)</Label>
+              <Input
+                id="rub-amount"
+                type="number"
+                step="0.01"
+                min="0"
+                max={(offerAmount * currentRate).toFixed(2)}
+                placeholder="0.00"
+                value={rubAmount}
+                onChange={(e) => handleRubChange(e.target.value)}
               />
-              <Label htmlFor="use-offer-office" className="text-sm leading-relaxed cursor-pointer font-normal">
-                {offerCity}, {firstOfferOffice}
-              </Label>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="usdt-amount" className="text-xs text-muted-foreground">В USDT</Label>
+              <Input
+                id="usdt-amount"
+                type="number"
+                step="0.01"
+                min="0"
+                max={offerAmount}
+                placeholder="0.00"
+                value={usdtAmount}
+                onChange={(e) => handleUsdtChange(e.target.value)}
+              />
             </div>
           </div>
-        )}
-        <div className="space-y-2">
-          <div className="flex items-start gap-2">
-            <Checkbox
-              id="use-custom-office"
-              checked={!useOfferOffice}
-              onCheckedChange={(checked) => setUseOfferOffice(checked !== true)}
-              disabled={isSubmitting}
-            />
-            <Label htmlFor="use-custom-office" className="text-sm leading-relaxed cursor-pointer font-normal">
-              Укажите свой адрес
-            </Label>
-          </div>
+        </div>
+
+        <div className="space-y-3">
+          <Label>Адрес для встречи</Label>
+          {firstOfferOffice && (
+            <div className="space-y-2">
+              <div className="flex items-start gap-2">
+                <Checkbox
+                  id="use-offer-office"
+                  checked={useOfferOffice}
+                  onCheckedChange={(checked) => setUseOfferOffice(checked === true)}
+                />
+                <label htmlFor="use-offer-office" className="text-sm leading-relaxed cursor-pointer">
+                  {firstOfferOffice}
+                </label>
+              </div>
+            </div>
+          )}
+          
           {!useOfferOffice && (
-            <Select value={customOffice} onValueChange={setCustomOffice} disabled={isSubmitting}>
-              <SelectTrigger className="mt-2">
-                <SelectValue placeholder="Выберите адрес" />
+            <div className="space-y-2">
+              <Label htmlFor="custom-office">Укажите адрес</Label>
+              <Select value={customOffice} onValueChange={setCustomOffice}>
+                <SelectTrigger id="custom-office">
+                  <SelectValue placeholder="Выберите адрес" />
+                </SelectTrigger>
+                <SelectContent>
+                  {cityOffices.map((office) => (
+                    <SelectItem key={office} value={office}>
+                      {office}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label>Выберите время встречи</Label>
+          <div className="flex gap-2">
+            <Select value={meetingHour} onValueChange={setMeetingHour}>
+              <SelectTrigger className="flex-1">
+                <SelectValue placeholder="Часы" />
               </SelectTrigger>
               <SelectContent>
-                {cityOffices.map((office, idx) => (
-                  <SelectItem key={idx} value={office}>{office}</SelectItem>
+                {Array.from({ length: 13 }, (_, i) => i + 9).map((hour) => (
+                  <SelectItem key={hour} value={hour.toString().padStart(2, '0')}>
+                    {hour.toString().padStart(2, '0')}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-          )}
+            <span className="text-2xl font-bold flex items-center">:</span>
+            <Select value={meetingMinute} onValueChange={setMeetingMinute}>
+              <SelectTrigger className="flex-1">
+                <SelectValue placeholder="Минуты" />
+              </SelectTrigger>
+              <SelectContent>
+                {['00', '15', '30', '45'].map((minute) => (
+                  <SelectItem key={minute} value={minute}>{minute}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            <Icon name="Info" size={12} className="inline mr-1" />
+            Обратите внимание: курс обмена актуален в течение трех часов и может измениться
+          </p>
         </div>
-      </div>
 
-      <div className="space-y-2">
-        <Label>Выберите время встречи</Label>
-        <div className="flex gap-2">
-          <Select value={meetingHour} onValueChange={setMeetingHour} disabled={isSubmitting}>
-            <SelectTrigger className="flex-1">
-              <SelectValue placeholder="Часы" />
-            </SelectTrigger>
-            <SelectContent>
-              {Array.from({ length: 13 }, (_, i) => i + 9).map((hour) => (
-                <SelectItem key={hour} value={hour.toString().padStart(2, '0')}>
-                  {hour.toString().padStart(2, '0')}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <span className="text-2xl font-bold flex items-center">:</span>
-          <Select value={meetingMinute} onValueChange={setMeetingMinute} disabled={isSubmitting}>
-            <SelectTrigger className="flex-1">
-              <SelectValue placeholder="Минуты" />
-            </SelectTrigger>
-            <SelectContent>
-              {['00', '15', '30', '45'].map((minute) => (
-                <SelectItem key={minute} value={minute}>{minute}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <p className="text-xs text-muted-foreground mt-1">
-          <Icon name="Info" size={12} className="inline mr-1" />
-          Обратите внимание: курс обмена актуален в течение трех часов и может измениться
-        </p>
+        <Button 
+          type="button"
+          onClick={handleNextStep}
+          className="w-full"
+        >
+          Далее
+          <Icon name="ArrowRight" className="ml-2" />
+        </Button>
       </div>
+    );
+  }
 
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label htmlFor="name">Имя и фамилия</Label>
+        <Label htmlFor="name">Имя и фамилия *</Label>
         <Input
           id="name"
           type="text"
@@ -342,7 +367,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="phone">Номер телефона</Label>
+        <Label htmlFor="phone">Номер телефона *</Label>
         <Input
           id="phone"
           type="tel"
@@ -353,23 +378,43 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
         />
       </div>
 
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? (
-          <>
-            <Icon name="Loader2" className="mr-2 animate-spin" />
-            Резервирование...
-          </>
-        ) : (
-          <>
-            <Icon name="Lock" className="mr-2" />
-            Зарезервировать
-          </>
-        )}
-      </Button>
+      <div className="space-y-2">
+        <Label htmlFor="email">Почта (необязательно)</Label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="example@mail.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          disabled={isSubmitting}
+        />
+      </div>
 
-      <p className="text-xs text-muted-foreground text-center">
-        * Мы получим вашу заявку и свяжемся с вами для завершения сделки.
-      </p>
+      <div className="flex gap-3">
+        <Button
+          type="button"
+          onClick={() => setStep(1)}
+          variant="outline"
+          className="flex-1"
+          disabled={isSubmitting}
+        >
+          <Icon name="ArrowLeft" className="mr-2" />
+          Назад
+        </Button>
+        <Button type="submit" className="flex-1" disabled={isSubmitting}>
+          {isSubmitting ? (
+            <>
+              <Icon name="Loader2" className="mr-2 animate-spin" />
+              Резервирование...
+            </>
+          ) : (
+            <>
+              <Icon name="Lock" className="mr-2" />
+              Забронировать
+            </>
+          )}
+        </Button>
+      </div>
     </form>
   );
 };
