@@ -43,7 +43,7 @@ const HeroSection = () => {
                 </span>
               </h1>
               
-              <p className="sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-2xl leading-relaxed font-light tracking-wide text-4xl">Легализованный обмен наделенным правом в соответствии с Законом №&nbsp;259-ФЗ</p>
+              <p className="text-sm sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-2xl leading-relaxed font-light tracking-wide">Легализованный обмен наделенным правом в соответствии с Законом №&nbsp;259-ФЗ</p>
               
               <div className="flex flex-col sm:flex-row gap-4 pt-4 sm:pt-6">
                 <Button 
