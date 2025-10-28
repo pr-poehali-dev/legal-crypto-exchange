@@ -55,7 +55,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
     const currentMinute = now.getMinutes();
     
     const intervals = [0, 15, 30, 45];
-    let nextMinute = intervals.find(m => m >= currentMinute);
+    let nextMinute = intervals.find(m => m > currentMinute);
     
     if (nextMinute === undefined) {
       currentHour = currentHour + 1;
