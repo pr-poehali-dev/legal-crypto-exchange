@@ -304,10 +304,10 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
               </div>
             </div>
             {currentRate && (
-              <div className="flex items-center gap-2 bg-card/50 border border-border rounded-lg px-4 py-2">
+              <div className="w-full md:w-auto flex items-center gap-2 bg-card/50 border border-border rounded-lg px-3 md:px-4 py-2">
                 <Icon name="TrendingUp" size={16} className="text-secondary" />
-                <span className="text-sm text-muted-foreground">Актуальный курс:</span>
-                <span className="text-base font-bold text-secondary">{currentRate.toFixed(2)} ₽</span>
+                <span className="text-xs md:text-sm text-muted-foreground">Актуальный курс:</span>
+                <span className="text-sm md:text-base font-bold text-secondary">{currentRate.toFixed(2)} ₽</span>
               </div>
             )}
           </div>
