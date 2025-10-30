@@ -135,8 +135,36 @@
     }
   }
 
+  @keyframes card-appear {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.5);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+
+  @keyframes orbit-slow {
+    from {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+
   .animate-card-float {
     animation: card-float 4s ease-in-out infinite;
+  }
+
+  .animate-card-appear {
+    animation: card-appear 0.8s ease-out forwards;
+  }
+
+  .animate-orbit-slow {
+    animation: orbit-slow 60s linear infinite;
   }
 
   @keyframes glow-border {
