@@ -143,20 +143,18 @@ const HeroSection = () => {
                         style={{
                           left: `calc(50% + ${x}%)`,
                           top: `calc(50% + ${y}%)`,
-                          transform: 'translate(-50%, -50%)'
+                          animation: `card-fly-in 0.8s ease-out ${index * 0.15}s forwards`,
+                          opacity: 0
                         }}
                       >
                         <div className="animate-orbit-counter-rotate">
                           <div 
-                            className="bg-card/90 backdrop-blur-sm rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border animate-card-appear border-2"
-                            style={{
-                              animationDelay: `${index * 0.1}s`
-                            }}
+                            className="bg-card/90 backdrop-blur-sm rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border border-2"
                           >
                             <div 
                               className="flex flex-col items-center gap-0 animate-card-float"
                               style={{
-                                animationDelay: `${index * 0.4}s`
+                                animationDelay: `${index * 0.4 + 0.8}s`
                               }}
                             >
                               <span className="text-[9px] sm:text-[10px] text-muted-foreground whitespace-nowrap font-semibold">{rate.exchange}</span>
