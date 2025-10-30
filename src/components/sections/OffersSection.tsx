@@ -30,10 +30,9 @@ interface Offer {
 interface OffersSectionProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
-  currentRate: number | null;
 }
 
-const OffersSection = ({ activeTab, setActiveTab, currentRate: propCurrentRate }: OffersSectionProps) => {
+const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
   const { toast } = useToast();
   const [offers, setOffers] = useState<Offer[]>([]);
   const [sortBy, setSortBy] = useState<'rate' | 'amount-min' | 'amount-max' | 'time'>('rate');
@@ -272,16 +271,6 @@ const OffersSection = ({ activeTab, setActiveTab, currentRate: propCurrentRate }
           </div>
         </div>
         <div className="max-w-5xl mx-auto">
-          {propCurrentRate && (
-            <div className="flex justify-center mb-6">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 rounded-lg">
-                <Icon name="TrendingUp" size={18} className="text-emerald-500" />
-                <span className="text-sm font-semibold text-foreground">
-                  Актуальный курс: <span className="text-emerald-500">{propCurrentRate.toFixed(2)} ₽</span> за USDT
-                </span>
-              </div>
-            </div>
-          )}
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 md:mb-6 gap-3">
             <div className="w-full md:w-auto flex flex-col sm:flex-row gap-3">
               <div className="flex items-center gap-2">
