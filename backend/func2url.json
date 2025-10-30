@@ -1,5 +1,5 @@
 {
-  "cleanup-expired-offers": "https://functions.poehali.dev/2237d1cb-ec94-4c0c-a318-6145c2f54e23",
+  "manage-reservations": "https://functions.poehali.dev/fa1ec48d-1eb7-41ba-948f-1d6bc520ec51",
   "create-anonymous-offer": "https://functions.poehali.dev/1b230655-4a48-4344-93de-76fdaf50a5bb",
   "update-statistics": "https://functions.poehali.dev/c2157c27-57f6-40c0-9239-5dea42db4833",
   "get-statistics": "https://functions.poehali.dev/121400a8-102d-4ec6-9d94-c1263c344c59",

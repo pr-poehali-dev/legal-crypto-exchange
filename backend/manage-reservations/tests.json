@@ -1,0 +1,24 @@
+{
+  "tests": [
+    {
+      "name": "Get pending reservations",
+      "method": "GET",
+      "path": "/?user_id=1",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Confirm reservation (or not found)",
+      "method": "POST",
+      "body": {
+        "reservation_id": 999,
+        "action": "confirm",
+        "user_id": 1
+      },
+      "expectedStatus": 404
+    }
+  ]
+}
