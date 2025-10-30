@@ -46,7 +46,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-background via-background to-background">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-background via-background to-background py-12 sm:py-0">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 -left-32 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
@@ -76,14 +76,14 @@ const HeroSection = () => {
                 Безопасный обмен с гарантией
               </div>
               
-              <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold leading-[1.1] tracking-tight" style={{fontFamily: 'Orbitron, sans-serif'}}>
-                <span className="block text-foreground mb-2 sm:mb-3 text-3xl sm:text-6xl font-normal">Обмен USDT</span>
-                <span className="block bg-gradient-to-r from-secondary via-accent to-secondary bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient text-3xl sm:text-6xl" style={{fontFamily: '"Exo 2", sans-serif', fontWeight: 500}}>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-extrabold leading-[1.1] tracking-tight" style={{fontFamily: 'Orbitron, sans-serif'}}>
+                <span className="block text-foreground mb-2 sm:mb-3 text-4xl sm:text-6xl font-normal">Обмен USDT</span>
+                <span className="block bg-gradient-to-r from-secondary via-accent to-secondary bg-clip-text text-transparent bg-[length:200%_200%] animate-gradient text-4xl sm:text-6xl" style={{fontFamily: '"Exo 2", sans-serif', fontWeight: 500}}>
                   с юридической защитой
                 </span>
               </h1>
               
-              <p className="text-sm sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-2xl leading-relaxed tracking-wide font-normal" style={{fontFamily: '"Exo 2", sans-serif', fontWeight: 600}}>Легализованный обмен наделенным правом в соответствии с Законом №&nbsp;259-ФЗ</p>
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-2xl leading-relaxed tracking-wide font-normal" style={{fontFamily: '"Exo 2", sans-serif', fontWeight: 600}}>Легализованный обмен наделенным правом в соответствии с Законом №&nbsp;259-ФЗ</p>
               
               <div className="flex flex-col sm:flex-row gap-4 pt-4 sm:pt-6">
                 <Button 
@@ -99,7 +99,7 @@ const HeroSection = () => {
             </div>
 
             <div className="flex items-center justify-center order-1 md:order-2 px-4 md:px-0">
-              <div className="relative w-full max-w-[500px] sm:max-w-[600px] aspect-square mx-auto">
+              <div className="relative w-full max-w-[340px] sm:max-w-[500px] md:max-w-[600px] aspect-square mx-auto">
                 <div className="absolute inset-0 bg-gradient-to-br from-secondary/20 via-accent/20 to-secondary/20 rounded-full blur-3xl animate-pulse"></div>
                 
                 <div className="absolute inset-[30%] sm:inset-[32%]">
@@ -110,7 +110,7 @@ const HeroSection = () => {
                       <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-white/10 to-transparent animate-spin-slow"></div>
                       
                       <div className="absolute inset-[15%] bg-gradient-to-br from-emerald-300 to-teal-400 rounded-full flex items-center justify-center shadow-inner">
-                        <span className="text-5xl sm:text-6xl md:text-7xl font-black text-white drop-shadow-2xl">₮</span>
+                        <span className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white drop-shadow-2xl">₮</span>
                       </div>
                       
                       {[...Array(8)].map((_, i) => (
@@ -152,7 +152,7 @@ const HeroSection = () => {
                       >
                         <div className="animate-orbit-counter-rotate">
                           <div 
-                            className="bg-card/90 backdrop-blur-sm rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border border-2"
+                            className="bg-card/90 backdrop-blur-sm rounded-lg px-1.5 py-0.5 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border border-2"
                           >
                             <div 
                               className="flex flex-col items-center gap-0 animate-card-float"
@@ -160,8 +160,8 @@ const HeroSection = () => {
                                 animationDelay: `${orbitalDelay + 0.6}s`
                               }}
                             >
-                              <span className="text-[9px] sm:text-[10px] text-muted-foreground whitespace-nowrap font-semibold">{rate.exchange}</span>
-                              <span className="text-xs sm:text-sm font-bold text-foreground leading-tight">{rate.rate.toFixed(2)} ₽</span>
+                              <span className="text-[8px] sm:text-[10px] text-muted-foreground whitespace-nowrap font-semibold">{rate.exchange}</span>
+                              <span className="text-[10px] sm:text-sm font-bold text-foreground leading-tight">{rate.rate.toFixed(2)} ₽</span>
                             </div>
                           </div>
                         </div>
