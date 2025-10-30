@@ -126,8 +126,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         result = fetcher()
         if result:
             rates.append(result)
-            if result.get('exchange') == 'Rapira':
-                break
     
     if not rates:
         rates = [{'exchange': 'Fallback', 'rate': round(usd_rub_rate, 2), 'change': 0.0}]
