@@ -88,8 +88,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             ORDER BY slot_time
         """, (offer_id,))
         
-        from datetime import datetime, time as dt_time
-        current_time = datetime.now().time()
+        from datetime import datetime, timezone, timedelta
+        moscow_tz = timezone(timedelta(hours=3))
+        current_time = datetime.now(moscow_tz).time()
         
         # Фильтруем слоты: только те, которые в будущем
         available_slots = []

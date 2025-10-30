@@ -169,10 +169,14 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
       const response = await fetch(`https://functions.poehali.dev/85034798-463f-4b9f-b879-43364e8c40ff?offer_id=${offerId}`);
       const data = await response.json();
       
+      console.log('Available slots response:', data);
+      
       if (data.success && data.offers && data.offers.length > 0) {
         const offer = data.offers[0];
+        console.log('Offer available_slots:', offer.available_slots);
         setAvailableSlots(offer.available_slots || []);
       } else {
+        console.log('No offers found in response');
         setAvailableSlots([]);
       }
     } catch (error) {
