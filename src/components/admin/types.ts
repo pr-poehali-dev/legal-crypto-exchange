@@ -14,6 +14,7 @@ export interface Offer {
   amount: number;
   rate: number;
   meeting_time: string;
+  meeting_time_end?: string;
   status: string;
   created_at: string;
   username: string;

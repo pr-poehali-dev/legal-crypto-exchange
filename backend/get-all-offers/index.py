@@ -30,7 +30,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         cur = conn.cursor()
         
         cur.execute(
-            "SELECT o.id, o.offer_type, o.amount, o.rate, o.meeting_time, o.status, o.created_at, u.username, u.phone, o.city, o.offices FROM offers o JOIN users u ON o.user_id = u.id ORDER BY o.created_at DESC"
+            "SELECT o.id, o.offer_type, o.amount, o.rate, o.meeting_time, o.time_start, o.time_end, o.status, o.created_at, u.username, u.phone, o.city, o.offices FROM offers o JOIN users u ON o.user_id = u.id ORDER BY o.created_at DESC"
         )
         
         rows = cur.fetchall()
@@ -42,13 +42,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'offer_type': row[1],
                 'amount': float(row[2]),
                 'rate': float(row[3]),
-                'meeting_time': row[4],
-                'status': row[5],
-                'created_at': row[6].isoformat() if row[6] else None,
-                'username': row[7],
-                'phone': row[8],
-                'city': row[9],
-                'offices': row[10] if row[10] else []
+                'meeting_time': str(row[5]) if row[5] else row[4],
+                'meeting_time_end': str(row[6]) if row[6] else None,
+                'status': row[7],
+                'created_at': row[8].isoformat() if row[8] else None,
+                'username': row[9],
+                'phone': row[10],
+                'city': row[11],
+                'offices': row[12] if row[12] else []
             })
         
         cur.close()

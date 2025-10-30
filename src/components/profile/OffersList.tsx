@@ -11,6 +11,7 @@ interface Offer {
   amount: number;
   rate: number;
   meeting_time: string;
+  meeting_time_end?: string;
   status: string;
   created_at: string;
   reserved_by?: number;
@@ -186,8 +187,12 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                       <p className="text-sm text-muted-foreground">
                         Курс: {offer.rate.toFixed(2)} ₽ • Итого: {(offer.amount * offer.rate).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₽
                       </p>
-                      <p className="text-xs text-muted-foreground">
-                        Встреча: {offer.meeting_time}
+                      <p className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Icon name="Clock" size={14} />
+                        {offer.meeting_time_end 
+                          ? `${offer.meeting_time} — ${offer.meeting_time_end}`
+                          : offer.meeting_time
+                        }
                       </p>
                       {offer.relation_type === 'reserved' && offer.owner_username && (
                         <p className="text-sm text-blue-500 mt-1">

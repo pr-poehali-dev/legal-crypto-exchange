@@ -25,6 +25,7 @@ interface Offer {
   amount: number;
   rate: number;
   meeting_time: string;
+  meeting_time_end?: string;
   status: string;
   created_at: string;
   reserved_by?: number;
@@ -177,7 +178,7 @@ const Profile = () => {
   };
 
   const handleCreateOffer = async () => {
-    if (!amount || !rate || !meetingTime || !city || selectedOffices.length === 0) {
+    if (!amount || !rate || !meetingTime || !meetingTimeEnd || !city || selectedOffices.length === 0) {
       toast({
         title: 'Ошибка',
         description: 'Заполните все поля',
@@ -229,7 +230,8 @@ const Profile = () => {
             offer_type: offerType,
             amount: parseFloat(amount),
             rate: parseFloat(rate),
-            meeting_time: meetingTime,
+            time_start: meetingTime,
+            time_end: meetingTimeEnd,
             city: city,
             offices: selectedOffices,
           }),

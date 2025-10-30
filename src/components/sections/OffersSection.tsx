@@ -18,6 +18,7 @@ interface Offer {
   amount: number;
   rate: number;
   meeting_time: string;
+  meeting_time_end?: string;
   username: string;
   phone: string;
   deals_count: number;
@@ -210,7 +211,13 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
             </div>
             <div className="col-span-2 min-w-0">
               <p className="text-xs text-muted-foreground mb-1.5 uppercase tracking-wide">Встреча</p>
-              <p className="text-sm font-medium break-words">Сегодня {offer.meeting_time}</p>
+              <p className="text-sm font-medium break-words flex items-center gap-1">
+                <Icon name="Clock" size={16} />
+                Сегодня {offer.meeting_time_end 
+                  ? `${offer.meeting_time} — ${offer.meeting_time_end}`
+                  : offer.meeting_time
+                }
+              </p>
             </div>
           </div>
 
