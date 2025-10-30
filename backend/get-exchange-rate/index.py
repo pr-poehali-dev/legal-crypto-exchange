@@ -224,24 +224,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             print(f'HTX error: {e}')
             return None
     
-    def fetch_rapira():
-        try:
-            req = urllib.request.Request('https://rapira.net/exchange/USDT_RUB')
-            req.add_header('User-Agent', 'Mozilla/5.0')
-            with urllib.request.urlopen(req, timeout=5) as response:
-                data = json.loads(response.read().decode())
-                if data.get('rate'):
-                    return {
-                        'exchange': 'Rapira',
-                        'rate': round(float(data['rate']), 2),
-                        'change': 0.0
-                    }
-        except Exception as e:
-            print(f'Rapira error: {e}')
-            return None
-    
     fetchers = [
-        fetch_rapira, fetch_binance, fetch_bybit, fetch_okx, fetch_kucoin,
+        fetch_binance, fetch_bybit, fetch_okx, fetch_kucoin,
         fetch_mexc, fetch_gate, fetch_coinbase, fetch_bitget, fetch_htx
     ]
     
