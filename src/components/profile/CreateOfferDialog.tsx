@@ -150,9 +150,9 @@ const CreateOfferDialog = ({
 
   const handleRateChange = (value: string) => {
     setRate(value);
-    if (lastEditedField === 'usdt') {
+    if (lastEditedField === 'usdt' && amount) {
       calculateRubles(amount, value);
-    } else {
+    } else if (lastEditedField === 'rubles' && rubles) {
       calculateUsdt(rubles, value);
     }
   };
