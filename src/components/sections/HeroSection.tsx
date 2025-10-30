@@ -138,13 +138,11 @@ const HeroSection = () => {
                   return (
                     <div 
                       key={`${rate.exchange}-${index}`}
-                      className="absolute bg-card/90 border border-border rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 shadow-lg backdrop-blur-sm animate-float"
+                      className="absolute bg-card/90 border border-border rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 shadow-lg backdrop-blur-sm transition-opacity duration-300"
                       style={{
-                        animationDelay: `${index * 0.2}s`,
                         left: `calc(50% + ${x}%)`,
                         top: `calc(50% + ${y}%)`,
-                        transform: 'translate(-50%, -50%)',
-                        willChange: 'transform'
+                        transform: 'translate(-50%, -50%)'
                       }}
                     >
                       <div className="flex flex-col items-center gap-0">
