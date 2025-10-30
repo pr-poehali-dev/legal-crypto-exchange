@@ -82,13 +82,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         # Получаем детали резерваций для созданных объявлений
         reservations_list = []
         if relation_type == 'created':
-            # Автоматически отклоняем резервации старше 30 минут
+            # Автоматически отклоняем резервации старше 3 минут
             cur.execute("""
                 UPDATE t_p53513159_legal_crypto_exchang.reservations
                 SET status = 'expired'
                 WHERE offer_id = %s 
                 AND status = 'pending' 
-                AND created_at < NOW() - INTERVAL '30 minutes'
+                AND created_at < NOW() - INTERVAL '3 minutes'
             """, (offer_id,))
             
             cur.execute("""
@@ -105,7 +105,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             for res in reservations_data:
                 status = res[7] if res[7] else 'pending'
                 seconds_ago = int(res[8]) if res[8] else 0
-                time_left = max(0, 1800 - seconds_ago)  # 30 минут = 1800 секунд
+                time_left = max(0, 180 - seconds_ago)  # 3 минуты = 180 секунд
                 
                 reservations_list.append({
                     'id': res[0],

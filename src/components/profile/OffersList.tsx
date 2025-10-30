@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -13,6 +13,7 @@ interface Reservation {
   meeting_office: string;
   created_at: string;
   status?: string;
+  time_left_seconds?: number;
 }
 
 interface Offer {
@@ -58,6 +59,32 @@ interface OffersListProps {
 
 const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer, onCancelReservation, onManageReservation, formatDate }: OffersListProps) => {
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [timeLeftMap, setTimeLeftMap] = useState<Record<number, number>>({});
+
+  useEffect(() => {
+    const updateTimers = () => {
+      const newTimeLeftMap: Record<number, number> = {};
+      offers.forEach(offer => {
+        if (offer.reservations) {
+          offer.reservations.forEach(reservation => {
+            if (reservation.time_left_seconds !== undefined && reservation.status === 'pending') {
+              const currentTimeLeft = timeLeftMap[reservation.id];
+              if (currentTimeLeft === undefined) {
+                newTimeLeftMap[reservation.id] = reservation.time_left_seconds;
+              } else {
+                newTimeLeftMap[reservation.id] = Math.max(0, currentTimeLeft - 1);
+              }
+            }
+          });
+        }
+      });
+      setTimeLeftMap(newTimeLeftMap);
+    };
+
+    updateTimers();
+    const interval = setInterval(updateTimers, 1000);
+    return () => clearInterval(interval);
+  }, [offers]);
 
   type CombinedItem = (Offer & { itemType: 'offer' }) | (Deal & { itemType: 'deal' });
   
@@ -262,6 +289,14 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                                   </div>
                                   {reservation.status === 'pending' && (
                                     <div className="flex flex-col gap-1">
+                                      <div className="text-xs font-medium text-orange-600 text-center mb-1">
+                                        {(() => {
+                                          const seconds = timeLeftMap[reservation.id] || 0;
+                                          const minutes = Math.floor(seconds / 60);
+                                          const secs = seconds % 60;
+                                          return `${minutes}:${String(secs).padStart(2, '0')}`;
+                                        })()}
+                                      </div>
                                       <Button
                                         size="sm"
                                         onClick={() => onManageReservation(reservation.id, 'accept')}
