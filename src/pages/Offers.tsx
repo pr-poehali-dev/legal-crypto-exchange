@@ -43,14 +43,6 @@ const Offers = () => {
               <p className="text-base md:text-xl text-muted-foreground mb-4">
                 Актуальные предложения от проверенных пользователей
               </p>
-              {currentRate && (
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 rounded-lg mb-4">
-                  <Icon name="TrendingUp" size={18} className="text-emerald-500" />
-                  <span className="text-sm font-semibold text-foreground">
-                    Актуальный курс: <span className="text-emerald-500">{currentRate.toFixed(2)} ₽</span> за USDT
-                  </span>
-                </div>
-              )}
               <div className="inline-flex items-start gap-6 text-sm text-muted-foreground bg-card/50 border border-border rounded-lg px-6 py-4 mt-4">
                 <div className="flex items-start gap-2">
                   <Icon name="ShoppingCart" size={18} className="text-accent mt-0.5 flex-shrink-0" />
@@ -69,7 +61,7 @@ const Offers = () => {
               </div>
             </div>
           </div>
-          <OffersSection activeTab={activeTab} setActiveTab={setActiveTab} />
+          <OffersSection activeTab={activeTab} setActiveTab={setActiveTab} currentRate={currentRate} />
         </div>
         <Footer />
       </div>

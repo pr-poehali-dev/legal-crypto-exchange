@@ -30,9 +30,10 @@ interface Offer {
 interface OffersSectionProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  currentRate: number | null;
 }
 
-const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
+const OffersSection = ({ activeTab, setActiveTab, currentRate: propCurrentRate }: OffersSectionProps) => {
   const { toast } = useToast();
   const [offers, setOffers] = useState<Offer[]>([]);
   const [sortBy, setSortBy] = useState<'rate' | 'amount-min' | 'amount-max' | 'time'>('rate');
@@ -306,6 +307,16 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            {propCurrentRate && (
+              <div className="flex justify-center mb-4">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/30 rounded-lg">
+                  <Icon name="TrendingUp" size={18} className="text-emerald-500" />
+                  <span className="text-sm font-semibold text-foreground">
+                    Актуальный курс: <span className="text-emerald-500">{propCurrentRate.toFixed(2)} ₽</span> за USDT
+                  </span>
+                </div>
+              </div>
+            )}
             <TabsList className="grid w-full grid-cols-2 bg-card border border-border mb-8">
               <TabsTrigger value="buy" className="data-[state=active]:bg-secondary data-[state=active]:text-primary">
                 <Icon name="ShoppingCart" className="mr-2" size={20} />
