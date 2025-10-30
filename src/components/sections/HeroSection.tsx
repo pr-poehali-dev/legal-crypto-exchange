@@ -1,6 +1,36 @@
 import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
+
+interface ExchangeRate {
+  exchange: string;
+  rate: number;
+  change: number;
+}
 
 const HeroSection = () => {
+  const [rates, setRates] = useState<ExchangeRate[]>([
+    { exchange: 'Binance', rate: 100.12, change: 0.5 },
+    { exchange: 'Bybit', rate: 100.08, change: -0.2 },
+    { exchange: 'OKX', rate: 100.15, change: 0.8 },
+    { exchange: 'Coinbase', rate: 100.05, change: 0.3 },
+    { exchange: 'KuCoin', rate: 100.10, change: 0.6 },
+    { exchange: 'MEXC', rate: 100.07, change: -0.1 },
+    { exchange: 'Bitget', rate: 100.13, change: 0.7 },
+    { exchange: 'HTX', rate: 100.09, change: 0.4 },
+    { exchange: 'Gate.io', rate: 100.11, change: 0.5 },
+  ]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRates(prev => prev.map(r => ({
+        ...r,
+        rate: r.rate + (Math.random() - 0.5) * 0.1,
+        change: (Math.random() - 0.5) * 2
+      })));
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
   const goToOffers = () => {
     window.location.href = '/offers';
   };
@@ -89,33 +119,43 @@ const HeroSection = () => {
                   </div>
                 </div>
 
-                <div className="absolute top-8 right-0 sm:-top-4 sm:-right-4 bg-card border border-border rounded-lg sm:rounded-2xl px-2 py-1.5 sm:px-4 sm:py-3 shadow-xl backdrop-blur-sm animate-float">
-                  <div className="flex items-center gap-1 sm:gap-2">
-                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-accent rounded-full animate-pulse"></div>
-                    <span className="text-[10px] sm:text-sm font-semibold whitespace-nowrap">Юр. защита</span>
-                  </div>
-                </div>
-
-                <div className="absolute bottom-0 left-0 sm:-bottom-4 sm:-left-4 bg-card border border-border rounded-lg sm:rounded-2xl px-2 py-1.5 sm:px-4 sm:py-3 shadow-xl backdrop-blur-sm animate-float" style={{animationDelay: '1s'}}>
-                  <div className="flex items-center gap-1 sm:gap-2">
-                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-secondary rounded-full animate-pulse"></div>
-                    <span className="text-[10px] sm:text-sm font-semibold whitespace-nowrap">Быстро</span>
-                  </div>
-                </div>
-
-                <div className="absolute top-1/2 left-0 sm:-left-16 md:-left-20 bg-card border border-border rounded-lg sm:rounded-2xl px-2 py-1.5 sm:px-4 sm:py-3 shadow-xl backdrop-blur-sm animate-float" style={{animationDelay: '0.5s'}}>
-                  <div className="flex items-center gap-1 sm:gap-2">
-                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <span className="text-[10px] sm:text-sm font-semibold whitespace-nowrap">Безопасно</span>
-                  </div>
-                </div>
-
-                <div className="absolute top-1/3 right-0 sm:-right-12 md:-right-16 bg-card border border-border rounded-lg sm:rounded-2xl px-2 py-1.5 sm:px-4 sm:py-3 shadow-xl backdrop-blur-sm animate-float" style={{animationDelay: '1.5s'}}>
-                  <div className="flex items-center gap-1 sm:gap-2">
-                    <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-violet-500 rounded-full animate-pulse"></div>
-                    <span className="text-[10px] sm:text-sm font-semibold whitespace-nowrap">Сделки</span>
-                  </div>
-                </div>
+                {rates.map((rate, index) => {
+                  const positions = [
+                    { top: '5%', right: '0', sm: '-top-4 sm:-right-4' },
+                    { bottom: '0', left: '0', sm: '-bottom-4 sm:-left-4' },
+                    { top: '50%', left: '0', sm: '-left-16 md:-left-20' },
+                    { top: '33%', right: '0', sm: '-right-12 md:-right-16' },
+                    { top: '15%', left: '10%', sm: 'left-0' },
+                    { bottom: '15%', right: '10%', sm: 'right-0' },
+                    { top: '70%', left: '5%', sm: '-left-8' },
+                    { top: '25%', right: '15%', sm: '-right-8' },
+                    { bottom: '30%', left: '15%', sm: 'left-4' },
+                  ];
+                  const pos = positions[index];
+                  return (
+                    <div 
+                      key={rate.exchange}
+                      className={`absolute ${pos.sm} bg-card/90 border border-border rounded-lg sm:rounded-xl px-2 py-1.5 sm:px-3 sm:py-2 shadow-lg backdrop-blur-sm animate-float`}
+                      style={{
+                        animationDelay: `${index * 0.2}s`,
+                        top: pos.top,
+                        bottom: pos.bottom,
+                        left: pos.left,
+                        right: pos.right
+                      }}
+                    >
+                      <div className="flex flex-col">
+                        <span className="text-[8px] sm:text-xs text-muted-foreground whitespace-nowrap">{rate.exchange}</span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-[10px] sm:text-sm font-bold text-foreground">{rate.rate.toFixed(2)} ₽</span>
+                          <span className={`text-[8px] sm:text-xs ${rate.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                            {rate.change >= 0 ? '↑' : '↓'}{Math.abs(rate.change).toFixed(1)}%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
