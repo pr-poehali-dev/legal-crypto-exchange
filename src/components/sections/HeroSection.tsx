@@ -138,14 +138,20 @@ const HeroSection = () => {
                   return (
                     <div 
                       key={`${rate.exchange}-${index}`}
-                      className="absolute bg-card/90 backdrop-blur-sm rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-card-float animate-glow-border border-2"
+                      className="absolute bg-card/90 backdrop-blur-sm rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border border-2"
                       style={{
                         left: `calc(50% + ${x}%)`,
                         top: `calc(50% + ${y}%)`,
+                        transform: 'translate(-50%, -50%)',
                         animationDelay: `${index * 0.4}s`
                       }}
                     >
-                      <div className="flex flex-col items-center gap-0">
+                      <div 
+                        className="flex flex-col items-center gap-0 animate-card-float"
+                        style={{
+                          animationDelay: `${index * 0.4}s`
+                        }}
+                      >
                         <span className="text-[9px] sm:text-[10px] text-muted-foreground whitespace-nowrap font-semibold">{rate.exchange}</span>
                         <span className="text-xs sm:text-sm font-bold text-foreground leading-tight">{rate.rate.toFixed(2)} ₽</span>
                       </div>

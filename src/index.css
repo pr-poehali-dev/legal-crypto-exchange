@@ -128,10 +128,10 @@
   @keyframes card-float {
     0%,
     100% {
-      transform: translate(-50%, -50%) translateY(0px);
+      transform: translateY(0px);
     }
     50% {
-      transform: translate(-50%, -50%) translateY(-8px);
+      transform: translateY(-6px);
     }
   }
 
