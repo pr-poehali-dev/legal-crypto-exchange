@@ -127,38 +127,26 @@ const HeroSection = () => {
                 </div>
 
                 {rates.map((rate, index) => {
-                  const positions = [
-                    { top: '5%', right: '0', sm: '-top-4 sm:-right-4' },
-                    { bottom: '0', left: '0', sm: '-bottom-4 sm:-left-4' },
-                    { top: '50%', left: '0', sm: '-left-16 md:-left-20' },
-                    { top: '33%', right: '0', sm: '-right-12 md:-right-16' },
-                    { top: '15%', left: '10%', sm: 'left-0' },
-                    { bottom: '15%', right: '10%', sm: 'right-0' },
-                    { top: '70%', left: '5%', sm: '-left-8' },
-                    { top: '25%', right: '15%', sm: '-right-8' },
-                    { bottom: '30%', left: '15%', sm: 'left-4' },
-                  ];
-                  const pos = positions[index];
+                  const angle = (index * 360) / rates.length;
+                  const radius = 140;
+                  const x = Math.cos((angle * Math.PI) / 180) * radius;
+                  const y = Math.sin((angle * Math.PI) / 180) * radius;
+                  
                   return (
                     <div 
                       key={rate.exchange}
-                      className={`absolute ${pos.sm} bg-card/90 border border-border rounded-lg sm:rounded-xl px-2 py-1.5 sm:px-3 sm:py-2 shadow-lg backdrop-blur-sm animate-float`}
+                      className="absolute bg-card/95 border border-secondary/30 rounded-2xl px-4 py-3 shadow-2xl backdrop-blur-md hover:scale-110 hover:border-secondary/60 transition-all duration-300 hover:shadow-secondary/20 animate-float"
                       style={{
-                        animationDelay: `${index * 0.2}s`,
-                        top: pos.top,
-                        bottom: pos.bottom,
-                        left: pos.left,
-                        right: pos.right
+                        left: `calc(50% + ${x}px)`,
+                        top: `calc(50% + ${y}px)`,
+                        transform: 'translate(-50%, -50%)',
+                        animationDelay: `${index * 0.15}s`,
+                        zIndex: 10
                       }}
                     >
-                      <div className="flex flex-col">
-                        <span className="text-[8px] sm:text-xs text-muted-foreground whitespace-nowrap">{rate.exchange}</span>
-                        <div className="flex items-center gap-1">
-                          <span className="text-[10px] sm:text-sm font-bold text-foreground">{rate.rate.toFixed(2)} ₽</span>
-                          <span className={`text-[8px] sm:text-xs ${rate.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                            {rate.change >= 0 ? '↑' : '↓'}{Math.abs(rate.change).toFixed(1)}%
-                          </span>
-                        </div>
+                      <div className="flex flex-col items-center gap-1">
+                        <span className="text-xs font-bold text-secondary whitespace-nowrap" style={{fontFamily: 'Orbitron, sans-serif'}}>{rate.exchange}</span>
+                        <span className="text-lg font-black text-foreground">{rate.rate.toFixed(2)} ₽</span>
                       </div>
                     </div>
                   );
