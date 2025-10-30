@@ -135,6 +135,7 @@ const HeroSection = () => {
                     const radius = 46;
                     const x = Math.cos((angle * Math.PI) / 180) * radius;
                     const y = Math.sin((angle * Math.PI) / 180) * radius;
+                    const orbitalDelay = index * 0.5;
                     
                     return (
                       <div 
@@ -143,7 +144,7 @@ const HeroSection = () => {
                         style={{
                           left: `calc(50% + ${x}%)`,
                           top: `calc(50% + ${y}%)`,
-                          animation: `card-fly-in 0.8s ease-out ${index * 0.5}s forwards`,
+                          animation: `card-fly-in 0.6s ease-out ${orbitalDelay + 1}s forwards`,
                           opacity: 0
                         }}
                       >
@@ -154,7 +155,7 @@ const HeroSection = () => {
                             <div 
                               className="flex flex-col items-center gap-0 animate-card-float"
                               style={{
-                                animationDelay: `${index * 0.5 + 0.8}s`
+                                animationDelay: `${orbitalDelay + 1.6}s`
                               }}
                             >
                               <span className="text-[9px] sm:text-[10px] text-muted-foreground whitespace-nowrap font-semibold">{rate.exchange}</span>
