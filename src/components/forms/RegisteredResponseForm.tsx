@@ -154,8 +154,7 @@ const RegisteredResponseForm = ({
         });
         setUseOfferOffice(true);
         setCustomOffice('');
-        setMeetingHour('');
-        setMeetingMinute('');
+        setSelectedTimeSlot('');
         onSuccess?.();
       } else {
         console.error('Reserve offer error:', data);
