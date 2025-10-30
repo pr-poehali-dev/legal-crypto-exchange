@@ -131,20 +131,21 @@ const HeroSection = () => {
                 </div>
 
                 {rates.slice(0, 8).map((rate, index) => {
-                  const angle = (index * 360) / 8 - 90;
+                  const angle = (index * 45) - 90;
                   const radius = 46;
                   const x = Math.cos((angle * Math.PI) / 180) * radius;
                   const y = Math.sin((angle * Math.PI) / 180) * radius;
                   
                   return (
                     <div 
-                      key={rate.exchange}
+                      key={`${rate.exchange}-${index}`}
                       className="absolute bg-card/90 border border-border rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 shadow-lg backdrop-blur-sm animate-float"
                       style={{
                         animationDelay: `${index * 0.2}s`,
                         left: `calc(50% + ${x}%)`,
                         top: `calc(50% + ${y}%)`,
-                        transform: 'translate(-50%, -50%)'
+                        transform: 'translate(-50%, -50%)',
+                        willChange: 'transform'
                       }}
                     >
                       <div className="flex flex-col items-center gap-0">
