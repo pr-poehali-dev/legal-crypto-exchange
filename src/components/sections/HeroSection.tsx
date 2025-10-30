@@ -88,7 +88,7 @@ const HeroSection = () => {
               <div className="flex flex-col sm:flex-row gap-4 pt-4 sm:pt-6">
                 <Button 
                   size="lg" 
-                  className="bg-secondary text-primary hover:bg-secondary/90 text-lg sm:text-xl font-bold px-8 py-6 sm:px-10 sm:py-7 shadow-2xl shadow-secondary/30 hover:shadow-secondary/50 transition-all duration-300 group tracking-wide"
+                  className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600 text-lg sm:text-xl font-bold px-8 py-6 sm:px-10 sm:py-7 shadow-2xl shadow-emerald-500/30 hover:shadow-emerald-500/50 transition-all duration-300 group tracking-wide rounded-xl"
                   onClick={goToOffers}
                   style={{fontFamily: 'Orbitron, sans-serif'}}
                 >
