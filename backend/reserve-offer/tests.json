@@ -6,15 +6,15 @@
       "path": "/",
       "body": {
         "offer_id": 1,
+        "slot_time": "14:00",
         "user_id": 2,
         "username": "TestUser",
-        "meeting_office": "Москва, ул. Арбат, 10",
-        "meeting_time": "14:00"
+        "meeting_office": "Москва, ул. Арбат, 10"
       },
       "expectedStatus": 404,
       "expectedBody": {
         "success": false,
-        "error": "Offer not found or not active"
+        "error": "Time slot not found"
       },
       "bodyMatcher": "partial"
     },

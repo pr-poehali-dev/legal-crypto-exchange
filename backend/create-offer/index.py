@@ -77,10 +77,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         cursor.execute('''
             INSERT INTO t_p53513159_legal_crypto_exchang.offers 
-            (user_id, offer_type, amount, rate, time_start, time_end, city, offices, status, expires_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'active', NOW() + INTERVAL '24 hours')
+            (user_id, offer_type, amount, rate, meeting_time, time_start, time_end, city, offices, status, expires_at)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'active', NOW() + INTERVAL '24 hours')
             RETURNING id
-        ''', (user_id, offer_type, float(amount), float(rate), time_start, time_end, city, offices))
+        ''', (user_id, offer_type, float(amount), float(rate), f"{time_start}-{time_end}", time_start, time_end, city, offices))
         
         offer_id = cursor.fetchone()[0]
         

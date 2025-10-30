@@ -8,7 +8,8 @@
         "offer_type": "buy",
         "amount": 1000,
         "rate": 95.50,
-        "meeting_time": "18:00"
+        "time_start": "10:00",
+        "time_end": "12:00"
       },
       "expectedStatus": 200,
       "expectedBody": {
