@@ -132,7 +132,7 @@ const HeroSection = () => {
                   </div>
                 </div>
 
-                <div className="absolute inset-0 animate-orbit-rotate">
+                <div className="absolute inset-0">
                   {rates.slice(0, 8).map((rate, index) => {
                     const angle = (index * 45) - 90;
                     const radius = 46;
@@ -141,6 +141,8 @@ const HeroSection = () => {
                     
                     const appearOrder = (index + 6) % 8;
                     const orbitalDelay = appearOrder * 0.5;
+                    const floatAnimations = ['chaotic-float-1', 'chaotic-float-2', 'chaotic-float-3', 'chaotic-float-4'];
+                    const floatDurations = [7, 8, 9, 10];
                     
                     return (
                       <div 
@@ -149,19 +151,17 @@ const HeroSection = () => {
                         style={{
                           left: `calc(50% + ${x}%)`,
                           top: `calc(50% + ${y}%)`,
-                          animation: `card-fly-in 0.6s ease-out ${orbitalDelay}s forwards`,
+                          animation: `card-fly-in 0.6s ease-out ${orbitalDelay}s forwards, ${floatAnimations[index % 4]} ${floatDurations[index % 4]}s ease-in-out infinite`,
+                          animationDelay: `${orbitalDelay}s, ${orbitalDelay + 0.6}s`,
                           opacity: 0
                         }}
                       >
-                        <div className="animate-orbit-counter-rotate">
+                        <div>
                           <div 
                             className="bg-card/95 backdrop-blur-md rounded-lg px-2.5 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border border-2 shadow-lg"
                           >
                             <div 
-                              className="flex flex-col items-center gap-0 animate-card-float"
-                              style={{
-                                animationDelay: `${orbitalDelay + 0.6}s`
-                              }}
+                              className="flex flex-col items-center gap-0"
                             >
                               <span className="text-[10px] sm:text-[10px] text-muted-foreground whitespace-nowrap font-bold">{rate.exchange}</span>
                               <span className="text-xs sm:text-sm font-black text-foreground leading-none whitespace-nowrap">{rate.rate.toFixed(2)}&nbsp;₽</span>

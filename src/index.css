@@ -164,21 +164,67 @@
     }
   }
 
-  @keyframes orbit-rotate {
-    from {
-      transform: rotate(0deg);
+  @keyframes chaotic-float-1 {
+    0%,
+    100% {
+      transform: translate(-50%, -50%) translateX(0px) translateY(0px);
     }
-    to {
-      transform: rotate(360deg);
+    25% {
+      transform: translate(-50%, -50%) translateX(15px) translateY(-20px);
+    }
+    50% {
+      transform: translate(-50%, -50%) translateX(-10px) translateY(15px);
+    }
+    75% {
+      transform: translate(-50%, -50%) translateX(20px) translateY(10px);
     }
   }
 
-  @keyframes orbit-counter-rotate {
-    from {
-      transform: rotate(0deg);
+  @keyframes chaotic-float-2 {
+    0%,
+    100% {
+      transform: translate(-50%, -50%) translateX(0px) translateY(0px);
     }
-    to {
-      transform: rotate(-360deg);
+    25% {
+      transform: translate(-50%, -50%) translateX(-18px) translateY(12px);
+    }
+    50% {
+      transform: translate(-50%, -50%) translateX(12px) translateY(-15px);
+    }
+    75% {
+      transform: translate(-50%, -50%) translateX(-8px) translateY(-18px);
+    }
+  }
+
+  @keyframes chaotic-float-3 {
+    0%,
+    100% {
+      transform: translate(-50%, -50%) translateX(0px) translateY(0px);
+    }
+    25% {
+      transform: translate(-50%, -50%) translateX(10px) translateY(18px);
+    }
+    50% {
+      transform: translate(-50%, -50%) translateX(-15px) translateY(-12px);
+    }
+    75% {
+      transform: translate(-50%, -50%) translateX(16px) translateY(-10px);
+    }
+  }
+
+  @keyframes chaotic-float-4 {
+    0%,
+    100% {
+      transform: translate(-50%, -50%) translateX(0px) translateY(0px);
+    }
+    25% {
+      transform: translate(-50%, -50%) translateX(-12px) translateY(-16px);
+    }
+    50% {
+      transform: translate(-50%, -50%) translateX(18px) translateY(10px);
+    }
+    75% {
+      transform: translate(-50%, -50%) translateX(-10px) translateY(14px);
     }
   }
 
@@ -188,14 +234,6 @@
 
   .animate-card-appear {
     animation: card-appear 0.8s ease-out forwards;
-  }
-
-  .animate-orbit-rotate {
-    animation: orbit-rotate 120s linear infinite;
-  }
-
-  .animate-orbit-counter-rotate {
-    animation: orbit-counter-rotate 120s linear infinite;
   }
 
   @keyframes glow-border {
