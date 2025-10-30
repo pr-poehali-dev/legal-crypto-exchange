@@ -130,8 +130,8 @@ const HeroSection = () => {
                 </div>
 
                 {rates.slice(0, 8).map((rate, index) => {
-                  const angle = (index * 45) - 90;
-                  const radius = 46;
+                  const angle = (index * 45);
+                  const radiusVW = 23;
                   
                   return (
                     <div 
@@ -140,17 +140,17 @@ const HeroSection = () => {
                       style={{
                         left: '50%',
                         top: '50%',
-                        width: 0,
-                        height: 0
+                        transform: `rotate(${angle}deg)`
                       }}
                     >
                       <div
-                        className="absolute bg-card/90 backdrop-blur-sm rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border animate-card-appear animate-orbit-counter-rotate border-2"
+                        className="bg-card/90 backdrop-blur-sm rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border animate-card-appear animate-orbit-counter-rotate border-2"
                         style={{
-                          left: '0',
-                          top: `${-radius}%`,
-                          transform: `translate(-50%, -50%) rotate(${-angle}deg)`,
-                          animationDelay: `${index * 0.1}s`
+                          transform: `translate(-50%, -${radiusVW}vw) rotate(-${angle}deg)`,
+                          animationDelay: `${index * 0.1}s`,
+                          position: 'absolute',
+                          left: 0,
+                          top: 0
                         }}
                       >
                         <div 
