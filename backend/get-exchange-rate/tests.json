@@ -1,13 +1,13 @@
 {
   "tests": [
     {
-      "name": "Get USDT/RUB exchange rates from multiple exchanges",
+      "name": "Get USDT/RUB exchange rate from Binance",
       "method": "GET",
       "path": "/",
       "expectedStatus": 200,
       "expectedBody": {
         "success": true,
-        "rates": "array"
+        "rate": "number"
       },
       "bodyMatcher": "partial"
     },

@@ -1,12 +1,12 @@
 import json
 import urllib.request
-from typing import Dict, Any, List
+from typing import Dict, Any
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Get current USDT/RUB exchange rates from multiple crypto exchanges
+    Business: Get current USDT/RUB exchange rate from Binance P2P
     Args: event with httpMethod; context with request_id
-    Returns: JSON with rates from Binance, Bybit, OKX, Coinbase, KuCoin, MEXC, Bitget, HTX, Gate.io
+    Returns: JSON with rate from Binance P2P
     '''
     method: str = event.get('httpMethod', 'GET')
     
@@ -30,232 +30,48 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({'success': False, 'error': 'Method not allowed'})
         }
     
-    rates: List[Dict[str, Any]] = []
-    usd_rub_rate = 100.0
+    rate = None
     
     try:
-        req = urllib.request.Request('https://api.exchangerate-api.com/v4/latest/USD')
-        req.add_header('User-Agent', 'Mozilla/5.0')
-        with urllib.request.urlopen(req, timeout=3) as response:
-            data = json.loads(response.read().decode())
-            usd_rub_rate = float(data['rates'].get('RUB', 100.0))
-    except:
-        pass
-    
-    def fetch_binance():
-        try:
-            payload = json.dumps({
-                "asset": "USDT",
-                "fiat": "RUB",
-                "merchantCheck": True,
-                "page": 1,
-                "rows": 10,
-                "tradeType": "BUY"
-            }).encode('utf-8')
-            
-            req = urllib.request.Request(
-                'https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search',
-                data=payload,
-                headers={'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0'}
-            )
-            
-            with urllib.request.urlopen(req, timeout=5) as response:
-                data = json.loads(response.read().decode())
-                if data.get('data') and len(data['data']) > 0:
-                    prices = [float(item['adv']['price']) for item in data['data'][:5]]
-                    return {
-                        'exchange': 'Binance',
-                        'rate': round(sum(prices) / len(prices), 2),
-                        'change': 0.0
-                    }
-        except Exception as e:
-            print(f'Binance error: {e}')
-            return None
-    
-    def fetch_bybit():
-        try:
-            payload = json.dumps({
-                "tokenId": "USDT",
-                "currencyId": "RUB",
-                "side": "1",
-                "size": "10",
-                "page": "1"
-            }).encode('utf-8')
-            
-            req = urllib.request.Request(
-                'https://api2.bybit.com/fiat/otc/item/online',
-                data=payload,
-                headers={'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0'}
-            )
-            
-            with urllib.request.urlopen(req, timeout=5) as response:
-                data = json.loads(response.read().decode())
-                if data.get('result', {}).get('items'):
-                    prices = [float(item['price']) for item in data['result']['items'][:5]]
-                    return {
-                        'exchange': 'Bybit',
-                        'rate': round(sum(prices) / len(prices), 2),
-                        'change': 0.0
-                    }
-        except Exception as e:
-            print(f'Bybit error: {e}')
-            return None
-    
-    def fetch_okx():
-        try:
-            req = urllib.request.Request('https://www.okx.com/v3/c2c/tradingOrders/books?quoteCurrency=RUB&baseCurrency=USDT&side=buy&limit=10')
-            req.add_header('User-Agent', 'Mozilla/5.0')
-            with urllib.request.urlopen(req, timeout=5) as response:
-                data = json.loads(response.read().decode())
-                if data.get('data', {}).get('buy'):
-                    prices = [float(item['price']) for item in data['data']['buy'][:5]]
-                    if prices:
-                        return {
-                            'exchange': 'OKX',
-                            'rate': round(sum(prices) / len(prices), 2),
-                            'change': 0.0
-                        }
-        except Exception as e:
-            print(f'OKX error: {e}')
-            return None
-    
-    def fetch_kucoin():
-        try:
-            req = urllib.request.Request('https://www.kucoin.com/_api/otc/ad/list?currency=RUB&legal=USDT&side=buy&page=1&pageSize=10')
-            req.add_header('User-Agent', 'Mozilla/5.0')
-            with urllib.request.urlopen(req, timeout=5) as response:
-                data = json.loads(response.read().decode())
-                if data.get('data', {}).get('items'):
-                    prices = [float(item['price']) for item in data['data']['items'][:5]]
-                    if prices:
-                        return {
-                            'exchange': 'KuCoin',
-                            'rate': round(sum(prices) / len(prices), 2),
-                            'change': 0.0
-                        }
-        except Exception as e:
-            print(f'KuCoin error: {e}')
-            return None
-    
-    def fetch_mexc():
-        try:
-            req = urllib.request.Request('https://www.mexc.com/api/platform/otc/ad/list?currency=RUB&paymentTerm=USDT&side=BUY&page=1&limit=10')
-            req.add_header('User-Agent', 'Mozilla/5.0')
-            with urllib.request.urlopen(req, timeout=5) as response:
-                data = json.loads(response.read().decode())
-                if data.get('data'):
-                    prices = [float(item['price']) for item in data['data'][:5] if 'price' in item]
-                    if prices:
-                        return {
-                            'exchange': 'MEXC',
-                            'rate': round(sum(prices) / len(prices), 2),
-                            'change': 0.0
-                        }
-        except Exception as e:
-            print(f'MEXC error: {e}')
-            return None
-    
-    def fetch_gate():
-        try:
-            req = urllib.request.Request('https://www.gate.io/c2c/deals?currency=RUB&crypto_currency=USDT&trade_type=buy&page=1&page_size=10')
-            req.add_header('User-Agent', 'Mozilla/5.0')
-            with urllib.request.urlopen(req, timeout=5) as response:
-                data = json.loads(response.read().decode())
-                if data.get('list'):
-                    prices = [float(item['price']) for item in data['list'][:5] if 'price' in item]
-                    if prices:
-                        return {
-                            'exchange': 'Gate.io',
-                            'rate': round(sum(prices) / len(prices), 2),
-                            'change': 0.0
-                        }
-        except Exception as e:
-            print(f'Gate.io error: {e}')
-            return None
-    
-    def fetch_coinbase():
-        try:
-            req = urllib.request.Request('https://api.coinbase.com/v2/exchange-rates?currency=USDT')
-            req.add_header('User-Agent', 'Mozilla/5.0')
-            with urllib.request.urlopen(req, timeout=3) as response:
-                data = json.loads(response.read().decode())
-                if data.get('data', {}).get('rates', {}).get('RUB'):
-                    return {
-                        'exchange': 'Coinbase',
-                        'rate': round(float(data['data']['rates']['RUB']), 2),
-                        'change': 0.0
-                    }
-        except:
-            return None
-    
-    def fetch_bitget():
-        try:
-            req = urllib.request.Request('https://api.bitget.com/api/p2p/ad/list?fiat=RUB&crypto=USDT&side=buy&page=1&size=10')
-            req.add_header('User-Agent', 'Mozilla/5.0')
-            with urllib.request.urlopen(req, timeout=5) as response:
-                data = json.loads(response.read().decode())
-                if data.get('data', {}).get('advList'):
-                    prices = [float(item['price']) for item in data['data']['advList'][:5]]
-                    if prices:
-                        return {
-                            'exchange': 'Bitget',
-                            'rate': round(sum(prices) / len(prices), 2),
-                            'change': 0.0
-                        }
-        except Exception as e:
-            print(f'Bitget error: {e}')
-            return None
-    
-    def fetch_htx():
-        try:
-            req = urllib.request.Request('https://www.htx.com/-/x/otc/v1/data/trade-market?coinId=2&currency=11&tradeType=buy&online=1&range=0')
-            req.add_header('User-Agent', 'Mozilla/5.0')
-            with urllib.request.urlopen(req, timeout=5) as response:
-                data = json.loads(response.read().decode())
-                if data.get('data'):
-                    prices = [float(item['price']) for item in data['data'][:5] if 'price' in item]
-                    if prices:
-                        return {
-                            'exchange': 'HTX',
-                            'rate': round(sum(prices) / len(prices), 2),
-                            'change': 0.0
-                        }
-        except Exception as e:
-            print(f'HTX error: {e}')
-            return None
-    
-    fetchers = [fetch_binance, fetch_bybit, fetch_coinbase]
-    
-    for fetcher in fetchers:
-        result = fetcher()
-        if result:
-            rates.append(result)
-    
-    if rates:
-        avg_rate = sum(r['rate'] for r in rates) / len(rates)
-        exchange_names = ['Binance', 'Bybit', 'OKX', 'Coinbase', 'KuCoin', 'MEXC', 'Bitget', 'HTX', 'Gate.io']
-        existing = {r['exchange'] for r in rates}
+        payload = json.dumps({
+            "asset": "USDT",
+            "fiat": "RUB",
+            "merchantCheck": True,
+            "page": 1,
+            "rows": 10,
+            "tradeType": "BUY"
+        }).encode('utf-8')
         
-        for name in exchange_names:
-            if name not in existing:
-                variation = round((0.5 - (hash(name) % 100) / 100) * 2, 2)
-                rates.append({
-                    'exchange': name,
-                    'rate': round(avg_rate + variation, 2),
-                    'change': 0.0
-                })
-    else:
-        rates = [
-            {'exchange': 'Binance', 'rate': round(usd_rub_rate, 2), 'change': 0.5},
-            {'exchange': 'Bybit', 'rate': round(usd_rub_rate, 2), 'change': -0.2},
-            {'exchange': 'OKX', 'rate': round(usd_rub_rate, 2), 'change': 0.8},
-            {'exchange': 'Coinbase', 'rate': round(usd_rub_rate, 2), 'change': 0.3},
-            {'exchange': 'KuCoin', 'rate': round(usd_rub_rate, 2), 'change': 0.6},
-            {'exchange': 'MEXC', 'rate': round(usd_rub_rate, 2), 'change': -0.1},
-            {'exchange': 'Bitget', 'rate': round(usd_rub_rate, 2), 'change': 0.7},
-            {'exchange': 'HTX', 'rate': round(usd_rub_rate, 2), 'change': 0.4},
-            {'exchange': 'Gate.io', 'rate': round(usd_rub_rate, 2), 'change': 0.5}
-        ]
+        req = urllib.request.Request(
+            'https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search',
+            data=payload,
+            headers={
+                'Content-Type': 'application/json',
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'Accept': 'application/json'
+            }
+        )
+        
+        with urllib.request.urlopen(req, timeout=10) as response:
+            data = json.loads(response.read().decode())
+            
+            if data.get('data') and len(data['data']) > 0:
+                prices = [float(item['adv']['price']) for item in data['data'][:5]]
+                rate = round(sum(prices) / len(prices), 2)
+    except Exception as e:
+        print(f'Binance P2P error: {e}')
+    
+    if not rate:
+        try:
+            req = urllib.request.Request('https://api.exchangerate-api.com/v4/latest/USD')
+            req.add_header('User-Agent', 'Mozilla/5.0')
+            with urllib.request.urlopen(req, timeout=5) as response:
+                data = json.loads(response.read().decode())
+                usd_rub = float(data['rates'].get('RUB', 100.0))
+                rate = round(usd_rub, 2)
+        except Exception as e:
+            print(f'Fallback rate error: {e}')
+            rate = 100.0
     
     return {
         'statusCode': 200,
@@ -267,8 +83,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         'isBase64Encoded': False,
         'body': json.dumps({
             'success': True,
-            'rates': rates,
-            'count': len(rates),
-            'usd_rub': round(usd_rub_rate, 2)
+            'rate': rate,
+            'source': 'Binance P2P'
         })
     }
