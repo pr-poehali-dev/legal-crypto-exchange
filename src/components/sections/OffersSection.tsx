@@ -45,6 +45,7 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [responseDialogOpen, setResponseDialogOpen] = useState(false);
   const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
+  const [availableSlots, setAvailableSlots] = useState<string[]>([]);
 
   useEffect(() => {
     const user = localStorage.getItem('user');
@@ -163,8 +164,26 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
   const buyOffers = getSortedOffers(offers.filter(o => o.offer_type === 'sell'));
   const sellOffers = getSortedOffers(offers.filter(o => o.offer_type === 'buy'));
 
+  const loadAvailableSlots = async (offerId: number) => {
+    try {
+      const response = await fetch(`https://functions.poehali.dev/85034798-463f-4b9f-b879-43364e8c40ff?offer_id=${offerId}`);
+      const data = await response.json();
+      
+      if (data.success && data.offers && data.offers.length > 0) {
+        const offer = data.offers[0];
+        setAvailableSlots(offer.available_slots || []);
+      } else {
+        setAvailableSlots([]);
+      }
+    } catch (error) {
+      console.error('Failed to load available slots:', error);
+      setAvailableSlots([]);
+    }
+  };
+
   const handleContact = async (offer: Offer) => {
     setSelectedOffer(offer);
+    await loadAvailableSlots(offer.id);
     setResponseDialogOpen(true);
   };
 
@@ -409,6 +428,7 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
                 offerCity={selectedOffer.city}
                 offerAmount={selectedOffer.amount}
                 currentRate={selectedOffer.rate}
+                availableSlots={availableSlots}
                 onSuccess={() => {
                   setResponseDialogOpen(false);
                   setSelectedOffer(null);

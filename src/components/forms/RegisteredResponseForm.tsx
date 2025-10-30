@@ -15,6 +15,7 @@ interface RegisteredResponseFormProps {
   offerCity?: string;
   offerAmount?: number;
   currentRate?: number;
+  availableSlots?: string[];
   onSuccess?: () => void;
 }
 
@@ -48,6 +49,7 @@ const RegisteredResponseForm = ({
   offerCity = 'Москва',
   offerAmount = 0,
   currentRate = 100,
+  availableSlots = [],
   onSuccess 
 }: RegisteredResponseFormProps) => {
   const { toast } = useToast();
@@ -92,34 +94,14 @@ const RegisteredResponseForm = ({
       setUsdtAmount('');
     }
   };
-  const [meetingHour, setMeetingHour] = useState('');
-  const [meetingMinute, setMeetingMinute] = useState('');
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const now = new Date();
-    let currentHour = now.getHours();
-    const currentMinute = now.getMinutes();
-    
-    const intervals = [0, 15, 30, 45];
-    let nextMinute = intervals.find(m => m > currentMinute);
-    
-    if (nextMinute === undefined) {
-      currentHour = currentHour + 1;
-      nextMinute = 0;
+    if (availableSlots.length > 0) {
+      setSelectedTimeSlot(availableSlots[0]);
     }
-    
-    if (currentHour < 9) {
-      currentHour = 9;
-      nextMinute = 0;
-    } else if (currentHour > 21 || (currentHour === 21 && nextMinute > 0)) {
-      currentHour = 9;
-      nextMinute = 0;
-    }
-    
-    setMeetingHour(String(currentHour).padStart(2, '0'));
-    setMeetingMinute(String(nextMinute).padStart(2, '0'));
-  }, []);
+  }, [availableSlots]);
 
   const firstOfferOffice = offerOffices && offerOffices.length > 0 ? offerOffices[0] : '';
   const cityOffices = CITIES_OFFICES[offerCity || 'Москва'] || MOSCOW_OFFICES;
@@ -127,7 +109,7 @@ const RegisteredResponseForm = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!meetingHour || !meetingMinute) {
+    if (!selectedTimeSlot) {
       toast({
         title: 'Ошибка',
         description: 'Выберите время встречи',
@@ -146,7 +128,7 @@ const RegisteredResponseForm = ({
       });
       return;
     }
-    const meetingTime = `${meetingHour}:${meetingMinute}`;
+    const meetingTime = selectedTimeSlot;
 
     setIsSubmitting(true);
 
@@ -291,31 +273,34 @@ const RegisteredResponseForm = ({
 
       <div className="space-y-2">
         <Label>Выберите время встречи</Label>
-        <div className="flex gap-2">
-          <Select value={meetingHour} onValueChange={setMeetingHour} disabled={isSubmitting}>
-            <SelectTrigger className="flex-1">
-              <SelectValue placeholder="Часы" />
-            </SelectTrigger>
-            <SelectContent>
-              {Array.from({ length: 13 }, (_, i) => i + 9).map((hour) => (
-                <SelectItem key={hour} value={hour.toString().padStart(2, '0')}>
-                  {hour.toString().padStart(2, '0')}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <span className="text-2xl font-bold flex items-center">:</span>
-          <Select value={meetingMinute} onValueChange={setMeetingMinute} disabled={isSubmitting}>
-            <SelectTrigger className="flex-1">
-              <SelectValue placeholder="Минуты" />
-            </SelectTrigger>
-            <SelectContent>
-              {['00', '15', '30', '45'].map((minute) => (
-                <SelectItem key={minute} value={minute}>{minute}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        {availableSlots.length > 0 ? (
+          <>
+            <Select value={selectedTimeSlot} onValueChange={setSelectedTimeSlot} disabled={isSubmitting}>
+              <SelectTrigger>
+                <SelectValue placeholder="Выберите доступное время" />
+              </SelectTrigger>
+              <SelectContent className="max-h-[200px]">
+                {availableSlots.map((slot) => (
+                  <SelectItem key={slot} value={slot}>
+                    <div className="flex items-center gap-2">
+                      <Icon name="Clock" size={16} />
+                      {slot}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              <Icon name="Info" size={12} className="inline mr-1" />
+              Доступно {availableSlots.length} временных слотов
+            </p>
+          </>
+        ) : (
+          <div className="p-3 bg-muted rounded-lg text-sm text-muted-foreground">
+            <Icon name="AlertCircle" size={16} className="inline mr-2" />
+            Нет доступных временных слотов
+          </div>
+        )}
         <p className="text-xs text-muted-foreground mt-1">
           <Icon name="Info" size={12} className="inline mr-1" />
           Обратите внимание: курс обмена актуален в течение трех часов и может измениться
