@@ -91,6 +91,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         current_time = datetime.combine(datetime.today(), start_time)
         end_datetime = datetime.combine(datetime.today(), end_time)
         
+        # Если время окончания 00:00, это следующий день
+        if end_time.hour == 0 and end_time.minute == 0:
+            end_datetime += timedelta(days=1)
+        
         slots_created = 0
         while current_time < end_datetime:
             cursor.execute('''
