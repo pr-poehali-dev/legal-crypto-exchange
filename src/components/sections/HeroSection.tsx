@@ -139,22 +139,28 @@ const HeroSection = () => {
                     return (
                       <div 
                         key={`${rate.exchange}-${index}`}
-                        className="absolute bg-card/90 backdrop-blur-sm rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border animate-card-appear border-2"
+                        className="absolute"
                         style={{
                           left: `calc(50% + ${x}%)`,
                           top: `calc(50% + ${y}%)`,
-                          transform: 'translate(-50%, -50%)',
-                          animationDelay: `${index * 0.1}s`
+                          transform: 'translate(-50%, -50%)'
                         }}
                       >
                         <div 
-                          className="flex flex-col items-center gap-0 animate-card-float"
+                          className="bg-card/90 backdrop-blur-sm rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border animate-card-appear border-2 animate-orbit-counter-rotate"
                           style={{
-                            animationDelay: `${index * 0.4}s`
+                            animationDelay: `${index * 0.1}s`
                           }}
                         >
-                          <span className="text-[9px] sm:text-[10px] text-muted-foreground whitespace-nowrap font-semibold">{rate.exchange}</span>
-                          <span className="text-xs sm:text-sm font-bold text-foreground leading-tight">{rate.rate.toFixed(2)} ₽</span>
+                          <div 
+                            className="flex flex-col items-center gap-0 animate-card-float"
+                            style={{
+                              animationDelay: `${index * 0.4}s`
+                            }}
+                          >
+                            <span className="text-[9px] sm:text-[10px] text-muted-foreground whitespace-nowrap font-semibold">{rate.exchange}</span>
+                            <span className="text-xs sm:text-sm font-bold text-foreground leading-tight">{rate.rate.toFixed(2)} ₽</span>
+                          </div>
                         </div>
                       </div>
                     );
