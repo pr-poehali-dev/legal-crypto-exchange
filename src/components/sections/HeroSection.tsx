@@ -128,7 +128,7 @@ const HeroSection = () => {
 
                 {rates.slice(0, 8).map((rate, index) => {
                   const angle = (index * 360) / 8;
-                  const radius = 43;
+                  const radius = 52;
                   const x = Math.cos((angle * Math.PI) / 180) * radius;
                   const y = Math.sin((angle * Math.PI) / 180) * radius;
                   
