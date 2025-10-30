@@ -42,28 +42,30 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     conn = psycopg2.connect(dsn)
     cur = conn.cursor()
     
-    # Get offers created by user
+    # Get offers created by user with reservations count
     cur.execute("""
         SELECT o.id, o.offer_type, o.amount, o.rate, o.meeting_time, o.time_start, o.time_end, o.status, o.created_at, 
-               o.reserved_by, o.reserved_at, u.username as reserved_by_username, 
-               o.user_id, owner.username as owner_username, 'created' as relation_type
-        FROM offers o
-        LEFT JOIN users u ON o.reserved_by = u.id
-        LEFT JOIN users owner ON o.user_id = owner.id
+               o.user_id, owner.username as owner_username, 'created' as relation_type,
+               COUNT(r.id) as reservations_count
+        FROM t_p53513159_legal_crypto_exchang.offers o
+        LEFT JOIN t_p53513159_legal_crypto_exchang.users owner ON o.user_id = owner.id
+        LEFT JOIN t_p53513159_legal_crypto_exchang.reservations r ON o.id = r.offer_id
         WHERE o.user_id = %s 
+        GROUP BY o.id, owner.username
         ORDER BY o.created_at DESC
     """, (user_id,))
     
     created_offers = cur.fetchall()
     
-    # Get offers reserved by user
+    # Get offers reserved by user (через таблицу reservations)
     cur.execute("""
-        SELECT o.id, o.offer_type, o.amount, o.rate, o.meeting_time, o.time_start, o.time_end, o.status, o.created_at, 
-               o.reserved_by, o.reserved_at, NULL as reserved_by_username, 
-               o.user_id, owner.username as owner_username, 'reserved' as relation_type
-        FROM offers o
-        LEFT JOIN users owner ON o.user_id = owner.id
-        WHERE o.reserved_by = %s 
+        SELECT DISTINCT o.id, o.offer_type, o.amount, o.rate, o.meeting_time, o.time_start, o.time_end, o.status, o.created_at, 
+               o.user_id, owner.username as owner_username, 'reserved' as relation_type,
+               0 as reservations_count
+        FROM t_p53513159_legal_crypto_exchang.offers o
+        LEFT JOIN t_p53513159_legal_crypto_exchang.users owner ON o.user_id = owner.id
+        INNER JOIN t_p53513159_legal_crypto_exchang.reservations r ON o.id = r.offer_id
+        WHERE r.buyer_user_id = %s 
         ORDER BY o.created_at DESC
     """, (user_id,))
     
@@ -74,6 +76,31 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     offers = []
     for row in all_rows:
+        offer_id = row[0]
+        relation_type = row[11]
+        
+        # Получаем детали резерваций для созданных объявлений
+        reservations_list = []
+        if relation_type == 'created':
+            cur.execute("""
+                SELECT r.buyer_name, r.buyer_phone, r.meeting_time, r.meeting_office, r.created_at,
+                       u.username as buyer_username
+                FROM t_p53513159_legal_crypto_exchang.reservations r
+                LEFT JOIN t_p53513159_legal_crypto_exchang.users u ON r.buyer_user_id = u.id
+                WHERE r.offer_id = %s
+                ORDER BY r.created_at DESC
+            """, (offer_id,))
+            
+            reservations_data = cur.fetchall()
+            for res in reservations_data:
+                reservations_list.append({
+                    'buyer_name': res[5] if res[5] else res[0],
+                    'buyer_phone': res[1],
+                    'meeting_time': str(res[2]),
+                    'meeting_office': res[3],
+                    'created_at': res[4].isoformat() if res[4] else None
+                })
+        
         offers.append({
             'id': row[0],
             'offer_type': row[1],
@@ -83,12 +110,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'meeting_time_end': str(row[6]) if row[6] else None,
             'status': row[7],
             'created_at': row[8].isoformat() if row[8] else None,
-            'reserved_by': row[9],
-            'reserved_at': row[10].isoformat() if row[10] else None,
-            'reserved_by_username': row[11],
-            'owner_id': row[12],
-            'owner_username': row[13],
-            'relation_type': row[14]
+            'owner_id': row[9],
+            'owner_username': row[10],
+            'relation_type': row[11],
+            'reservations_count': row[12],
+            'reservations': reservations_list
         })
     
     cur.close()

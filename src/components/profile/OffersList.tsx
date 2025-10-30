@@ -5,6 +5,14 @@ import { Badge } from '@/components/ui/badge';
 import Icon from '@/components/ui/icon';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
+interface Reservation {
+  buyer_name: string;
+  buyer_phone?: string;
+  meeting_time: string;
+  meeting_office: string;
+  created_at: string;
+}
+
 interface Offer {
   id: number;
   offer_type: string;
@@ -20,6 +28,8 @@ interface Offer {
   owner_id?: number;
   owner_username?: string;
   relation_type?: 'created' | 'reserved';
+  reservations_count?: number;
+  reservations?: Reservation[];
 }
 
 interface Deal {
@@ -207,6 +217,36 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                       <p className="text-xs text-muted-foreground mt-1">
                         Создано: {formatDate(offer.created_at)}
                       </p>
+                      
+                      {offer.relation_type === 'created' && offer.reservations && offer.reservations.length > 0 && (
+                        <div className="mt-3 pt-3 border-t border-border">
+                          <p className="text-sm font-medium mb-2 flex items-center gap-2">
+                            <Icon name="Bell" size={16} className="text-orange-500" />
+                            Заявки на встречу ({offer.reservations.length}):
+                          </p>
+                          <div className="space-y-2">
+                            {offer.reservations.map((reservation, idx) => (
+                              <div key={idx} className="bg-orange-500/5 border border-orange-500/20 rounded p-2 text-xs">
+                                <p className="font-medium text-orange-600">{reservation.buyer_name}</p>
+                                {reservation.buyer_phone && (
+                                  <p className="text-muted-foreground flex items-center gap-1 mt-1">
+                                    <Icon name="Phone" size={12} />
+                                    {reservation.buyer_phone}
+                                  </p>
+                                )}
+                                <p className="text-muted-foreground flex items-center gap-1 mt-1">
+                                  <Icon name="Clock" size={12} />
+                                  {reservation.meeting_time}
+                                </p>
+                                <p className="text-muted-foreground flex items-center gap-1 mt-1">
+                                  <Icon name="MapPin" size={12} />
+                                  {reservation.meeting_office}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
