@@ -225,40 +225,43 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             return None
     
     def fetch_rapira():
-        try:
-            req = urllib.request.Request('https://rapira.net/api/v1/public/market/rate/USDT_RUB')
-            req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)')
-            req.add_header('Accept', 'application/json')
-            with urllib.request.urlopen(req, timeout=5) as response:
-                data = json.loads(response.read().decode())
-                if data and 'rate' in data:
-                    return {
-                        'exchange': 'Rapira',
-                        'rate': round(float(data['rate']), 2),
-                        'change': 0.0
-                    }
-                if data and 'price' in data:
-                    return {
-                        'exchange': 'Rapira',
-                        'rate': round(float(data['price']), 2),
-                        'change': 0.0
-                    }
-        except Exception as e:
-            print(f'Rapira API error: {e}')
+        endpoints = [
+            'https://rapira.net/api/currency/rate?pair=USDT_RUB',
+            'https://rapira.net/api/rates/USDT_RUB',
+            'https://rapira.net/api/exchange/rate/USDT_RUB',
+            'https://api.rapira.net/v1/rate/USDT_RUB',
+            'https://rapira.net/trade-api/public/rate/USDT_RUB'
+        ]
+        
+        for endpoint in endpoints:
             try:
-                req = urllib.request.Request('https://rapira.net/exchange/USDT_RUB')
-                req.add_header('User-Agent', 'Mozilla/5.0')
-                with urllib.request.urlopen(req, timeout=5) as response:
-                    html = response.read().decode('utf-8')
-                    import re
-                    patterns = [
-                        r'<span[^>]*class="[^"]*price[^"]*"[^>]*>([\d.]+)</span>',
-                        r'"rate":\s*([\d.]+)',
-                        r'rate["\']?\s*[:=]\s*["\']?([\d.]+)',
-                        r'(\d{2}\.\d{2})\s*₽'
-                    ]
-                    for pattern in patterns:
-                        match = re.search(pattern, html)
+                req = urllib.request.Request(endpoint)
+                req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)')
+                req.add_header('Accept', 'application/json, text/plain, */*')
+                req.add_header('Referer', 'https://rapira.net/exchange/USDT_RUB')
+                with urllib.request.urlopen(req, timeout=3) as response:
+                    content = response.read().decode('utf-8')
+                    try:
+                        data = json.loads(content)
+                        rate = None
+                        if isinstance(data, dict):
+                            rate = data.get('rate') or data.get('price') or data.get('last') or data.get('value')
+                            if not rate and 'data' in data:
+                                rate = data['data'].get('rate') or data['data'].get('price')
+                        elif isinstance(data, (int, float)):
+                            rate = data
+                        
+                        if rate:
+                            rate_val = float(rate)
+                            if 70 < rate_val < 95:
+                                return {
+                                    'exchange': 'Rapira',
+                                    'rate': round(rate_val, 2),
+                                    'change': 0.0
+                                }
+                    except:
+                        import re
+                        match = re.search(r'([\d]{2}\.[\d]{2})', content)
                         if match:
                             rate_val = float(match.group(1))
                             if 70 < rate_val < 95:
@@ -267,9 +270,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                                     'rate': round(rate_val, 2),
                                     'change': 0.0
                                 }
-            except Exception as e2:
-                print(f'Rapira HTML error: {e2}')
-            return None
+            except:
+                continue
+        
+        return None
     
     fetchers = [
         fetch_rapira, fetch_binance, fetch_bybit, fetch_okx, fetch_kucoin,
