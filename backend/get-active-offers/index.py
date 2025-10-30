@@ -98,10 +98,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if slot_time > current_time:
                 available_slots.append(slot_time.strftime('%H:%M'))
         
-        # Пропускаем объявления без доступных слотов
-        if not available_slots:
-            continue
-        
         offers.append({
             'id': offer_id,
             'user_id': row[1],
