@@ -224,10 +224,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             print(f'HTX error: {e}')
             return None
     
-    fetchers = [
-        fetch_binance, fetch_bybit, fetch_okx, fetch_kucoin,
-        fetch_mexc, fetch_gate, fetch_coinbase, fetch_bitget, fetch_htx
-    ]
+    fetchers = [fetch_binance, fetch_bybit, fetch_coinbase]
     
     for fetcher in fetchers:
         result = fetcher()
