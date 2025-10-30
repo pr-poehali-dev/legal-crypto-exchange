@@ -142,6 +142,7 @@ const HeroSection = () => {
                       style={{
                         left: `calc(50% + ${x}%)`,
                         top: `calc(50% + ${y}%)`,
+                        transform: 'translate(-50%, -50%)',
                         animationDelay: `${index * 0.3}s`
                       }}
                     >
