@@ -88,7 +88,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             ORDER BY slot_time
         """, (offer_id,))
         
-        available_slots = [slot[0].strftime('%H:%M') for slot in cur.fetchall()]
+        from datetime import datetime, time as dt_time
+        current_time = datetime.now().time()
+        
+        # Фильтруем слоты: только те, которые в будущем
+        available_slots = []
+        for slot in cur.fetchall():
+            slot_time = slot[0]
+            if slot_time > current_time:
+                available_slots.append(slot_time.strftime('%H:%M'))
         
         # Пропускаем объявления без доступных слотов
         if not available_slots:
