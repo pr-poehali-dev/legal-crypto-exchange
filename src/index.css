@@ -191,11 +191,11 @@
   }
 
   .animate-orbit-rotate {
-    animation: orbit-rotate 60s linear infinite;
+    animation: orbit-rotate 120s linear infinite;
   }
 
   .animate-orbit-counter-rotate {
-    animation: orbit-counter-rotate 60s linear infinite;
+    animation: orbit-counter-rotate 120s linear infinite;
   }
 
   @keyframes glow-border {
