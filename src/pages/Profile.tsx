@@ -47,6 +47,7 @@ const Profile = () => {
   const [amount, setAmount] = useState('');
   const [rate, setRate] = useState('');
   const [meetingTime, setMeetingTime] = useState('');
+  const [meetingTimeEnd, setMeetingTimeEnd] = useState('');
   const [city, setCity] = useState('Москва');
   const [selectedOffices, setSelectedOffices] = useState<string[]>([]);
   const [editingOffer, setEditingOffer] = useState<Offer | null>(null);
@@ -72,7 +73,9 @@ const Profile = () => {
       nextMinute = 0;
     }
     
-    setMeetingTime(`${String(currentHour).padStart(2, '0')}:${String(nextMinute).padStart(2, '0')}`);
+    const startTime = `${String(currentHour).padStart(2, '0')}:${String(nextMinute).padStart(2, '0')}`;
+    setMeetingTime(startTime);
+    setMeetingTimeEnd('21:00');
   }, []);
 
   useEffect(() => {
@@ -263,6 +266,7 @@ const Profile = () => {
     setAmount('');
     setRate('');
     setMeetingTime('');
+    setMeetingTimeEnd('21:00');
     setCity('Москва');
     setSelectedOffices([]);
     setEditingOffer(null);
@@ -414,6 +418,8 @@ const Profile = () => {
               setRate={setRate}
               meetingTime={meetingTime}
               setMeetingTime={setMeetingTime}
+              meetingTimeEnd={meetingTimeEnd}
+              setMeetingTimeEnd={setMeetingTimeEnd}
               city={city}
               setCity={setCity}
               selectedOffices={selectedOffices}

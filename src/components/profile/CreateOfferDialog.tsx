@@ -20,6 +20,8 @@ interface CreateOfferDialogProps {
   setRate: (value: string) => void;
   meetingTime: string;
   setMeetingTime: (value: string) => void;
+  meetingTimeEnd: string;
+  setMeetingTimeEnd: (value: string) => void;
   city: string;
   setCity: (value: string) => void;
   selectedOffices: string[];
@@ -39,6 +41,8 @@ const CreateOfferDialog = ({
   setRate,
   meetingTime,
   setMeetingTime,
+  meetingTimeEnd,
+  setMeetingTimeEnd,
   city,
   setCity,
   selectedOffices,
@@ -355,38 +359,54 @@ const CreateOfferDialog = ({
               <p className="text-xs text-muted-foreground mt-2">Выберите хотя бы один офис</p>
             )}
           </div>
-          <div>
-            <Label>Время встречи</Label>
-            <Select value={meetingTime} onValueChange={setMeetingTime}>
-              <SelectTrigger className="bg-background">
-                <SelectValue placeholder="Выберите время" />
-              </SelectTrigger>
-              <SelectContent className="max-h-[200px]">
-                <TooltipProvider>
-                  {generateTimeSlots().map(slot => (
-                    <Tooltip key={slot.time} delayDuration={200}>
-                      <TooltipTrigger asChild>
-                        <SelectItem value={slot.time} disabled={slot.isOccupied}>
-                          {slot.time} {slot.isOccupied && '(Все офисы заняты)'}
-                        </SelectItem>
-                      </TooltipTrigger>
-                      {slot.offices.length > 0 && (
-                        <TooltipContent side="left" className="max-w-xs">
-                          <div className="text-xs">
-                            <p className="font-semibold mb-1">Занятые офисы:</p>
-                            <ul className="list-disc pl-4 space-y-0.5">
-                              {slot.offices.map(office => (
-                                <li key={office}>{office}</li>
-                              ))}
-                            </ul>
-                          </div>
-                        </TooltipContent>
-                      )}
-                    </Tooltip>
-                  ))}
-                </TooltipProvider>
-              </SelectContent>
-            </Select>
+          <div className="space-y-2">
+            <Label>Период времени для встречи</Label>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <Label htmlFor="meeting-time-start" className="text-xs text-muted-foreground">От</Label>
+                <Select value={meetingTime} onValueChange={setMeetingTime}>
+                  <SelectTrigger id="meeting-time-start" className="bg-background">
+                    <SelectValue placeholder="09:00" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[200px]">
+                    {generateTimeSlots().map((slot) => (
+                      <SelectItem 
+                        key={`start-${slot.time}`} 
+                        value={slot.time}
+                        disabled={slot.isOccupied || (meetingTimeEnd && slot.time >= meetingTimeEnd)}
+                      >
+                        {slot.time} {slot.isOccupied && '🔒'}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="meeting-time-end" className="text-xs text-muted-foreground">До</Label>
+                <Select value={meetingTimeEnd} onValueChange={setMeetingTimeEnd}>
+                  <SelectTrigger id="meeting-time-end" className="bg-background">
+                    <SelectValue placeholder="21:00" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-[200px]">
+                    {generateTimeSlots().map((slot) => (
+                      <SelectItem 
+                        key={`end-${slot.time}`} 
+                        value={slot.time}
+                        disabled={slot.isOccupied || (meetingTime && slot.time <= meetingTime)}
+                      >
+                        {slot.time} {slot.isOccupied && '🔒'}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            {meetingTime && meetingTimeEnd && (
+              <p className="text-xs text-success">
+                <Icon name="Check" size={12} className="inline mr-1" />
+                Вы будете доступны с {meetingTime} до {meetingTimeEnd}
+              </p>
+            )}
             <p className="text-xs text-muted-foreground mt-1">
               <Icon name="Info" size={12} className="inline mr-1" />
               Обратите внимание: курс обмена актуален в течение трех часов и может измениться
