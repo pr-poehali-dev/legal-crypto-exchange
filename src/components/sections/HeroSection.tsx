@@ -136,7 +136,7 @@ const HeroSection = () => {
                     const x = Math.cos((angle * Math.PI) / 180) * radius;
                     const y = Math.sin((angle * Math.PI) / 180) * radius;
                     
-                    const appearOrder = (index + 2) % 8;
+                    const appearOrder = (index + 6) % 8;
                     const orbitalDelay = appearOrder * 0.5;
                     
                     return (
