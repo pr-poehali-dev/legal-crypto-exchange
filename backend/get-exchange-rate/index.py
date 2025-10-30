@@ -101,77 +101,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             print(f'Bybit error: {e}')
             return None
     
-    def fetch_okx():
-        try:
-            req = urllib.request.Request('https://www.okx.com/v3/c2c/tradingOrders/books?quoteCurrency=RUB&baseCurrency=USDT&side=buy&limit=10')
-            req.add_header('User-Agent', 'Mozilla/5.0')
-            with urllib.request.urlopen(req, timeout=5) as response:
-                data = json.loads(response.read().decode())
-                if data.get('data', {}).get('buy'):
-                    prices = [float(item['price']) for item in data['data']['buy'][:5]]
-                    if prices:
-                        return {
-                            'exchange': 'OKX',
-                            'rate': round(sum(prices) / len(prices), 2),
-                            'change': 0.0
-                        }
-        except Exception as e:
-            print(f'OKX error: {e}')
-            return None
-    
-    def fetch_kucoin():
-        try:
-            req = urllib.request.Request('https://www.kucoin.com/_api/otc/ad/list?currency=RUB&legal=USDT&side=buy&page=1&pageSize=10')
-            req.add_header('User-Agent', 'Mozilla/5.0')
-            with urllib.request.urlopen(req, timeout=5) as response:
-                data = json.loads(response.read().decode())
-                if data.get('data', {}).get('items'):
-                    prices = [float(item['price']) for item in data['data']['items'][:5]]
-                    if prices:
-                        return {
-                            'exchange': 'KuCoin',
-                            'rate': round(sum(prices) / len(prices), 2),
-                            'change': 0.0
-                        }
-        except Exception as e:
-            print(f'KuCoin error: {e}')
-            return None
-    
-    def fetch_mexc():
-        try:
-            req = urllib.request.Request('https://www.mexc.com/api/platform/otc/ad/list?currency=RUB&paymentTerm=USDT&side=BUY&page=1&limit=10')
-            req.add_header('User-Agent', 'Mozilla/5.0')
-            with urllib.request.urlopen(req, timeout=5) as response:
-                data = json.loads(response.read().decode())
-                if data.get('data'):
-                    prices = [float(item['price']) for item in data['data'][:5] if 'price' in item]
-                    if prices:
-                        return {
-                            'exchange': 'MEXC',
-                            'rate': round(sum(prices) / len(prices), 2),
-                            'change': 0.0
-                        }
-        except Exception as e:
-            print(f'MEXC error: {e}')
-            return None
-    
-    def fetch_gate():
-        try:
-            req = urllib.request.Request('https://www.gate.io/c2c/deals?currency=RUB&crypto_currency=USDT&trade_type=buy&page=1&page_size=10')
-            req.add_header('User-Agent', 'Mozilla/5.0')
-            with urllib.request.urlopen(req, timeout=5) as response:
-                data = json.loads(response.read().decode())
-                if data.get('list'):
-                    prices = [float(item['price']) for item in data['list'][:5] if 'price' in item]
-                    if prices:
-                        return {
-                            'exchange': 'Gate.io',
-                            'rate': round(sum(prices) / len(prices), 2),
-                            'change': 0.0
-                        }
-        except Exception as e:
-            print(f'Gate.io error: {e}')
-            return None
+
     
     def fetch_coinbase():
         try:
@@ -188,51 +118,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         except:
             return None
     
-    def fetch_bitget():
-        try:
-            req = urllib.request.Request('https://api.bitget.com/api/p2p/ad/list?fiat=RUB&crypto=USDT&side=buy&page=1&size=10')
-            req.add_header('User-Agent', 'Mozilla/5.0')
-            with urllib.request.urlopen(req, timeout=5) as response:
-                data = json.loads(response.read().decode())
-                if data.get('data', {}).get('advList'):
-                    prices = [float(item['price']) for item in data['data']['advList'][:5]]
-                    if prices:
-                        return {
-                            'exchange': 'Bitget',
-                            'rate': round(sum(prices) / len(prices), 2),
-                            'change': 0.0
-                        }
-        except Exception as e:
-            print(f'Bitget error: {e}')
-            return None
+
     
-    def fetch_htx():
-        try:
-            req = urllib.request.Request('https://www.htx.com/-/x/otc/v1/data/trade-market?coinId=2&currency=11&tradeType=buy&online=1&range=0')
-            req.add_header('User-Agent', 'Mozilla/5.0')
-            with urllib.request.urlopen(req, timeout=5) as response:
-                data = json.loads(response.read().decode())
-                if data.get('data'):
-                    prices = [float(item['price']) for item in data['data'][:5] if 'price' in item]
-                    if prices:
-                        return {
-                            'exchange': 'HTX',
-                            'rate': round(sum(prices) / len(prices), 2),
-                            'change': 0.0
-                        }
-        except Exception as e:
-            print(f'HTX error: {e}')
-            return None
-    
-    def fetch_rapira():
-        # Rapira.net не предоставляет публичного API
-        # Используем среднее значение P2P бирж как более точный источник
-        return None
-    
-    fetchers = [
-        fetch_rapira, fetch_binance, fetch_bybit, fetch_okx, fetch_kucoin,
-        fetch_mexc, fetch_gate, fetch_coinbase, fetch_bitget, fetch_htx
-    ]
+    fetchers = [fetch_binance, fetch_bybit, fetch_coinbase]
     
     for fetcher in fetchers:
         result = fetcher()
