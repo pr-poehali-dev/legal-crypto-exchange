@@ -125,6 +125,20 @@
     }
   }
 
+  @keyframes card-float {
+    0%,
+    100% {
+      transform: translate(-50%, -50%) translateY(0px);
+    }
+    50% {
+      transform: translate(-50%, -50%) translateY(-8px);
+    }
+  }
+
+  .animate-card-float {
+    animation: card-float 4s ease-in-out infinite;
+  }
+
   @keyframes glow-border {
     0%,
     100% {
