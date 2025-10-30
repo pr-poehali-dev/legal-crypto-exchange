@@ -21,13 +21,20 @@ const HeroSection = () => {
   ]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setRates(prev => prev.map(r => ({
-        ...r,
-        rate: r.rate + (Math.random() - 0.5) * 0.1,
-        change: (Math.random() - 0.5) * 2
-      })));
-    }, 3000);
+    const fetchRates = async () => {
+      try {
+        const response = await fetch('https://functions.poehali.dev/f429c90b-c275-4b5d-bcd3-d3a69a15dea9');
+        const data = await response.json();
+        if (data.success && data.rates && data.rates.length > 0) {
+          setRates(data.rates);
+        }
+      } catch (error) {
+        console.error('Failed to fetch rates:', error);
+      }
+    };
+
+    fetchRates();
+    const interval = setInterval(fetchRates, 30000);
     return () => clearInterval(interval);
   }, []);
 

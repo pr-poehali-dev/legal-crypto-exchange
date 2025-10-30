@@ -1,8 +1,19 @@
 {
   "tests": [
     {
-      "name": "Get USDT/RUB exchange rate",
+      "name": "Get USDT/RUB exchange rates from multiple exchanges",
       "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "rates": "array"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Handle OPTIONS request",
+      "method": "OPTIONS",
       "path": "/",
       "expectedStatus": 200
     }
