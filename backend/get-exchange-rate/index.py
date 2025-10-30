@@ -224,8 +224,24 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             print(f'HTX error: {e}')
             return None
     
+    def fetch_rapira():
+        try:
+            req = urllib.request.Request('https://rapira.net/exchange/USDT_RUB')
+            req.add_header('User-Agent', 'Mozilla/5.0')
+            with urllib.request.urlopen(req, timeout=5) as response:
+                data = json.loads(response.read().decode())
+                if data.get('rate'):
+                    return {
+                        'exchange': 'Rapira',
+                        'rate': round(float(data['rate']), 2),
+                        'change': 0.0
+                    }
+        except Exception as e:
+            print(f'Rapira error: {e}')
+            return None
+    
     fetchers = [
-        fetch_binance, fetch_bybit, fetch_okx, fetch_kucoin,
+        fetch_rapira, fetch_binance, fetch_bybit, fetch_okx, fetch_kucoin,
         fetch_mexc, fetch_gate, fetch_coinbase, fetch_bitget, fetch_htx
     ]
     
@@ -234,31 +250,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         if result:
             rates.append(result)
     
-    if rates:
-        avg_rate = sum(r['rate'] for r in rates) / len(rates)
-        exchange_names = ['Binance', 'Bybit', 'OKX', 'Coinbase', 'KuCoin', 'MEXC', 'Bitget', 'HTX', 'Gate.io']
-        existing = {r['exchange'] for r in rates}
-        
-        for name in exchange_names:
-            if name not in existing:
-                variation = round((0.5 - (hash(name) % 100) / 100) * 2, 2)
-                rates.append({
-                    'exchange': name,
-                    'rate': round(avg_rate + variation, 2),
-                    'change': 0.0
-                })
-    else:
-        rates = [
-            {'exchange': 'Binance', 'rate': round(usd_rub_rate, 2), 'change': 0.5},
-            {'exchange': 'Bybit', 'rate': round(usd_rub_rate, 2), 'change': -0.2},
-            {'exchange': 'OKX', 'rate': round(usd_rub_rate, 2), 'change': 0.8},
-            {'exchange': 'Coinbase', 'rate': round(usd_rub_rate, 2), 'change': 0.3},
-            {'exchange': 'KuCoin', 'rate': round(usd_rub_rate, 2), 'change': 0.6},
-            {'exchange': 'MEXC', 'rate': round(usd_rub_rate, 2), 'change': -0.1},
-            {'exchange': 'Bitget', 'rate': round(usd_rub_rate, 2), 'change': 0.7},
-            {'exchange': 'HTX', 'rate': round(usd_rub_rate, 2), 'change': 0.4},
-            {'exchange': 'Gate.io', 'rate': round(usd_rub_rate, 2), 'change': 0.5}
-        ]
+    if not rates:
+        rates = [{'exchange': 'Fallback', 'rate': round(usd_rub_rate, 2), 'change': 0.0}]
+    
+    avg_rate = sum(r['rate'] for r in rates) / len(rates) if rates else usd_rub_rate
     
     return {
         'statusCode': 200,
@@ -270,6 +265,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         'isBase64Encoded': False,
         'body': json.dumps({
             'success': True,
+            'rate': round(avg_rate, 2),
             'rates': rates,
             'count': len(rates),
             'usd_rub': round(usd_rub_rate, 2)

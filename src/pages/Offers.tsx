@@ -12,13 +12,17 @@ const Offers = () => {
   useEffect(() => {
     const fetchRate = async () => {
       try {
-        const response = await fetch('https://functions.poehali.dev/f429c90b-c275-4b5d-bcd3-d3a69a15dea9');
+        const response = await fetch('https://functions.poehali.dev/f429c90b-c275-4b5d-bcd3-d3a69a15dea9?t=' + Date.now());
         const data = await response.json();
-        if (data && data.success && data.rates && data.rates.length > 0) {
-          const rates = data.rates.map((r: any) => r.rate).filter((r: number) => r > 0);
-          if (rates.length > 0) {
-            const avgRate = rates.reduce((a: number, b: number) => a + b, 0) / rates.length;
-            setCurrentRate(avgRate);
+        if (data && data.success) {
+          if (data.rate && data.rate > 0) {
+            setCurrentRate(data.rate);
+          } else if (data.rates && data.rates.length > 0) {
+            const rates = data.rates.map((r: any) => r.rate).filter((r: number) => r > 0);
+            if (rates.length > 0) {
+              const avgRate = rates.reduce((a: number, b: number) => a + b, 0) / rates.length;
+              setCurrentRate(avgRate);
+            }
           }
         }
       } catch (error) {
