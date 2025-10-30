@@ -132,28 +132,36 @@ const HeroSection = () => {
                 {rates.slice(0, 8).map((rate, index) => {
                   const angle = (index * 45) - 90;
                   const radius = 46;
-                  const x = Math.cos((angle * Math.PI) / 180) * radius;
-                  const y = Math.sin((angle * Math.PI) / 180) * radius;
                   
                   return (
                     <div 
                       key={`${rate.exchange}-${index}`}
-                      className="absolute bg-card/90 backdrop-blur-sm rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border animate-card-appear border-2"
+                      className="absolute animate-orbit-rotate"
                       style={{
-                        left: `calc(50% + ${x}%)`,
-                        top: `calc(50% + ${y}%)`,
-                        transform: 'translate(-50%, -50%)',
-                        animationDelay: `${index * 0.1}s`
+                        left: '50%',
+                        top: '50%',
+                        width: 0,
+                        height: 0
                       }}
                     >
-                      <div 
-                        className="flex flex-col items-center gap-0 animate-card-float"
+                      <div
+                        className="absolute bg-card/90 backdrop-blur-sm rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border animate-card-appear animate-orbit-counter-rotate border-2"
                         style={{
-                          animationDelay: `${index * 0.4}s`
+                          left: '0',
+                          top: `${-radius}%`,
+                          transform: `translate(-50%, -50%) rotate(${-angle}deg)`,
+                          animationDelay: `${index * 0.1}s`
                         }}
                       >
-                        <span className="text-[9px] sm:text-[10px] text-muted-foreground whitespace-nowrap font-semibold">{rate.exchange}</span>
-                        <span className="text-xs sm:text-sm font-bold text-foreground leading-tight">{rate.rate.toFixed(2)} ₽</span>
+                        <div 
+                          className="flex flex-col items-center gap-0 animate-card-float"
+                          style={{
+                            animationDelay: `${index * 0.4}s`
+                          }}
+                        >
+                          <span className="text-[9px] sm:text-[10px] text-muted-foreground whitespace-nowrap font-semibold">{rate.exchange}</span>
+                          <span className="text-xs sm:text-sm font-bold text-foreground leading-tight">{rate.rate.toFixed(2)} ₽</span>
+                        </div>
                       </div>
                     </div>
                   );

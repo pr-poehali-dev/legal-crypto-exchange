@@ -146,12 +146,21 @@
     }
   }
 
-  @keyframes orbit-slow {
+  @keyframes orbit-rotate {
     from {
       transform: rotate(0deg);
     }
     to {
       transform: rotate(360deg);
+    }
+  }
+
+  @keyframes orbit-counter-rotate {
+    from {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+      transform: translate(-50%, -50%) rotate(-360deg);
     }
   }
 
@@ -163,8 +172,12 @@
     animation: card-appear 0.8s ease-out forwards;
   }
 
-  .animate-orbit-slow {
-    animation: orbit-slow 60s linear infinite;
+  .animate-orbit-rotate {
+    animation: orbit-rotate 60s linear infinite;
+  }
+
+  .animate-orbit-counter-rotate {
+    animation: orbit-counter-rotate 60s linear infinite;
   }
 
   @keyframes glow-border {
