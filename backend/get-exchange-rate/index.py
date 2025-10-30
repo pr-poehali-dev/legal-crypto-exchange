@@ -226,30 +226,49 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     
     def fetch_rapira():
         try:
-            req = urllib.request.Request('https://rapira.net/trade/USDT_RUB')
-            req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36')
-            req.add_header('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+            req = urllib.request.Request('https://rapira.net/api/v1/public/market/rate/USDT_RUB')
+            req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)')
+            req.add_header('Accept', 'application/json')
             with urllib.request.urlopen(req, timeout=5) as response:
-                html = response.read().decode('utf-8')
-                import re
-                price_match = re.search(r'price["\']?\s*:\s*["\']?([\d.]+)', html)
-                if price_match:
+                data = json.loads(response.read().decode())
+                if data and 'rate' in data:
                     return {
                         'exchange': 'Rapira',
-                        'rate': round(float(price_match.group(1)), 2),
+                        'rate': round(float(data['rate']), 2),
                         'change': 0.0
                     }
-                rate_match = re.search(r'[\d]{2,3}\.\d{2}', html)
-                if rate_match:
-                    rate_val = float(rate_match.group(0))
-                    if 75 < rate_val < 90:
-                        return {
-                            'exchange': 'Rapira',
-                            'rate': round(rate_val, 2),
-                            'change': 0.0
-                        }
+                if data and 'price' in data:
+                    return {
+                        'exchange': 'Rapira',
+                        'rate': round(float(data['price']), 2),
+                        'change': 0.0
+                    }
         except Exception as e:
-            print(f'Rapira error: {e}')
+            print(f'Rapira API error: {e}')
+            try:
+                req = urllib.request.Request('https://rapira.net/exchange/USDT_RUB')
+                req.add_header('User-Agent', 'Mozilla/5.0')
+                with urllib.request.urlopen(req, timeout=5) as response:
+                    html = response.read().decode('utf-8')
+                    import re
+                    patterns = [
+                        r'<span[^>]*class="[^"]*price[^"]*"[^>]*>([\d.]+)</span>',
+                        r'"rate":\s*([\d.]+)',
+                        r'rate["\']?\s*[:=]\s*["\']?([\d.]+)',
+                        r'(\d{2}\.\d{2})\s*₽'
+                    ]
+                    for pattern in patterns:
+                        match = re.search(pattern, html)
+                        if match:
+                            rate_val = float(match.group(1))
+                            if 70 < rate_val < 95:
+                                return {
+                                    'exchange': 'Rapira',
+                                    'rate': round(rate_val, 2),
+                                    'change': 0.0
+                                }
+            except Exception as e2:
+                print(f'Rapira HTML error: {e2}')
             return None
     
     fetchers = [
