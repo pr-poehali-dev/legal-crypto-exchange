@@ -101,7 +101,91 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             print(f'Bybit error: {e}')
             return None
     
-
+    def fetch_okx():
+        try:
+            payload = json.dumps({
+                "side": "buy",
+                "baseCurrency": "usdt",
+                "quoteCurrency": "rub",
+                "paymentMethod": "all",
+                "userType": "all"
+            }).encode('utf-8')
+            
+            req = urllib.request.Request(
+                'https://www.okx.com/v3/c2c/tradingOrders/getMarketplaceAdsPrelogin',
+                data=payload,
+                headers={'Content-Type': 'application/json', 'User-Agent': 'Mozilla/5.0'}
+            )
+            
+            with urllib.request.urlopen(req, timeout=5) as response:
+                data = json.loads(response.read().decode())
+                if data.get('data', {}).get('buy'):
+                    prices = [float(item['price']) for item in data['data']['buy'][:5]]
+                    if prices:
+                        return {
+                            'exchange': 'OKX',
+                            'rate': round(sum(prices) / len(prices), 2),
+                            'change': 0.0
+                        }
+        except Exception as e:
+            print(f'OKX error: {e}')
+            return None
+    
+    def fetch_kucoin():
+        try:
+            req = urllib.request.Request('https://www.kucoin.com/_api/otc/ad/list?currency=RUB&legal=USDT&side=BUY&page=1&pageSize=10')
+            req.add_header('User-Agent', 'Mozilla/5.0')
+            with urllib.request.urlopen(req, timeout=5) as response:
+                data = json.loads(response.read().decode())
+                if data.get('items'):
+                    prices = [float(item['price']) for item in data['items'][:5] if 'price' in item]
+                    if prices:
+                        return {
+                            'exchange': 'KuCoin',
+                            'rate': round(sum(prices) / len(prices), 2),
+                            'change': 0.0
+                        }
+        except Exception as e:
+            print(f'KuCoin error: {e}')
+            return None
+    
+    def fetch_mexc():
+        try:
+            req = urllib.request.Request('https://www.mexc.com/api/platform/c2c/ad/list?currency=USDT&legalCurrency=RUB&side=SELL&page=1&rows=10')
+            req.add_header('User-Agent', 'Mozilla/5.0')
+            req.add_header('Accept', 'application/json')
+            with urllib.request.urlopen(req, timeout=5) as response:
+                data = json.loads(response.read().decode())
+                if data.get('data'):
+                    prices = [float(item['price']) for item in data['data'][:5] if 'price' in item]
+                    if prices:
+                        return {
+                            'exchange': 'MEXC',
+                            'rate': round(sum(prices) / len(prices), 2),
+                            'change': 0.0
+                        }
+        except Exception as e:
+            print(f'MEXC error: {e}')
+            return None
+    
+    def fetch_gate():
+        try:
+            req = urllib.request.Request('https://www.gate.io/otc/search?type=buy&currency=RUB&crypto=USDT&page=1')
+            req.add_header('User-Agent', 'Mozilla/5.0')
+            req.add_header('Accept', 'application/json')
+            with urllib.request.urlopen(req, timeout=5) as response:
+                data = json.loads(response.read().decode())
+                if data.get('list'):
+                    prices = [float(item['price']) for item in data['list'][:5] if 'price' in item]
+                    if prices:
+                        return {
+                            'exchange': 'Gate.io',
+                            'rate': round(sum(prices) / len(prices), 2),
+                            'change': 0.0
+                        }
+        except Exception as e:
+            print(f'Gate.io error: {e}')
+            return None
     
     def fetch_coinbase():
         try:
@@ -115,12 +199,49 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'rate': round(float(data['data']['rates']['RUB']), 2),
                         'change': 0.0
                     }
-        except:
+        except Exception as e:
+            print(f'Coinbase error: {e}')
             return None
     
-
+    def fetch_bitget():
+        try:
+            req = urllib.request.Request('https://api.bitget.com/api/v2/p2p/merchantList?online=yes&tradeSide=buy&fiat=RUB&crypto=USDT&limit=10')
+            req.add_header('User-Agent', 'Mozilla/5.0')
+            req.add_header('Accept', 'application/json')
+            with urllib.request.urlopen(req, timeout=5) as response:
+                data = json.loads(response.read().decode())
+                if data.get('data', {}).get('merchantList'):
+                    prices = [float(item['price']) for item in data['data']['merchantList'][:5] if 'price' in item]
+                    if prices:
+                        return {
+                            'exchange': 'Bitget',
+                            'rate': round(sum(prices) / len(prices), 2),
+                            'change': 0.0
+                        }
+        except Exception as e:
+            print(f'Bitget error: {e}')
+            return None
     
-    fetchers = [fetch_binance, fetch_bybit, fetch_coinbase]
+    def fetch_htx():
+        try:
+            req = urllib.request.Request('https://www.htx.com/-/x/otc/v1/data/trade-market?coinId=2&currency=11&tradeType=buy&currPage=1&payMethod=0&acceptOrder=-1&blockType=general&online=1')
+            req.add_header('User-Agent', 'Mozilla/5.0')
+            req.add_header('Accept', 'application/json')
+            with urllib.request.urlopen(req, timeout=5) as response:
+                data = json.loads(response.read().decode())
+                if data.get('data'):
+                    prices = [float(item['price']) for item in data['data'][:5] if 'price' in item]
+                    if prices:
+                        return {
+                            'exchange': 'HTX',
+                            'rate': round(sum(prices) / len(prices), 2),
+                            'change': 0.0
+                        }
+        except Exception as e:
+            print(f'HTX error: {e}')
+            return None
+    
+    fetchers = [fetch_binance, fetch_bybit, fetch_okx, fetch_kucoin, fetch_mexc, fetch_gate, fetch_coinbase, fetch_bitget, fetch_htx]
     
     for fetcher in fetchers:
         result = fetcher()
