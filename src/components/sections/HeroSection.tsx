@@ -102,7 +102,7 @@ const HeroSection = () => {
               <div className="relative w-full max-w-[500px] sm:max-w-[600px] aspect-square mx-auto">
                 <div className="absolute inset-0 bg-gradient-to-br from-secondary/20 via-accent/20 to-secondary/20 rounded-full blur-3xl animate-pulse"></div>
                 
-                <div className="absolute inset-[30%] sm:inset-[32%]">
+                <div className="absolute inset-[35%] sm:inset-[36%]">
                   <div className="relative w-full h-full">
                     <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 via-teal-400 to-cyan-400 rounded-full animate-spin-slow opacity-20"></div>
                     
@@ -110,7 +110,7 @@ const HeroSection = () => {
                       <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-white/10 to-transparent animate-spin-slow"></div>
                       
                       <div className="absolute inset-[15%] bg-gradient-to-br from-emerald-300 to-teal-400 rounded-full flex items-center justify-center shadow-inner">
-                        <span className="text-4xl sm:text-6xl md:text-7xl font-black text-white drop-shadow-2xl">₮</span>
+                        <span className="text-3xl sm:text-5xl md:text-6xl font-black text-white drop-shadow-2xl">₮</span>
                       </div>
                       
                       {[...Array(8)].map((_, i) => (
