@@ -9,15 +9,14 @@ interface ExchangeRate {
 
 const HeroSection = () => {
   const [rates, setRates] = useState<ExchangeRate[]>([
-    { exchange: 'Binance', rate: 100.12, change: 0.5 },
     { exchange: 'Bybit', rate: 100.08, change: -0.2 },
-    { exchange: 'OKX', rate: 100.15, change: 0.8 },
     { exchange: 'Coinbase', rate: 100.05, change: 0.3 },
+    { exchange: 'Binance', rate: 100.12, change: 0.5 },
+    { exchange: 'OKX', rate: 100.15, change: 0.8 },
     { exchange: 'KuCoin', rate: 100.10, change: 0.6 },
     { exchange: 'MEXC', rate: 100.07, change: -0.1 },
     { exchange: 'Bitget', rate: 100.13, change: 0.7 },
     { exchange: 'HTX', rate: 100.09, change: 0.4 },
-    { exchange: 'Gate.io', rate: 100.11, change: 0.5 },
   ]);
 
   useEffect(() => {
