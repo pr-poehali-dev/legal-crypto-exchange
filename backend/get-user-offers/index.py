@@ -82,9 +82,19 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         # Получаем детали резерваций для созданных объявлений
         reservations_list = []
         if relation_type == 'created':
+            # Автоматически отклоняем резервации старше 30 минут
+            cur.execute("""
+                UPDATE t_p53513159_legal_crypto_exchang.reservations
+                SET status = 'expired'
+                WHERE offer_id = %s 
+                AND status = 'pending' 
+                AND created_at < NOW() - INTERVAL '30 minutes'
+            """, (offer_id,))
+            
             cur.execute("""
                 SELECT r.id, r.buyer_name, r.buyer_phone, r.meeting_time, r.meeting_office, r.created_at,
-                       u.username as buyer_username, r.status
+                       u.username as buyer_username, r.status,
+                       EXTRACT(EPOCH FROM (NOW() - r.created_at)) as seconds_ago
                 FROM t_p53513159_legal_crypto_exchang.reservations r
                 LEFT JOIN t_p53513159_legal_crypto_exchang.users u ON r.buyer_user_id = u.id
                 WHERE r.offer_id = %s
@@ -93,6 +103,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             reservations_data = cur.fetchall()
             for res in reservations_data:
+                status = res[7] if res[7] else 'pending'
+                seconds_ago = int(res[8]) if res[8] else 0
+                time_left = max(0, 1800 - seconds_ago)  # 30 минут = 1800 секунд
+                
                 reservations_list.append({
                     'id': res[0],
                     'buyer_name': res[6] if res[6] else res[1],
@@ -100,7 +114,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'meeting_time': str(res[3]),
                     'meeting_office': res[4],
                     'created_at': res[5].isoformat() if res[5] else None,
-                    'status': res[7] if res[7] else 'pending'
+                    'status': status,
+                    'time_left_seconds': time_left
                 })
         
         offers.append({
