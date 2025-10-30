@@ -135,7 +135,7 @@ const HeroSection = () => {
                   return (
                     <div 
                       key={rate.exchange}
-                      className="absolute bg-card/90 border border-border rounded-lg sm:rounded-xl px-2 py-1.5 sm:px-3 sm:py-2 shadow-lg backdrop-blur-sm animate-float"
+                      className="absolute bg-card/90 border border-border rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 shadow-lg backdrop-blur-sm animate-float"
                       style={{
                         animationDelay: `${index * 0.2}s`,
                         left: `calc(50% + ${x}%)`,
@@ -143,14 +143,9 @@ const HeroSection = () => {
                         transform: 'translate(-50%, -50%)'
                       }}
                     >
-                      <div className="flex flex-col">
-                        <span className="text-[10px] sm:text-xs text-muted-foreground whitespace-nowrap">{rate.exchange}</span>
-                        <div className="flex items-center gap-1">
-                          <span className="text-xs sm:text-sm font-bold text-foreground">{rate.rate.toFixed(2)} ₽</span>
-                          <span className={`text-[10px] sm:text-xs ${rate.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                            {rate.change >= 0 ? '↑' : '↓'}{Math.abs(rate.change).toFixed(1)}%
-                          </span>
-                        </div>
+                      <div className="flex flex-col items-center gap-0">
+                        <span className="text-[9px] sm:text-[10px] text-muted-foreground whitespace-nowrap font-semibold">{rate.exchange}</span>
+                        <span className="text-xs sm:text-sm font-bold text-foreground leading-tight">{rate.rate.toFixed(2)} ₽</span>
                       </div>
                     </div>
                   );
