@@ -130,37 +130,47 @@ const HeroSection = () => {
                 </div>
 
                 {rates.slice(0, 8).map((rate, index) => {
-                  const angle = (index * 45);
+                  const angle = (index * 45) - 90;
                   const radiusVW = 23;
                   
                   return (
                     <div 
                       key={`${rate.exchange}-${index}`}
-                      className="absolute animate-orbit-rotate"
+                      className="absolute"
                       style={{
                         left: '50%',
                         top: '50%',
-                        transform: `rotate(${angle}deg)`
+                        width: 0,
+                        height: 0
                       }}
                     >
                       <div
-                        className="bg-card/90 backdrop-blur-sm rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border animate-card-appear animate-orbit-counter-rotate border-2"
+                        className="absolute animate-orbit-rotate"
                         style={{
-                          transform: `translate(-50%, -${radiusVW}vw) rotate(-${angle}deg)`,
-                          animationDelay: `${index * 0.1}s`,
-                          position: 'absolute',
                           left: 0,
-                          top: 0
+                          top: 0,
+                          transform: `rotate(${angle}deg)`
                         }}
                       >
-                        <div 
-                          className="flex flex-col items-center gap-0 animate-card-float"
+                        <div
+                          className="bg-card/90 backdrop-blur-sm rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border animate-card-appear animate-orbit-counter-rotate border-2"
                           style={{
-                            animationDelay: `${index * 0.4}s`
+                            transform: `translate(-50%, -${radiusVW}vw) rotate(${-angle}deg)`,
+                            animationDelay: `${index * 0.1}s`,
+                            position: 'absolute',
+                            left: 0,
+                            top: 0
                           }}
                         >
-                          <span className="text-[9px] sm:text-[10px] text-muted-foreground whitespace-nowrap font-semibold">{rate.exchange}</span>
-                          <span className="text-xs sm:text-sm font-bold text-foreground leading-tight">{rate.rate.toFixed(2)} ₽</span>
+                          <div 
+                            className="flex flex-col items-center gap-0 animate-card-float"
+                            style={{
+                              animationDelay: `${index * 0.4}s`
+                            }}
+                          >
+                            <span className="text-[9px] sm:text-[10px] text-muted-foreground whitespace-nowrap font-semibold">{rate.exchange}</span>
+                            <span className="text-xs sm:text-sm font-bold text-foreground leading-tight">{rate.rate.toFixed(2)} ₽</span>
+                          </div>
                         </div>
                       </div>
                     </div>
