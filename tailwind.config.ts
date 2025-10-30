@@ -149,6 +149,7 @@ export default {
 				'float': 'float 6s ease-in-out infinite',
 				'gradient': 'gradient 3s ease infinite',
 				'orbit': 'orbit 4s linear infinite',
+				'orbit-mobile': 'orbit-mobile 4s linear infinite',
 				'pulse-glow': 'pulse-glow 3s ease-in-out infinite',
 				'slide-in-left': 'slide-in-left 0.6s ease-out',
 				'slide-in-right': 'slide-in-right 0.6s ease-out',

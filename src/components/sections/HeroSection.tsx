@@ -116,7 +116,7 @@ const HeroSection = () => {
                       {[...Array(8)].map((_, i) => (
                         <div
                           key={i}
-                          className="absolute w-2 h-2 md:w-3 md:h-3 bg-white/40 rounded-full blur-sm animate-orbit"
+                          className="absolute w-2 h-2 md:w-3 md:h-3 bg-white/40 rounded-full blur-sm animate-orbit-mobile md:animate-orbit"
                           style={{
                             top: '50%',
                             left: '50%',
