@@ -203,7 +203,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
           buyer_phone: phone,
           buyer_email: email || undefined,
           meeting_office: finalOffice,
-          meeting_time: meetingTime,
+          slot_time: meetingTime,
           is_anonymous: true,
         }),
       });

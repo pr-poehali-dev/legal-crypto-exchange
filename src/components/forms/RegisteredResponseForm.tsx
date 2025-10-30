@@ -141,7 +141,7 @@ const RegisteredResponseForm = ({
           user_id: userId,
           username: username,
           meeting_office: finalOffice,
-          meeting_time: meetingTime,
+          slot_time: meetingTime,
         }),
       });
 
