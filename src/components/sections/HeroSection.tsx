@@ -110,7 +110,7 @@ const HeroSection = () => {
                       <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-white/10 to-transparent animate-spin-slow"></div>
                       
                       <div className="absolute inset-[15%] bg-gradient-to-br from-emerald-300 to-teal-400 rounded-full flex items-center justify-center shadow-inner">
-                        <span className="text-5xl sm:text-6xl md:text-7xl font-black text-white drop-shadow-2xl">₮</span>
+                        <span className="text-4xl sm:text-6xl md:text-7xl font-black text-white drop-shadow-2xl">₮</span>
                       </div>
                       
                       {[...Array(8)].map((_, i) => (
