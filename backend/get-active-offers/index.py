@@ -80,24 +80,68 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 username = row[7] if row[7] else 'Пользователь'
             phone = row[8] if row[8] else ''
         
-        # Получаем доступные слоты для объявления
-        cur.execute("""
-            SELECT slot_time
-            FROM t_p53513159_legal_crypto_exchang.offer_time_slots
-            WHERE offer_id = %s AND is_reserved = FALSE
-            ORDER BY slot_time
-        """, (offer_id,))
-        
-        from datetime import datetime, timezone, timedelta
+        # Генерируем временные слоты из диапазона time_start - time_end
+        from datetime import datetime, timezone, timedelta, time as dt_time
         moscow_tz = timezone(timedelta(hours=3))
         current_time = datetime.now(moscow_tz).time()
         
-        # Фильтруем слоты: только те, которые в будущем
+        city = row[12] if len(row) > 12 else 'Москва'
+        offices = row[13] if len(row) > 13 and row[13] else []
+        
+        # Получаем все забронированные слоты в этом городе и офисах с подтверждённым статусом
+        reserved_slots = set()
+        if offices:
+            for office in offices:
+                cur.execute("""
+                    SELECT r.meeting_time, r.meeting_office
+                    FROM t_p53513159_legal_crypto_exchang.reservations r
+                    JOIN t_p53513159_legal_crypto_exchang.offers o ON r.offer_id = o.id
+                    WHERE o.city = %s 
+                    AND r.meeting_office = %s 
+                    AND r.status IN ('pending', 'confirmed')
+                    AND r.expires_at > NOW()
+                """, (city, office))
+                
+                for res_row in cur.fetchall():
+                    reserved_slots.add(f"{res_row[0]}|{res_row[1]}")
+        
+        # Генерируем слоты с интервалом 15 минут
         available_slots = []
-        for slot in cur.fetchall():
-            slot_time = slot[0]
-            if slot_time > current_time:
-                available_slots.append(slot_time.strftime('%H:%M'))
+        if time_start and time_end:
+            start_hour = time_start.hour
+            start_minute = time_start.minute
+            end_hour = time_end.hour if time_end.hour > 0 else 24
+            end_minute = time_end.minute
+            
+            current_hour = start_hour
+            current_minute = start_minute
+            
+            while True:
+                slot_time = dt_time(current_hour % 24, current_minute)
+                
+                # Проверяем что слот в будущем
+                if slot_time > current_time:
+                    # Проверяем что слот не забронирован ни в одном офисе
+                    is_available = True
+                    for office in offices:
+                        if f"{slot_time.strftime('%H:%M')}|{office}" in reserved_slots:
+                            is_available = False
+                            break
+                    
+                    if is_available:
+                        available_slots.append(slot_time.strftime('%H:%M'))
+                
+                # Переходим к следующему слоту (+15 минут)
+                current_minute += 15
+                if current_minute >= 60:
+                    current_minute = 0
+                    current_hour += 1
+                
+                # Проверяем достигли ли конца
+                if current_hour > end_hour or (current_hour == end_hour and current_minute >= end_minute):
+                    break
+                if current_hour >= 24:
+                    break
         
         offers.append({
             'id': offer_id,
