@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import Icon from '@/components/ui/icon';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import func2url from '../../../backend/func2url.json';
 
 interface CreateOfferDialogProps {
   isOpen: boolean;
@@ -60,13 +61,16 @@ const CreateOfferDialog = ({
 
   const fetchOccupiedTimes = async () => {
     try {
-      const response = await fetch('https://functions.poehali.dev/24cbcabc-c4e4-496b-a820-0315a576e32e');
+      const response = await fetch(func2url['get-all-offers']);
       const data = await response.json();
+      
+      console.log('Fetched offers data:', data);
       
       if (data.success && data.offers) {
         const occupiedMap = new Map<string, Set<string>>();
         
         data.offers.forEach((offer: any) => {
+          console.log('Processing offer:', offer);
           if ((offer.status === 'active' || offer.status === 'reserved') && offer.offices && offer.meeting_time) {
             offer.offices.forEach((office: string) => {
               if (!occupiedMap.has(office)) {
@@ -77,6 +81,7 @@ const CreateOfferDialog = ({
           }
         });
         
+        console.log('Occupied times map:', occupiedMap);
         setOccupiedTimesByOffice(occupiedMap);
       }
     } catch (error) {
@@ -87,7 +92,7 @@ const CreateOfferDialog = ({
   const fetchCurrentRate = async () => {
     setIsLoadingRate(true);
     try {
-      const response = await fetch('https://functions.poehali.dev/f429c90b-c275-4b5d-bcd3-d3a69a15dea9');
+      const response = await fetch(func2url['get-exchange-rate']);
       const data = await response.json();
       
       if (data.success && data.rate) {
