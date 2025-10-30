@@ -139,7 +139,7 @@ const HeroSection = () => {
                     return (
                       <div 
                         key={`${rate.exchange}-${index}`}
-                        className="absolute"
+                        className="absolute animate-orbit-counter-rotate"
                         style={{
                           left: `calc(50% + ${x}%)`,
                           top: `calc(50% + ${y}%)`,
@@ -147,7 +147,7 @@ const HeroSection = () => {
                         }}
                       >
                         <div 
-                          className="bg-card/90 backdrop-blur-sm rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border animate-card-appear border-2 animate-orbit-counter-rotate"
+                          className="bg-card/90 backdrop-blur-sm rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border animate-card-appear border-2"
                           style={{
                             animationDelay: `${index * 0.1}s`
                           }}
