@@ -1,9 +1,9 @@
 {
+  "admin-clear-all": "https://functions.poehali.dev/9ba15f07-2b5a-4130-9c77-85a5b1d8f040",
   "manage-reservation-response": "https://functions.poehali.dev/353673c7-c605-4d46-bb98-56554c376426",
   "create-anonymous-offer": "https://functions.poehali.dev/1b230655-4a48-4344-93de-76fdaf50a5bb",
   "update-statistics": "https://functions.poehali.dev/c2157c27-57f6-40c0-9239-5dea42db4833",
   "get-statistics": "https://functions.poehali.dev/121400a8-102d-4ec6-9d94-c1263c344c59",
-  "send-telegram-message": "https://functions.poehali.dev/09e16699-07ea-42a0-a07b-6faa27662d58",
   "cancel-reservation": "https://functions.poehali.dev/d3db438e-da8f-4c6a-a366-764038cf12c3",
   "update-telegram": "https://functions.poehali.dev/32fbe1d7-cfb3-446f-84b5-011ff57dc0cf",
   "get-user-data": "https://functions.poehali.dev/89a1066f-b5ab-4ce5-bc62-94bfd60d600b",

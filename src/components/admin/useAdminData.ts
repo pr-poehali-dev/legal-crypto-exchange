@@ -191,7 +191,7 @@ export const useAdminData = () => {
     if (!confirm('ВНИМАНИЕ! Это удалит ВСЕ объявления из базы. Продолжить?')) return;
 
     try {
-      const response = await fetch('https://functions.poehali.dev/2237d1cb-ec94-4c0c-a318-6145c2f54e23', {
+      const response = await fetch('https://functions.poehali.dev/9ba15f07-2b5a-4130-9c77-85a5b1d8f040', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ clear_all: true })
@@ -199,7 +199,7 @@ export const useAdminData = () => {
 
       const data = await response.json();
       if (data.success) {
-        toast.success(`Удалено объявлений: ${data.deleted_count}`);
+        toast.success(`Удалено записей: ${data.deleted_count} (резервации: ${data.reservations}, сделки: ${data.deals}, слоты: ${data.slots}, объявления: ${data.offers})`);
         await loadOffers();
         await loadDeals();
       } else {
