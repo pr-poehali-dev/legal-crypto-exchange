@@ -96,37 +96,64 @@ const HeroSection = () => {
             </div>
 
             <div className="flex items-center justify-center order-1 md:order-2 px-4 md:px-0">
-              <div className="w-full space-y-4">
-                <div className="text-center mb-6">
-                  <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-1" style={{fontFamily: 'Orbitron, sans-serif'}}>
-                    Актуальные курсы
-                  </h3>
-                  <p className="text-sm text-muted-foreground" style={{fontFamily: '"Exo 2", sans-serif'}}>
-                    P2P обмен на биржах
-                  </p>
-                </div>
+              <div className="relative w-full max-w-[500px] sm:max-w-[600px] md:max-w-[700px] aspect-square mx-auto">
+                <div className="absolute inset-0 bg-gradient-to-br from-secondary/20 via-accent/20 to-secondary/20 rounded-full blur-3xl animate-pulse"></div>
                 
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-w-2xl mx-auto">
-                  {rates.map((rate, index) => (
+                <div className="absolute inset-[30%] sm:inset-[32%] md:inset-[35%]">
+                  <div className="relative w-full h-full">
+                    <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 via-teal-400 to-cyan-400 rounded-full animate-spin-slow opacity-20"></div>
+                    
+                    <div className="absolute inset-2 bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-500 rounded-full shadow-2xl shadow-teal-500/50">
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-white/10 to-transparent animate-spin-slow"></div>
+                      
+                      <div className="absolute inset-[15%] bg-gradient-to-br from-emerald-300 to-teal-400 rounded-full flex items-center justify-center shadow-inner">
+                        <span className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white drop-shadow-2xl">₮</span>
+                      </div>
+                      
+                      {[...Array(8)].map((_, i) => (
+                        <div
+                          key={i}
+                          className="absolute w-2 h-2 md:w-3 md:h-3 bg-white/40 rounded-full blur-sm animate-orbit"
+                          style={{
+                            top: '50%',
+                            left: '50%',
+                            animationDelay: `${i * 0.5}s`,
+                            animationDuration: '4s'
+                          }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {rates.map((rate, index) => {
+                  const angle = (index * 360) / rates.length - 90;
+                  const radius = 48;
+                  const x = Math.cos((angle * Math.PI) / 180) * radius;
+                  const y = Math.sin((angle * Math.PI) / 180) * radius;
+                  
+                  return (
                     <div 
                       key={rate.exchange}
-                      className="bg-card/80 border border-secondary/20 rounded-xl p-4 backdrop-blur-sm hover:border-secondary/40 hover:shadow-lg hover:shadow-secondary/10 transition-all duration-300 animate-fade-in group"
+                      className="absolute bg-card/90 border border-secondary/30 rounded-lg px-3 py-2 shadow-xl backdrop-blur-md hover:scale-110 hover:border-secondary/60 transition-all duration-300 hover:shadow-secondary/20 animate-float"
                       style={{
-                        animationDelay: `${index * 0.1}s`
+                        left: `calc(50% + ${x}%)`,
+                        top: `calc(50% + ${y}%)`,
+                        transform: 'translate(-50%, -50%)',
+                        animationDelay: `${index * 0.15}s`
                       }}
                     >
-                      <div className="flex flex-col items-center gap-2">
-                        <span className="text-xs font-bold text-secondary/80 group-hover:text-secondary transition-colors" style={{fontFamily: 'Orbitron, sans-serif'}}>
+                      <div className="flex flex-col items-center gap-0.5">
+                        <span className="text-[10px] font-bold text-secondary whitespace-nowrap" style={{fontFamily: 'Orbitron, sans-serif'}}>
                           {rate.exchange}
                         </span>
-                        <span className="text-2xl font-black text-foreground group-hover:scale-105 transition-transform" style={{fontFamily: '"Exo 2", sans-serif'}}>
+                        <span className="text-sm sm:text-base font-black text-foreground" style={{fontFamily: '"Exo 2", sans-serif'}}>
                           {rate.rate.toFixed(2)}
                         </span>
-                        <span className="text-xs text-muted-foreground">₽ за USDT</span>
                       </div>
                     </div>
-                  ))}
-                </div>
+                  );
+                })}
               </div>
             </div>
           </div>
