@@ -391,6 +391,38 @@ const Profile = () => {
     }
   };
 
+  const handleManageReservation = async (reservationId: number, action: 'accept' | 'reject') => {
+    try {
+      const response = await fetch('https://functions.poehali.dev/353673c7-c605-4d46-bb98-56554c376426', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ reservation_id: reservationId, action }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast({
+          title: 'Успешно!',
+          description: action === 'accept' ? 'Резервация подтверждена' : 'Резервация отклонена',
+        });
+        loadOffers(user.id);
+      } else {
+        toast({
+          title: 'Ошибка',
+          description: data.error || 'Не удалось обработать запрос',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      toast({
+        title: 'Ошибка',
+        description: 'Не удалось обработать запрос',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('user');
     navigate('/');
@@ -452,6 +484,7 @@ const Profile = () => {
             onEditOffer={handleEditOffer}
             onDeleteOffer={handleDeleteOffer}
             onCancelReservation={handleCancelReservation}
+            onManageReservation={handleManageReservation}
             formatDate={formatDate}
           />
         </div>

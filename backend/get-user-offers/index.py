@@ -83,8 +83,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         reservations_list = []
         if relation_type == 'created':
             cur.execute("""
-                SELECT r.buyer_name, r.buyer_phone, r.meeting_time, r.meeting_office, r.created_at,
-                       u.username as buyer_username
+                SELECT r.id, r.buyer_name, r.buyer_phone, r.meeting_time, r.meeting_office, r.created_at,
+                       u.username as buyer_username, r.status
                 FROM t_p53513159_legal_crypto_exchang.reservations r
                 LEFT JOIN t_p53513159_legal_crypto_exchang.users u ON r.buyer_user_id = u.id
                 WHERE r.offer_id = %s
@@ -94,11 +94,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             reservations_data = cur.fetchall()
             for res in reservations_data:
                 reservations_list.append({
-                    'buyer_name': res[5] if res[5] else res[0],
-                    'buyer_phone': res[1],
-                    'meeting_time': str(res[2]),
-                    'meeting_office': res[3],
-                    'created_at': res[4].isoformat() if res[4] else None
+                    'id': res[0],
+                    'buyer_name': res[6] if res[6] else res[1],
+                    'buyer_phone': res[2],
+                    'meeting_time': str(res[3]),
+                    'meeting_office': res[4],
+                    'created_at': res[5].isoformat() if res[5] else None,
+                    'status': res[7] if res[7] else 'pending'
                 })
         
         offers.append({

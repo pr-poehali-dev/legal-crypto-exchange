@@ -1,0 +1,27 @@
+{
+  "tests": [
+    {
+      "name": "Accept reservation",
+      "method": "POST",
+      "body": {
+        "reservation_id": 1,
+        "action": "accept"
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Missing parameters",
+      "method": "POST",
+      "body": {},
+      "expectedStatus": 400,
+      "expectedBody": {
+        "success": false
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
