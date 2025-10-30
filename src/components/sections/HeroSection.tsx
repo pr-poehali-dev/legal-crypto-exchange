@@ -126,36 +126,60 @@ const HeroSection = () => {
                   </div>
                 </div>
 
-                {rates.map((rate, index) => {
-                  const positions = [
-                    { top: '5%', right: '0', sm: '-top-4 sm:-right-4' },
-                    { bottom: '0', left: '0', sm: '-bottom-4 sm:-left-4' },
-                    { top: '50%', left: '0', sm: '-left-16 md:-left-20' },
-                    { top: '33%', right: '0', sm: '-right-12 md:-right-16' },
-                    { top: '15%', left: '10%', sm: 'left-0' },
-                    { bottom: '15%', right: '10%', sm: 'right-0' },
-                    { top: '70%', left: '5%', sm: '-left-8' },
-                    { top: '25%', right: '15%', sm: '-right-8' },
-                    { bottom: '30%', left: '15%', sm: 'left-4' },
-                  ];
-                  const pos = positions[index];
+                {rates.slice(0, 8).map((rate, index) => {
+                  const angle = (index * 360) / 8 - 90;
+                  const radius = 165;
+                  const radiusSm = 140;
+                  const x = Math.cos((angle * Math.PI) / 180) * radius;
+                  const y = Math.sin((angle * Math.PI) / 180) * radius;
+                  const xSm = Math.cos((angle * Math.PI) / 180) * radiusSm;
+                  const ySm = Math.sin((angle * Math.PI) / 180) * radiusSm;
+                  
                   return (
                     <div 
                       key={rate.exchange}
-                      className={`absolute ${pos.sm} bg-card/90 border border-border rounded-lg sm:rounded-xl px-2 py-1.5 sm:px-3 sm:py-2 shadow-lg backdrop-blur-sm animate-float`}
+                      className="absolute bg-card/90 border border-border rounded-lg sm:rounded-xl px-2 py-1.5 sm:px-3 sm:py-2 shadow-lg backdrop-blur-sm animate-float hidden sm:block"
                       style={{
                         animationDelay: `${index * 0.2}s`,
-                        top: pos.top,
-                        bottom: pos.bottom,
-                        left: pos.left,
-                        right: pos.right
+                        left: `calc(50% + ${x}px)`,
+                        top: `calc(50% + ${y}px)`,
+                        transform: 'translate(-50%, -50%)'
                       }}
                     >
                       <div className="flex flex-col">
-                        <span className="text-[8px] sm:text-xs text-muted-foreground whitespace-nowrap">{rate.exchange}</span>
+                        <span className="text-xs text-muted-foreground whitespace-nowrap">{rate.exchange}</span>
                         <div className="flex items-center gap-1">
-                          <span className="text-[10px] sm:text-sm font-bold text-foreground">{rate.rate.toFixed(2)} ₽</span>
-                          <span className={`text-[8px] sm:text-xs ${rate.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                          <span className="text-sm font-bold text-foreground">{rate.rate.toFixed(2)} ₽</span>
+                          <span className={`text-xs ${rate.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                            {rate.change >= 0 ? '↑' : '↓'}{Math.abs(rate.change).toFixed(1)}%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+                {rates.slice(0, 6).map((rate, index) => {
+                  const angle = (index * 360) / 6 - 90;
+                  const radius = 120;
+                  const x = Math.cos((angle * Math.PI) / 180) * radius;
+                  const y = Math.sin((angle * Math.PI) / 180) * radius;
+                  
+                  return (
+                    <div 
+                      key={`mobile-${rate.exchange}`}
+                      className="absolute bg-card/90 border border-border rounded-lg px-2 py-1.5 shadow-lg backdrop-blur-sm animate-float block sm:hidden"
+                      style={{
+                        animationDelay: `${index * 0.2}s`,
+                        left: `calc(50% + ${x}px)`,
+                        top: `calc(50% + ${y}px)`,
+                        transform: 'translate(-50%, -50%)'
+                      }}
+                    >
+                      <div className="flex flex-col">
+                        <span className="text-[8px] text-muted-foreground whitespace-nowrap">{rate.exchange}</span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-[10px] font-bold text-foreground">{rate.rate.toFixed(2)} ₽</span>
+                          <span className={`text-[8px] ${rate.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                             {rate.change >= 0 ? '↑' : '↓'}{Math.abs(rate.change).toFixed(1)}%
                           </span>
                         </div>
