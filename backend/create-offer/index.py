@@ -3,12 +3,13 @@ import os
 import psycopg2
 import requests
 from typing import Dict, Any
+from datetime import datetime, timedelta
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Create new offer/announcement for buying or selling USDT
-    Args: event with httpMethod, body containing user_id, offer_type, amount, rate, meeting_time
-    Returns: Success response with offer_id
+    Business: Create new offer with time slots for buying or selling USDT
+    Args: event with httpMethod, body containing user_id, offer_type, amount, rate, time_start, time_end
+    Returns: Success response with offer_id and created time slots
     '''
     method: str = event.get('httpMethod', 'POST')
     
@@ -40,11 +41,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         offer_type = body_data.get('offer_type')
         amount = body_data.get('amount')
         rate = body_data.get('rate')
-        meeting_time = body_data.get('meeting_time')
+        time_start = body_data.get('time_start')
+        time_end = body_data.get('time_end')
         city = body_data.get('city', 'Москва')
         offices = body_data.get('offices', [])
         
-        if not all([user_id, offer_type, amount, rate, meeting_time]):
+        if not all([user_id, offer_type, amount, rate, time_start, time_end]):
             return {
                 'statusCode': 400,
                 'headers': {
@@ -75,12 +77,29 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         cursor.execute('''
             INSERT INTO t_p53513159_legal_crypto_exchang.offers 
-            (user_id, offer_type, amount, rate, meeting_time, city, offices, status, expires_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, 'active', NOW() + INTERVAL '24 hours')
+            (user_id, offer_type, amount, rate, time_start, time_end, city, offices, status, expires_at)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, 'active', NOW() + INTERVAL '24 hours')
             RETURNING id
-        ''', (user_id, offer_type, float(amount), float(rate), meeting_time, city, offices))
+        ''', (user_id, offer_type, float(amount), float(rate), time_start, time_end, city, offices))
         
         offer_id = cursor.fetchone()[0]
+        
+        # Генерируем временные слоты (каждые 15 минут)
+        start_time = datetime.strptime(time_start, '%H:%M').time()
+        end_time = datetime.strptime(time_end, '%H:%M').time()
+        
+        current_time = datetime.combine(datetime.today(), start_time)
+        end_datetime = datetime.combine(datetime.today(), end_time)
+        
+        slots_created = 0
+        while current_time < end_datetime:
+            cursor.execute('''
+                INSERT INTO t_p53513159_legal_crypto_exchang.offer_time_slots 
+                (offer_id, slot_time, is_reserved)
+                VALUES (%s, %s, FALSE)
+            ''', (offer_id, current_time.time()))
+            current_time += timedelta(minutes=15)
+            slots_created += 1
         
         cursor.execute('SELECT username FROM t_p53513159_legal_crypto_exchang.users WHERE id = %s', (user_id,))
         username_result = cursor.fetchone()
@@ -102,7 +121,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 📝 Тип: {offer_type_text}
 💰 Сумма: {float(amount)} USDT
 💱 Курс: {float(rate)} ₽
-⏰ Время встречи: {meeting_time}
+⏰ Временной промежуток: {time_start} - {time_end}
+📅 Слотов создано: {slots_created}
 💵 Итого: {float(amount) * float(rate):,.2f} ₽"""
             
             try:
@@ -124,7 +144,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'isBase64Encoded': False,
             'body': json.dumps({
                 'success': True,
-                'offer_id': offer_id
+                'offer_id': offer_id,
+                'slots_created': slots_created
             })
         }
         
