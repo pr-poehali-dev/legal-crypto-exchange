@@ -143,7 +143,7 @@ const HeroSection = () => {
                         style={{
                           left: `calc(50% + ${x}%)`,
                           top: `calc(50% + ${y}%)`,
-                          animation: `card-fly-in 0.8s ease-out ${index * 0.15}s forwards`,
+                          animation: `card-fly-in 0.8s ease-out ${index * 0.5}s forwards`,
                           opacity: 0
                         }}
                       >
@@ -154,7 +154,7 @@ const HeroSection = () => {
                             <div 
                               className="flex flex-col items-center gap-0 animate-card-float"
                               style={{
-                                animationDelay: `${index * 0.4 + 0.8}s`
+                                animationDelay: `${index * 0.5 + 0.8}s`
                               }}
                             >
                               <span className="text-[9px] sm:text-[10px] text-muted-foreground whitespace-nowrap font-semibold">{rate.exchange}</span>
