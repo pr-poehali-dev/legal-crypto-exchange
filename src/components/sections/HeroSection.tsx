@@ -129,20 +129,29 @@ const HeroSection = () => {
                   </div>
                 </div>
 
-                <div className="absolute inset-0 animate-orbit-slow" style={{ animationDelay: '0.5s' }}>
-                  {rates.slice(0, 8).map((rate, index) => {
-                    const angle = (index * 45) - 90;
-                    const radius = 46;
-                    const x = Math.cos((angle * Math.PI) / 180) * radius;
-                    const y = Math.sin((angle * Math.PI) / 180) * radius;
-                    
-                    return (
-                      <div 
-                        key={`${rate.exchange}-${index}`}
-                        className="absolute bg-card/90 backdrop-blur-sm rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border animate-card-appear border-2"
+                {rates.slice(0, 8).map((rate, index) => {
+                  const angle = (index * 45) - 90;
+                  const radius = 46;
+                  const x = Math.cos((angle * Math.PI) / 180) * radius;
+                  const y = Math.sin((angle * Math.PI) / 180) * radius;
+                  
+                  return (
+                    <div 
+                      key={`${rate.exchange}-${index}`}
+                      className="absolute animate-orbit-slow"
+                      style={{
+                        left: '50%',
+                        top: '50%',
+                        animationDelay: '0.5s'
+                      }}
+                    >
+                      <div
+                        className="bg-card/90 backdrop-blur-sm rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border animate-card-appear border-2"
                         style={{
-                          left: `calc(50% + ${x}%)`,
-                          top: `calc(50% + ${y}%)`,
+                          position: 'relative',
+                          left: `${x}%`,
+                          top: `${y}%`,
+                          transform: 'translate(-50%, -50%) rotate(-360deg)',
                           animationDelay: `${index * 0.1}s`
                         }}
                       >
@@ -156,9 +165,9 @@ const HeroSection = () => {
                           <span className="text-xs sm:text-sm font-bold text-foreground leading-tight">{rate.rate.toFixed(2)} ₽</span>
                         </div>
                       </div>
-                    );
-                  })}
-                </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
