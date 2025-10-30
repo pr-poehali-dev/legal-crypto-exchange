@@ -96,10 +96,10 @@ const HeroSection = () => {
             </div>
 
             <div className="flex items-center justify-center order-1 md:order-2 px-4 md:px-0">
-              <div className="relative w-full max-w-[500px] sm:max-w-[600px] md:max-w-[700px] aspect-square mx-auto">
+              <div className="relative w-full max-w-[280px] sm:max-w-sm md:max-w-md aspect-square mx-auto">
                 <div className="absolute inset-0 bg-gradient-to-br from-secondary/20 via-accent/20 to-secondary/20 rounded-full blur-3xl animate-pulse"></div>
                 
-                <div className="absolute inset-[30%] sm:inset-[32%] md:inset-[35%]">
+                <div className="absolute inset-12 sm:inset-16 md:inset-20">
                   <div className="relative w-full h-full">
                     <div className="absolute inset-0 bg-gradient-to-br from-emerald-500 via-teal-400 to-cyan-400 rounded-full animate-spin-slow opacity-20"></div>
                     
@@ -107,7 +107,7 @@ const HeroSection = () => {
                       <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-transparent via-white/10 to-transparent animate-spin-slow"></div>
                       
                       <div className="absolute inset-[15%] bg-gradient-to-br from-emerald-300 to-teal-400 rounded-full flex items-center justify-center shadow-inner">
-                        <span className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white drop-shadow-2xl">₮</span>
+                        <span className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white drop-shadow-2xl">₮</span>
                       </div>
                       
                       {[...Array(8)].map((_, i) => (
@@ -127,29 +127,38 @@ const HeroSection = () => {
                 </div>
 
                 {rates.map((rate, index) => {
-                  const angle = (index * 360) / rates.length - 90;
-                  const radius = 48;
-                  const x = Math.cos((angle * Math.PI) / 180) * radius;
-                  const y = Math.sin((angle * Math.PI) / 180) * radius;
-                  
+                  const positions = [
+                    { top: '5%', right: '0', sm: '-top-4 sm:-right-4' },
+                    { bottom: '0', left: '0', sm: '-bottom-4 sm:-left-4' },
+                    { top: '50%', left: '0', sm: '-left-16 md:-left-20' },
+                    { top: '33%', right: '0', sm: '-right-12 md:-right-16' },
+                    { top: '15%', left: '10%', sm: 'left-0' },
+                    { bottom: '15%', right: '10%', sm: 'right-0' },
+                    { top: '70%', left: '5%', sm: '-left-8' },
+                    { top: '25%', right: '15%', sm: '-right-8' },
+                    { bottom: '30%', left: '15%', sm: 'left-4' },
+                  ];
+                  const pos = positions[index];
                   return (
                     <div 
                       key={rate.exchange}
-                      className="absolute bg-card/90 border border-secondary/30 rounded-lg px-3 py-2 shadow-xl backdrop-blur-md hover:scale-110 hover:border-secondary/60 transition-all duration-300 hover:shadow-secondary/20 animate-float"
+                      className={`absolute ${pos.sm} bg-card/90 border border-border rounded-lg sm:rounded-xl px-2 py-1.5 sm:px-3 sm:py-2 shadow-lg backdrop-blur-sm animate-float`}
                       style={{
-                        left: `calc(50% + ${x}%)`,
-                        top: `calc(50% + ${y}%)`,
-                        transform: 'translate(-50%, -50%)',
-                        animationDelay: `${index * 0.15}s`
+                        animationDelay: `${index * 0.2}s`,
+                        top: pos.top,
+                        bottom: pos.bottom,
+                        left: pos.left,
+                        right: pos.right
                       }}
                     >
-                      <div className="flex flex-col items-center gap-0.5">
-                        <span className="text-[10px] font-bold text-secondary whitespace-nowrap" style={{fontFamily: 'Orbitron, sans-serif'}}>
-                          {rate.exchange}
-                        </span>
-                        <span className="text-sm sm:text-base font-black text-foreground" style={{fontFamily: '"Exo 2", sans-serif'}}>
-                          {rate.rate.toFixed(2)}
-                        </span>
+                      <div className="flex flex-col">
+                        <span className="text-[8px] sm:text-xs text-muted-foreground whitespace-nowrap">{rate.exchange}</span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-[10px] sm:text-sm font-bold text-foreground">{rate.rate.toFixed(2)} ₽</span>
+                          <span className={`text-[8px] sm:text-xs ${rate.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                            {rate.change >= 0 ? '↑' : '↓'}{Math.abs(rate.change).toFixed(1)}%
+                          </span>
+                        </div>
                       </div>
                     </div>
                   );
