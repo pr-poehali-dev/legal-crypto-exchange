@@ -120,8 +120,8 @@ const HeroSection = () => {
                           style={{
                             top: '50%',
                             left: '50%',
-                            animationDelay: `${i * 0.75}s`,
-                            animationDuration: '6s'
+                            animationDelay: `${i * 0.5}s`,
+                            animationDuration: '8s'
                           }}
                         />
                       ))}
