@@ -152,7 +152,7 @@ const HeroSection = () => {
                       >
                         <div className="animate-orbit-counter-rotate">
                           <div 
-                            className="bg-card/90 backdrop-blur-sm rounded-lg px-2 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border border-2"
+                            className="bg-card/95 backdrop-blur-md rounded-lg px-2.5 py-1 sm:px-2.5 sm:py-1.5 animate-card-pulse animate-glow-border border-2 shadow-lg"
                           >
                             <div 
                               className="flex flex-col items-center gap-0 animate-card-float"
@@ -160,8 +160,8 @@ const HeroSection = () => {
                                 animationDelay: `${orbitalDelay + 0.6}s`
                               }}
                             >
-                              <span className="text-[9px] sm:text-[10px] text-muted-foreground whitespace-nowrap font-semibold">{rate.exchange}</span>
-                              <span className="text-xs sm:text-sm font-bold text-foreground leading-none whitespace-nowrap">{rate.rate.toFixed(2)}&nbsp;₽</span>
+                              <span className="text-[10px] sm:text-[10px] text-muted-foreground whitespace-nowrap font-bold">{rate.exchange}</span>
+                              <span className="text-xs sm:text-sm font-black text-foreground leading-none whitespace-nowrap">{rate.rate.toFixed(2)}&nbsp;₽</span>
                             </div>
                           </div>
                         </div>
