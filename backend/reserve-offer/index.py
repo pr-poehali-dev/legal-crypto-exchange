@@ -130,11 +130,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         display_name = buyer_name if is_anonymous else username
         
+        # Резервируем объявление для любого типа отклика
         if is_anonymous:
-            # Для анонимных откликов объявление остается активным, только записываем заявку
-            pass
+            cur.execute(
+                "UPDATE offers SET status = 'reserved', reserved_at = NOW() WHERE id = %s",
+                (offer_id,)
+            )
         else:
-            # Для зарегистрированных пользователей резервируем объявление
             cur.execute(
                 "UPDATE offers SET status = 'reserved', reserved_by = %s, reserved_at = NOW() WHERE id = %s",
                 (user_id, offer_id)
