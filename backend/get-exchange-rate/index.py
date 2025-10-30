@@ -224,8 +224,36 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             print(f'HTX error: {e}')
             return None
     
+    def fetch_rapira():
+        try:
+            req = urllib.request.Request('https://rapira.net/trade/USDT_RUB')
+            req.add_header('User-Agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36')
+            req.add_header('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+            with urllib.request.urlopen(req, timeout=5) as response:
+                html = response.read().decode('utf-8')
+                import re
+                price_match = re.search(r'price["\']?\s*:\s*["\']?([\d.]+)', html)
+                if price_match:
+                    return {
+                        'exchange': 'Rapira',
+                        'rate': round(float(price_match.group(1)), 2),
+                        'change': 0.0
+                    }
+                rate_match = re.search(r'[\d]{2,3}\.\d{2}', html)
+                if rate_match:
+                    rate_val = float(rate_match.group(0))
+                    if 75 < rate_val < 90:
+                        return {
+                            'exchange': 'Rapira',
+                            'rate': round(rate_val, 2),
+                            'change': 0.0
+                        }
+        except Exception as e:
+            print(f'Rapira error: {e}')
+            return None
+    
     fetchers = [
-        fetch_binance, fetch_bybit, fetch_okx, fetch_kucoin,
+        fetch_rapira, fetch_binance, fetch_bybit, fetch_okx, fetch_kucoin,
         fetch_mexc, fetch_gate, fetch_coinbase, fetch_bitget, fetch_htx
     ]
     
@@ -233,6 +261,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         result = fetcher()
         if result:
             rates.append(result)
+            if result.get('exchange') == 'Rapira':
+                break
     
     if not rates:
         rates = [{'exchange': 'Fallback', 'rate': round(usd_rub_rate, 2), 'change': 0.0}]
