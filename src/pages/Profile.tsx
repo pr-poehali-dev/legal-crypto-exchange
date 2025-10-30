@@ -69,14 +69,14 @@ const Profile = () => {
     if (currentHour < 9) {
       currentHour = 9;
       nextMinute = 0;
-    } else if (currentHour > 21 || (currentHour === 21 && nextMinute > 0)) {
+    } else if (currentHour >= 24) {
       currentHour = 9;
       nextMinute = 0;
     }
     
     const startTime = `${String(currentHour).padStart(2, '0')}:${String(nextMinute).padStart(2, '0')}`;
     setMeetingTime(startTime);
-    setMeetingTimeEnd('21:00');
+    setMeetingTimeEnd('00:00');
   }, []);
 
   useEffect(() => {
@@ -268,7 +268,7 @@ const Profile = () => {
     setAmount('');
     setRate('');
     setMeetingTime('');
-    setMeetingTimeEnd('21:00');
+    setMeetingTimeEnd('00:00');
     setCity('Москва');
     setSelectedOffices([]);
     setEditingOffer(null);
