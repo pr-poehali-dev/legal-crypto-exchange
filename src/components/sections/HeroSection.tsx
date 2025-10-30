@@ -26,7 +26,11 @@ const HeroSection = () => {
         const response = await fetch('https://functions.poehali.dev/f429c90b-c275-4b5d-bcd3-d3a69a15dea9');
         const data = await response.json();
         if (data.success && data.rates && data.rates.length > 0) {
-          setRates(data.rates);
+          const order = ['Bybit', 'Coinbase', 'Binance', 'OKX', 'KuCoin', 'MEXC', 'Bitget', 'HTX'];
+          const sortedRates = order
+            .map(name => data.rates.find((r: ExchangeRate) => r.exchange === name))
+            .filter(Boolean) as ExchangeRate[];
+          setRates(sortedRates);
         }
       } catch (error) {
         console.error('Failed to fetch rates:', error);
