@@ -119,6 +119,10 @@ export default {
 					'0%': { transform: 'translate(-50%, -50%) rotate(0deg) translateX(120px) rotate(0deg)' },
 					'100%': { transform: 'translate(-50%, -50%) rotate(360deg) translateX(120px) rotate(-360deg)' }
 				},
+				'orbit-mobile': {
+					'0%': { transform: 'translate(-50%, -50%) rotate(0deg) translateX(90px) rotate(0deg)' },
+					'100%': { transform: 'translate(-50%, -50%) rotate(360deg) translateX(90px) rotate(-360deg)' }
+				},
 				'pulse-glow': {
 					'0%, 100%': { boxShadow: '0 0 20px rgba(255, 215, 77, 0.3)' },
 					'50%': { boxShadow: '0 0 40px rgba(255, 215, 77, 0.6)' }
