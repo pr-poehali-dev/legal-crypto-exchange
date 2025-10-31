@@ -184,39 +184,30 @@ const CreateOfferDialog = ({
 
   const generateTimeSlots = () => {
     const slots: Array<{ time: string; isOccupied: boolean; offices: string[] }> = [];
-    const now = new Date();
-    const currentHour = now.getHours();
-    const currentMinute = now.getMinutes();
     
-    // Generate all time slots from 9:00 to 00:00 (24:00) with 15-minute intervals
-    for (let hour = 9; hour <= 24; hour++) {
+    // Generate all time slots from 9:00 to 21:00 with 15-minute intervals
+    for (let hour = 9; hour <= 21; hour++) {
       for (let minute = 0; minute < 60; minute += 15) {
-        if (hour === 24 && minute > 0) break;
+        if (hour === 21 && minute > 0) break;
         
-        const displayHour = hour === 24 ? 0 : hour;
-        const timeSlot = `${String(displayHour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+        const timeSlot = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
         
-        // Filter out past times
-        const isPastTime = hour < currentHour || (hour === currentHour && minute <= currentMinute);
+        // Check if this time is occupied for any selected office
+        const occupiedOffices: string[] = [];
+        selectedOffices.forEach(office => {
+          const occupiedTimes = occupiedTimesByOffice.get(office);
+          if (occupiedTimes && occupiedTimes.has(timeSlot)) {
+            occupiedOffices.push(office);
+          }
+        });
         
-        if (!isPastTime) {
-          // Check if this time is occupied for any selected office
-          const occupiedOffices: string[] = [];
-          selectedOffices.forEach(office => {
-            const occupiedTimes = occupiedTimesByOffice.get(office);
-            if (occupiedTimes && occupiedTimes.has(timeSlot)) {
-              occupiedOffices.push(office);
-            }
-          });
-          
-          const isFullyOccupied = selectedOffices.length > 0 && occupiedOffices.length === selectedOffices.length;
-          
-          slots.push({
-            time: timeSlot,
-            isOccupied: isFullyOccupied,
-            offices: occupiedOffices
-          });
-        }
+        const isFullyOccupied = selectedOffices.length > 0 && occupiedOffices.length === selectedOffices.length;
+        
+        slots.push({
+          time: timeSlot,
+          isOccupied: isFullyOccupied,
+          offices: occupiedOffices
+        });
       }
     }
     
