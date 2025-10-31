@@ -11,7 +11,7 @@ export const useOfferForm = (userId: number | null, onSuccess: () => void) => {
   const [meetingTime, setMeetingTime] = useState('');
   const [meetingTimeEnd, setMeetingTimeEnd] = useState('');
   const [city, setCity] = useState('Москва');
-  const [selectedOffices, setSelectedOffices] = useState<string[]>([]);
+  const [selectedOffices, setSelectedOffices] = useState<string[]>(['Москва, ул. Нефтезаводская, д.9/2, 12 этаж']);
   const [editingOffer, setEditingOffer] = useState<Offer | null>(null);
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export const useOfferForm = (userId: number | null, onSuccess: () => void) => {
     setMeetingTime('');
     setMeetingTimeEnd('00:00');
     setCity('Москва');
-    setSelectedOffices([]);
+    setSelectedOffices(['Москва, ул. Нефтезаводская, д.9/2, 12 этаж']);
     setEditingOffer(null);
   };
 
