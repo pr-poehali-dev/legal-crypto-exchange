@@ -400,6 +400,10 @@ const CreateOfferDialog = ({
               </p>
             )}
             <p className="text-xs text-muted-foreground mt-1">
+              <Icon name="Lightbulb" size={12} className="inline mr-1" />
+              Более широкий временной диапазон повышает шансы на успешную сделку
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
               <Icon name="Info" size={12} className="inline mr-1" />
               Обратите внимание: курс обмена актуален в течение трех часов и может измениться
             </p>
