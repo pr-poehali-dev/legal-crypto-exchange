@@ -174,14 +174,6 @@ const CreateOfferDialog = ({
 
   const currentCityOffices = cityOffices[city] || [];
 
-  const handleOfficeToggle = (office: string) => {
-    if (selectedOffices.includes(office)) {
-      setSelectedOffices(selectedOffices.filter(o => o !== office));
-    } else {
-      setSelectedOffices([...selectedOffices, office]);
-    }
-  };
-
   const generateTimeSlots = () => {
     const slots: Array<{ time: string; isOccupied: boolean; offices: string[] }> = [];
     
@@ -315,7 +307,8 @@ const CreateOfferDialog = ({
             <Label htmlFor="city">Город</Label>
             <Select value={city} onValueChange={(value) => {
               setCity(value);
-              setSelectedOffices([]);
+              const newOffices = cityOffices[value] || [];
+              setSelectedOffices(newOffices.length > 0 ? [newOffices[0]] : []);
             }}>
               <SelectTrigger id="city" className="bg-background">
                 <SelectValue />
@@ -329,27 +322,12 @@ const CreateOfferDialog = ({
             </Select>
           </div>
           <div>
-            <Label>Выберите офисы для встречи</Label>
-            <div className="space-y-2 mt-2 max-h-[200px] overflow-y-auto bg-background/50 rounded-lg p-3">
-              {currentCityOffices.map((office) => (
-                <div key={office} className="flex items-start space-x-2">
-                  <Checkbox
-                    id={office}
-                    checked={selectedOffices.includes(office)}
-                    onCheckedChange={() => handleOfficeToggle(office)}
-                  />
-                  <label
-                    htmlFor={office}
-                    className="text-sm leading-relaxed cursor-pointer select-none"
-                  >
-                    {office}
-                  </label>
-                </div>
-              ))}
+            <Label>Офис для встречи</Label>
+            <div className="mt-2 bg-background/50 rounded-lg p-3">
+              <p className="text-sm leading-relaxed">
+                {currentCityOffices[0] || 'Выберите город'}
+              </p>
             </div>
-            {selectedOffices.length === 0 && (
-              <p className="text-xs text-muted-foreground mt-2">Выберите хотя бы один офис</p>
-            )}
           </div>
           <div className="space-y-2">
             <Label>Период времени для встречи</Label>
