@@ -365,7 +365,7 @@ const CreateOfferDialog = ({
                       <SelectItem 
                         key={`start-${slot.time}`} 
                         value={slot.time}
-                        disabled={slot.isOccupied || (meetingTimeEnd && slot.time >= meetingTimeEnd)}
+                        disabled={slot.isOccupied}
                       >
                         {slot.time} {slot.isOccupied && '🔒'}
                       </SelectItem>
