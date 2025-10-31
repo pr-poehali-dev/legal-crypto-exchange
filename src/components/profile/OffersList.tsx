@@ -33,6 +33,7 @@ interface Offer {
   relation_type?: 'created' | 'reserved';
   reservations_count?: number;
   reservations?: Reservation[];
+  reservation_status?: 'pending' | 'confirmed' | 'rejected' | 'expired';
 }
 
 interface Deal {
@@ -234,10 +235,42 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                           : offer.meeting_time
                         }
                       </p>
-                      {offer.relation_type === 'reserved' && offer.owner_username && (
-                        <p className="text-sm text-blue-500 mt-1">
-                          Владелец: {offer.owner_username}
-                        </p>
+                      {offer.relation_type === 'reserved' && (
+                        <>
+                          {offer.owner_username && (
+                            <p className="text-sm text-blue-500 mt-1">
+                              Владелец: {offer.owner_username}
+                            </p>
+                          )}
+                          {offer.reservation_status && (
+                            <div className="mt-2">
+                              {offer.reservation_status === 'confirmed' && (
+                                <Badge className="bg-green-500/20 text-green-600 border-green-500/30">
+                                  <Icon name="CheckCircle2" size={14} className="mr-1" />
+                                  Ваша заявка принята
+                                </Badge>
+                              )}
+                              {offer.reservation_status === 'rejected' && (
+                                <Badge className="bg-red-500/20 text-red-600 border-red-500/30">
+                                  <Icon name="XCircle" size={14} className="mr-1" />
+                                  Ваша заявка отклонена
+                                </Badge>
+                              )}
+                              {offer.reservation_status === 'pending' && (
+                                <Badge className="bg-orange-500/20 text-orange-600 border-orange-500/30">
+                                  <Icon name="Clock" size={14} className="mr-1" />
+                                  Ожидание подтверждения
+                                </Badge>
+                              )}
+                              {offer.reservation_status === 'expired' && (
+                                <Badge className="bg-gray-500/20 text-gray-600 border-gray-500/30">
+                                  <Icon name="AlertCircle" size={14} className="mr-1" />
+                                  Время истекло
+                                </Badge>
+                              )}
+                            </div>
+                          )}
+                        </>
                       )}
                       {offer.relation_type === 'created' && offer.reserved_by && offer.reserved_by_username && (
                         <p className="text-sm text-orange-500 mt-1">

@@ -61,7 +61,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     cur.execute("""
         SELECT DISTINCT o.id, o.offer_type, o.amount, o.rate, o.meeting_time, o.time_start, o.time_end, o.status, o.created_at, 
                o.user_id, owner.username as owner_username, 'reserved' as relation_type,
-               0 as reservations_count
+               0 as reservations_count, r.status as reservation_status
         FROM t_p53513159_legal_crypto_exchang.offers o
         LEFT JOIN t_p53513159_legal_crypto_exchang.users owner ON o.user_id = owner.id
         INNER JOIN t_p53513159_legal_crypto_exchang.reservations r ON o.id = r.offer_id
@@ -81,6 +81,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         # Получаем детали резерваций для созданных объявлений
         reservations_list = []
+        reservation_status = None
+        
         if relation_type == 'created':
             # Автоматически отклоняем резервации старше 3 минут
             cur.execute("""
@@ -117,6 +119,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'status': status,
                     'time_left_seconds': time_left
                 })
+        else:
+            # Для зарезервированных объявлений получаем статус резервации
+            reservation_status = row[13] if len(row) > 13 else 'pending'
         
         offers.append({
             'id': row[0],
@@ -131,7 +136,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'owner_username': row[10],
             'relation_type': row[11],
             'reservations_count': row[12],
-            'reservations': reservations_list
+            'reservations': reservations_list,
+            'reservation_status': reservation_status
         })
     
     cur.close()

@@ -29,6 +29,7 @@ export interface Offer {
   owner_username?: string;
   relation_type?: 'created' | 'reserved';
   reservations?: any[];
+  reservation_status?: 'pending' | 'confirmed' | 'rejected' | 'expired';
 }
 
 export const useProfileData = () => {
