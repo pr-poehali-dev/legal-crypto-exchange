@@ -40,7 +40,7 @@ const AppContent = () => {
         },
         body: JSON.stringify({
           reservation_id: reservationId,
-          action: 'confirm',
+          action: 'accept',
         }),
       });
 
