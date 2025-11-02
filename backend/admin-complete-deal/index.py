@@ -1,5 +1,7 @@
 import json
 import os
+import urllib.request
+import urllib.parse
 from typing import Dict, Any
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
@@ -64,7 +66,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         cursor.execute("""
             SELECT o.user_id, o.reserved_by, o.offer_type, o.amount, o.rate, 
-                   owner.username as owner_name, reserver.username as reserver_name
+                   owner.username as owner_name, reserver.username as reserver_name,
+                   owner.telegram_id as owner_telegram, reserver.telegram_id as reserver_telegram
             FROM offers o
             JOIN users owner ON o.user_id = owner.id
             JOIN users reserver ON o.reserved_by = reserver.id
@@ -85,7 +88,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'Offer not found'})
             }
         
-        owner_id, reserver_id, offer_type, amount, rate, owner_name, reserver_name = offer_data
+        owner_id, reserver_id, offer_type, amount, rate, owner_name, reserver_name, owner_telegram, reserver_telegram = offer_data
         total = float(amount) * float(rate)
         
         if offer_type == 'buy':
@@ -113,6 +116,49 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         conn.commit()
         cursor.close()
         conn.close()
+        
+        bot_token = os.environ.get('TELEGRAM_BOT_TOKEN')
+        if bot_token:
+            deal_type_owner = 'Покупка' if owner_deal_type == 'buy' else 'Продажа'
+            deal_type_reserver = 'Покупка' if reserver_deal_type == 'buy' else 'Продажа'
+            
+            if owner_telegram:
+                message = f"""✅ Сделка завершена!
+                
+💼 Тип: {deal_type_owner}
+💵 Сумма: {amount} USDT
+💱 Курс: {rate} ₽
+💰 Итого: {total:.2f} ₽
+👤 Партнёр: {reserver_name}"""
+                
+                url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
+                data = {'chat_id': owner_telegram, 'text': message}
+                try:
+                    encoded_data = urllib.parse.urlencode(data).encode('utf-8')
+                    req = urllib.request.Request(url, data=encoded_data, method='POST')
+                    with urllib.request.urlopen(req) as response:
+                        response.read()
+                except:
+                    pass
+            
+            if reserver_telegram:
+                message = f"""✅ Сделка завершена!
+                
+💼 Тип: {deal_type_reserver}
+💵 Сумма: {amount} USDT
+💱 Курс: {rate} ₽
+💰 Итого: {total:.2f} ₽
+👤 Партнёр: {owner_name}"""
+                
+                url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
+                data = {'chat_id': reserver_telegram, 'text': message}
+                try:
+                    encoded_data = urllib.parse.urlencode(data).encode('utf-8')
+                    req = urllib.request.Request(url, data=encoded_data, method='POST')
+                    with urllib.request.urlopen(req) as response:
+                        response.read()
+                except:
+                    pass
         
         return {
             'statusCode': 200,

@@ -1,6 +1,8 @@
 import json
 import os
 import psycopg2
+import urllib.request
+import urllib.parse
 from typing import Dict, Any
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
@@ -85,9 +87,48 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         offer_id, buyer_name, meeting_time, meeting_office = result
         
+        cur.execute("""
+            SELECT o.amount, o.rate, o.offer_type, u.telegram_id, u.username
+            FROM t_p53513159_legal_crypto_exchang.offers o
+            JOIN t_p53513159_legal_crypto_exchang.users u ON o.reserved_by = u.id
+            WHERE o.id = %s
+        """, (offer_id,))
+        
+        offer_data = cur.fetchone()
+        
         conn.commit()
         cur.close()
         conn.close()
+        
+        if offer_data:
+            amount, rate, offer_type, telegram_id, username = offer_data
+            bot_token = os.environ.get('TELEGRAM_BOT_TOKEN')
+            
+            if bot_token and telegram_id:
+                status_text = '✅ подтверждена' if action == 'accept' else '❌ отклонена'
+                deal_type_text = 'Покупка' if offer_type == 'buy' else 'Продажа'
+                
+                telegram_message = f"""🔔 Ваша бронь {status_text}!
+                
+💼 Тип: {deal_type_text}
+💵 Сумма: {amount} USDT
+💱 Курс: {rate} ₽
+📍 Офис: {meeting_office}
+🕐 Время: {meeting_time}"""
+                
+                url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
+                data = {
+                    'chat_id': telegram_id,
+                    'text': telegram_message
+                }
+                
+                try:
+                    encoded_data = urllib.parse.urlencode(data).encode('utf-8')
+                    req = urllib.request.Request(url, data=encoded_data, method='POST')
+                    with urllib.request.urlopen(req) as response:
+                        response.read()
+                except:
+                    pass
         
         return {
             'statusCode': 200,
