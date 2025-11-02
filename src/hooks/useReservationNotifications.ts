@@ -44,6 +44,12 @@ export const useReservationNotifications = () => {
     }
   };
 
+  const vibrate = () => {
+    if ('vibrate' in navigator) {
+      navigator.vibrate([200, 100, 200, 100, 400]);
+    }
+  };
+
   const checkNewReservations = async () => {
     const userId = localStorage.getItem('userId');
     if (!userId) return;
@@ -70,6 +76,9 @@ export const useReservationNotifications = () => {
             // Звук
             playNotificationSound();
             
+            // Вибрация на телефоне
+            vibrate();
+            
             // Toast уведомление
             toast({
               title: '🎉 Новая бронь!',
@@ -84,6 +93,7 @@ export const useReservationNotifications = () => {
                 icon: '/favicon.ico',
                 tag: `reservation-${offer.id}-${Date.now()}`,
                 requireInteraction: true,
+                vibrate: [200, 100, 200, 100, 400],
               });
             }
           }
