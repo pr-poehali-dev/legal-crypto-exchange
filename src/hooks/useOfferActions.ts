@@ -37,7 +37,8 @@ export const useOfferActions = (userId: number | null, onSuccess: () => void) =>
     if (!userId) return;
 
     try {
-      const response = await fetch('https://functions.poehali.dev/d3db438e-da8f-4c6a-a366-764038cf12c3', {
+      const url = funcUrls['cancel-reservation'];
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ offer_id: offerId, user_id: userId }),
@@ -75,7 +76,8 @@ export const useOfferActions = (userId: number | null, onSuccess: () => void) =>
     if (!confirm('Вы уверены, что хотите удалить объявление?')) return;
 
     try {
-      const response = await fetch('https://functions.poehali.dev/dc3a8c3a-a2c6-4cf7-90ee-98bc9c9e5301', {
+      const url = funcUrls['delete-offer'];
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ offer_id: offerId }),

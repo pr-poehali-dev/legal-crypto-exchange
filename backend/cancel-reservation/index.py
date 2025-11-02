@@ -5,7 +5,7 @@ from typing import Dict, Any
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Cancel offer reservation (owner or reserver can cancel)
+    Business: Cancel pending reservation by user who created it
     Args: event with httpMethod, body containing offer_id, user_id
           context with request_id
     Returns: HTTP response with success status
@@ -54,8 +54,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     cur = conn.cursor()
     
     cur.execute(
-        "SELECT user_id, reserved_by FROM offers WHERE id = %s",
-        (offer_id,)
+        f"SELECT id FROM reservations WHERE offer_id = {offer_id} AND buyer_id = {user_id} AND status = 'pending'"
     )
     
     result = cur.fetchone()
@@ -67,35 +66,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'statusCode': 404,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'isBase64Encoded': False,
-            'body': json.dumps({'success': False, 'error': 'Offer not found'})
+            'body': json.dumps({'success': False, 'error': 'No pending reservation found'})
         }
     
-    owner_id, reserved_by = result
-    
-    if not reserved_by:
-        cur.close()
-        conn.close()
-        return {
-            'statusCode': 400,
-            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-            'isBase64Encoded': False,
-            'body': json.dumps({'success': False, 'error': 'Offer is not reserved'})
-        }
-    
-    # Allow cancellation by owner OR by the person who reserved it
-    if owner_id != user_id and reserved_by != user_id:
-        cur.close()
-        conn.close()
-        return {
-            'statusCode': 403,
-            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-            'isBase64Encoded': False,
-            'body': json.dumps({'success': False, 'error': 'Not authorized'})
-        }
+    reservation_id = result[0]
     
     cur.execute(
-        "UPDATE offers SET last_reserved_by = reserved_by, last_reserved_at = reserved_at, reserved_by = NULL, reserved_at = NULL WHERE id = %s",
-        (offer_id,)
+        f"UPDATE reservations SET status = 'cancelled' WHERE id = {reservation_id}"
     )
     
     conn.commit()

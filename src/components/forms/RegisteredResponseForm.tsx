@@ -160,13 +160,6 @@ const RegisteredResponseForm = ({
 
       if (data.success) {
         setStep(2);
-        setTimeout(() => {
-          setUseOfferOffice(true);
-          setCustomOffice('');
-          setSelectedTimeSlot('');
-          setStep(1);
-          onSuccess?.();
-        }, 4000);
       } else {
         console.error('Reserve offer error:', data);
         toast({
@@ -192,7 +185,7 @@ const RegisteredResponseForm = ({
   };
 
   if (step === 2) {
-    return <RegisteredSuccessScreen />;
+    return <RegisteredSuccessScreen onCancel={onSuccess} />;
   }
 
   return (

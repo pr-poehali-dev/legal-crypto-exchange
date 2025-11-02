@@ -1,6 +1,11 @@
 import Icon from '@/components/ui/icon';
+import { Button } from '@/components/ui/button';
 
-export const RegisteredSuccessScreen = () => {
+interface RegisteredSuccessScreenProps {
+  onCancel?: () => void;
+}
+
+export const RegisteredSuccessScreen = ({ onCancel }: RegisteredSuccessScreenProps) => {
   return (
     <div className="flex flex-col items-center justify-center py-12 space-y-6">
       <div className="relative">
@@ -21,6 +26,17 @@ export const RegisteredSuccessScreen = () => {
         <Icon name="CheckCircle2" size={16} className="text-success" />
         <span>Заявка отправлена</span>
       </div>
+
+      {onCancel && (
+        <Button
+          variant="outline"
+          onClick={onCancel}
+          className="border-blue-500 text-blue-500 hover:bg-blue-500/10"
+        >
+          <Icon name="X" size={16} className="mr-1" />
+          Закрыть
+        </Button>
+      )}
     </div>
   );
 };
