@@ -226,6 +226,9 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
                   : offer.meeting_time
                 }
               </p>
+              <p className="text-xs text-muted-foreground/70 italic mt-1.5">
+                Вы можете выбрать другого продавца, если время Вам не подходит
+              </p>
             </div>
           </div>
 
