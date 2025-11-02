@@ -92,6 +92,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 AND status = 'pending' 
                 AND created_at < NOW() - INTERVAL '3 minutes'
             """)
+            conn.commit()
             
             cur.execute(f"""
                 SELECT r.id, r.buyer_name, r.buyer_phone, r.meeting_time, r.meeting_office, r.created_at,
