@@ -44,8 +44,55 @@ export const useProfileData = () => {
   const notificationAudio = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    notificationAudio.current = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBgoOEhYaHiImKi4yNjo+QkZKTlJWWl5iZmpucnZ6foKGio6SlpqeoqaqrrK2ur7CxsrO0tba3uLm6u7y9vr/AwcLDxMXGx8jJysvMzc7P0NHS09TV1tfY2drb3N3e3+Dh4uPk5ebn6Onq6+zt7u/w8fLz9PX29/j5+vv8/f7/AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1Njc4OTo7PD0+P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWprbG1ub3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/w==');
-    notificationAudio.current.volume = 0.5;
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    
+    const playNotificationSound = () => {
+      const oscillator1 = audioContext.createOscillator();
+      const oscillator2 = audioContext.createOscillator();
+      const gainNode = audioContext.createGain();
+      
+      oscillator1.connect(gainNode);
+      oscillator2.connect(gainNode);
+      gainNode.connect(audioContext.destination);
+      
+      oscillator1.frequency.value = 800;
+      oscillator2.frequency.value = 1000;
+      oscillator1.type = 'sine';
+      oscillator2.type = 'sine';
+      
+      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+      
+      oscillator1.start(audioContext.currentTime);
+      oscillator2.start(audioContext.currentTime);
+      oscillator1.stop(audioContext.currentTime + 0.5);
+      oscillator2.stop(audioContext.currentTime + 0.5);
+      
+      setTimeout(() => {
+        const osc1 = audioContext.createOscillator();
+        const osc2 = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(audioContext.destination);
+        
+        osc1.frequency.value = 1000;
+        osc2.frequency.value = 1200;
+        osc1.type = 'sine';
+        osc2.type = 'sine';
+        
+        gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+        
+        osc1.start(audioContext.currentTime);
+        osc2.start(audioContext.currentTime);
+        osc1.stop(audioContext.currentTime + 0.5);
+        osc2.stop(audioContext.currentTime + 0.5);
+      }, 200);
+    };
+    
+    notificationAudio.current = { play: () => Promise.resolve(playNotificationSound()) } as any;
 
     const savedUser = localStorage.getItem('user');
     if (!savedUser) {
@@ -145,6 +192,10 @@ export const useProfileData = () => {
                   buyerName: latestReservation.buyer_name
                 });
                 notificationAudio.current?.play().catch(() => {});
+                
+                if ('vibrate' in navigator) {
+                  navigator.vibrate([200, 100, 200, 100, 400]);
+                }
               }
             }
             

@@ -42,16 +42,19 @@ const ReservationNotificationDialog = ({
 
   return (
     <Dialog open={!!notification} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md border-accent shadow-xl shadow-accent/20 animate-in zoom-in-95 duration-300">
         <DialogHeader>
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center animate-pulse">
-              <Icon name="Bell" size={24} className="text-accent" />
+            <div className="relative w-12 h-12 rounded-full bg-gradient-to-br from-accent to-accent/60 flex items-center justify-center">
+              <div className="absolute inset-0 rounded-full bg-accent animate-ping opacity-75"></div>
+              <Icon name="Bell" size={24} className="text-white relative z-10" />
             </div>
-            <DialogTitle className="text-xl">Новая заявка!</DialogTitle>
+            <DialogTitle className="text-xl font-bold bg-gradient-to-r from-accent to-accent/80 bg-clip-text text-transparent">
+              🎉 Новая заявка!
+            </DialogTitle>
           </div>
-          <DialogDescription className="text-base">
-            <span className="font-semibold">{notification?.buyerName}</span> хочет зарезервировать ваше объявление
+          <DialogDescription className="text-base pt-2">
+            <span className="font-semibold text-accent">{notification?.buyerName}</span> хочет зарезервировать ваше объявление
           </DialogDescription>
         </DialogHeader>
         <div className="flex gap-3 mt-4">
