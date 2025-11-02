@@ -13,7 +13,7 @@ export const RegisteredSuccessScreen = () => {
       <div className="text-center space-y-2">
         <h3 className="text-2xl font-bold text-secondary">Ожидайте подтверждения</h3>
         <p className="text-muted-foreground max-w-sm">
-          Ваша заявка успешно отправлена. Владелец объявления получил уведомление и свяжется с вами в ближайшее время.
+          Ваша заявка отправлена создателю. Он должен подтвердить бронь. Следите за статусом в профиле.
         </p>
       </div>
 

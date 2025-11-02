@@ -68,9 +68,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         cur.execute(f"""
             UPDATE t_p53513159_legal_crypto_exchang.reservations
-            SET status = '{new_status}'
+            SET status = '{new_status}', {('confirmed_at' if action == 'accept' else 'rejected_at')} = NOW()
             WHERE id = {reservation_id}
-            RETURNING offer_id, buyer_name, meeting_time, meeting_office
+            RETURNING offer_id, buyer_name, meeting_time, meeting_office, buyer_user_id
         """)
         
         result = cur.fetchone()
@@ -85,7 +85,27 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'success': False, 'error': 'Reservation not found'})
             }
         
-        offer_id, buyer_name, meeting_time, meeting_office = result
+        offer_id, buyer_name, meeting_time, meeting_office, buyer_user_id_from_res = result
+        
+        if action == 'accept':
+            if buyer_user_id_from_res:
+                cur.execute(f"""
+                    UPDATE t_p53513159_legal_crypto_exchang.offer_time_slots
+                    SET is_reserved = TRUE, reserved_by = {buyer_user_id_from_res}, reserved_at = NOW()
+                    WHERE offer_id = {offer_id} AND slot_time = '{meeting_time}'
+                """)
+            else:
+                cur.execute(f"""
+                    UPDATE t_p53513159_legal_crypto_exchang.offer_time_slots
+                    SET is_reserved = TRUE, reserved_at = NOW()
+                    WHERE offer_id = {offer_id} AND slot_time = '{meeting_time}'
+                """)
+        else:
+            cur.execute(f"""
+                UPDATE t_p53513159_legal_crypto_exchang.offer_time_slots
+                SET is_reserved = FALSE, reserved_by = NULL, reserved_at = NULL
+                WHERE offer_id = {offer_id} AND slot_time = '{meeting_time}'
+            """)
         
         cur.execute(f"""
             SELECT o.amount, o.rate, o.offer_type, u.telegram_id, u.username, r.buyer_user_id

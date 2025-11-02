@@ -144,19 +144,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 display_name = buyer_name if is_anonymous else username
                 
-                if is_anonymous:
-                    cur.execute(f"""
-                        UPDATE t_p53513159_legal_crypto_exchang.offer_time_slots
-                        SET is_reserved = TRUE, reserved_at = NOW()
-                        WHERE offer_id = {offer_id} AND slot_time = '{slot_time}'
-                    """)
-                else:
-                    cur.execute(f"""
-                        UPDATE t_p53513159_legal_crypto_exchang.offer_time_slots
-                        SET is_reserved = TRUE, reserved_by = {user_id}, reserved_at = NOW()
-                        WHERE offer_id = {offer_id} AND slot_time = '{slot_time}'
-                    """)
-                
                 buyer_name_sql = escape_sql(buyer_name) if is_anonymous else 'NULL'
                 buyer_phone_sql = escape_sql(buyer_phone) if is_anonymous else 'NULL'
                 user_id_sql = user_id if not is_anonymous else 'NULL'
@@ -173,7 +160,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 if telegram_id:
                     contact_info = f"\n🌐 Контакт: {buyer_phone}" if is_anonymous else ""
-                    owner_message = f"""🚀 НОВАЯ БРОНЬ В СИСТЕМЕ!
+                    owner_message = f"""🔔 НОВАЯ ЗАЯВКА НА БРОНЬ!
 
 👤 Партнёр: {display_name}{contact_info}
 ⚡ Тип сделки: {offer_type_text}
@@ -182,7 +169,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 📍 Точка встречи: {meeting_office}
 ⏰ Временной слот: {slot_time}
 
-✨ Система ожидает вашего прибытия в указанное время."""
+⏳ Зайдите в профиль и подтвердите или отклоните заявку."""
                     
                     try:
                         requests.post(
@@ -200,7 +187,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 chat_id = os.environ.get('TELEGRAM_CHAT_ID')
                 if bot_token_deals and chat_id:
                     contact_details = f"\n🌐 Контакт: {buyer_phone}" if is_anonymous else ""
-                    admin_message = f"""🛸 ИНИЦИИРОВАНА НОВАЯ ТРАНЗАКЦИЯ
+                    admin_message = f"""🔔 НОВАЯ ЗАЯВКА НА БРОНЬ
 
 🎯 Инициатор: {owner_username}
 👽 Партнёр: {display_name}{contact_details}
