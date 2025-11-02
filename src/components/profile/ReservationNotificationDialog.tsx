@@ -25,8 +25,13 @@ const ReservationNotificationDialog = ({
 
   
   const handleAccept = () => {
+    console.log('🔔 Dialog handleAccept - notification:', notification);
     if (notification) {
-      console.log('handleAccept - reservationId:', notification.reservationId);
+      console.log('🔔 Dialog handleAccept - reservationId:', notification.reservationId);
+      if (!notification.reservationId) {
+        console.error('❌ reservationId is missing!', notification);
+        return;
+      }
       onAccept(notification.reservationId);
     }
   };
