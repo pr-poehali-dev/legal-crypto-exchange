@@ -88,9 +88,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         offer_id, buyer_name, meeting_time, meeting_office = result
         
         cur.execute(f"""
-            SELECT o.amount, o.rate, o.offer_type, u.telegram_id, u.username
+            SELECT o.amount, o.rate, o.offer_type, u.telegram_id, u.username, r.buyer_user_id
             FROM t_p53513159_legal_crypto_exchang.offers o
-            JOIN t_p53513159_legal_crypto_exchang.users u ON o.reserved_by = u.id
+            LEFT JOIN t_p53513159_legal_crypto_exchang.reservations r ON r.id = {reservation_id}
+            LEFT JOIN t_p53513159_legal_crypto_exchang.users u ON r.buyer_user_id = u.id
             WHERE o.id = {offer_id}
         """)
         
@@ -101,7 +102,28 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         conn.close()
         
         if offer_data:
-            amount, rate, offer_type, telegram_id, username = offer_data
+            amount, rate, offer_type, telegram_id, username, buyer_user_id = offer_data
+            
+            if not buyer_user_id:
+                return {
+                    'statusCode': 200,
+                    'headers': {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*'
+                    },
+                    'isBase64Encoded': False,
+                    'body': json.dumps({
+                        'success': True,
+                        'message': f'Reservation {action}ed successfully (anonymous buyer)',
+                        'reservation': {
+                            'id': reservation_id,
+                            'status': new_status,
+                            'buyer_name': buyer_name,
+                            'meeting_time': str(meeting_time),
+                            'meeting_office': meeting_office
+                        }
+                    })
+                }
             bot_token = os.environ.get('TELEGRAM_BOT_TOKEN')
             
             if bot_token and telegram_id:

@@ -142,8 +142,8 @@ const Profile = () => {
         notification={newReservationNotification}
         offers={offers}
         onClose={() => setNewReservationNotification(null)}
-        onAccept={handleManageReservation}
-        onReject={handleManageReservation}
+        onAccept={(reservationId) => handleManageReservation(reservationId, 'accept')}
+        onReject={(reservationId) => handleManageReservation(reservationId, 'reject')}
       />
     </div>
   );

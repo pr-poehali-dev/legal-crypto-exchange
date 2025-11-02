@@ -39,7 +39,7 @@ export const useProfileData = () => {
   const [deals, setDeals] = useState<Deal[]>([]);
   const [offers, setOffers] = useState<Offer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [newReservationNotification, setNewReservationNotification] = useState<{offerId: number, buyerName: string} | null>(null);
+  const [newReservationNotification, setNewReservationNotification] = useState<{offerId: number, buyerName: string, reservationId: number} | null>(null);
   const prevReservationsCount = useRef<Record<number, number>>({});
   const notificationAudio = useRef<HTMLAudioElement | null>(null);
 
@@ -182,7 +182,8 @@ export const useProfileData = () => {
                 console.log('🔔 Новая бронь!', latestReservation);
                 setNewReservationNotification({
                   offerId: offer.id,
-                  buyerName: latestReservation.buyer_name
+                  buyerName: latestReservation.buyer_name,
+                  reservationId: latestReservation.id
                 });
                 notificationAudio.current?.play().catch((e) => console.error('Sound error:', e));
                 
