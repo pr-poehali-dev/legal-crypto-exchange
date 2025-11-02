@@ -94,6 +94,14 @@ const ReservationNotificationDialog = ({
                 {reservation?.meeting_time ? formatMeetingTime(reservation.meeting_time) : 'Не указано'}
               </span>
             </div>
+            {reservation?.meeting_office && (
+              <div className="flex flex-col gap-1 pt-2 border-t border-accent/20">
+                <span className="text-sm text-muted-foreground">Место встречи:</span>
+                <span className="text-sm font-medium text-foreground leading-snug">
+                  📍 {reservation.meeting_office}
+                </span>
+              </div>
+            )}
           </div>
         )}
         <div className="flex gap-3 mt-4">
