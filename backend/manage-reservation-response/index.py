@@ -105,17 +105,18 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             bot_token = os.environ.get('TELEGRAM_BOT_TOKEN')
             
             if bot_token and telegram_id:
-                status_text = '✅ подтверждена' if action == 'accept' else '❌ отклонена'
+                status_text = '✅ ПОДТВЕРЖДЕНА' if action == 'accept' else '⛔ ОТКЛОНЕНА'
+                status_emoji = '🚀' if action == 'accept' else '🌑'
                 deal_type_text = 'Покупка' if offer_type == 'buy' else 'Продажа'
                 total_amount = float(amount) * float(rate)
                 
-                telegram_message = f"""🔔 Ваша бронь {status_text}!
-                
-💼 Тип: {deal_type_text}
-💵 Сумма: {amount} USDT ({total_amount:.2f} ₽)
-💱 Курс: {rate} ₽
-📍 Офис: {meeting_office}
-🕐 Время: {meeting_time}"""
+                telegram_message = f"""{status_emoji} СТАТУС БРОНИ: {status_text}
+
+⚡ Операция: {deal_type_text}
+💎 Объём: {amount} USDT ({total_amount:.2f} ₽)
+📊 Курс: {rate} ₽
+📡 Станция: {meeting_office}
+⏱ Временной слот: {meeting_time}"""
                 
                 url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
                 data = {

@@ -123,13 +123,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             deal_type_reserver = 'Покупка' if reserver_deal_type == 'buy' else 'Продажа'
             
             if owner_telegram:
-                message = f"""✅ Сделка завершена!
-                
-💼 Тип: {deal_type_owner}
-💵 Сумма: {amount} USDT
-💱 Курс: {rate} ₽
-💰 Итого: {total:.2f} ₽
-👤 Партнёр: {reserver_name}"""
+                message = f"""🎯 ТРАНЗАКЦИЯ ЗАВЕРШЕНА!
+
+⚡ Операция: {deal_type_owner}
+💎 Объём: {amount} USDT
+📊 Курс: {rate} ₽
+💫 Итоговая сумма: {total:.2f} ₽
+👽 Партнёр: {reserver_name}
+
+✨ Миссия выполнена успешно!"""
                 
                 url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
                 data = {'chat_id': owner_telegram, 'text': message}
@@ -142,13 +144,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     pass
             
             if reserver_telegram:
-                message = f"""✅ Сделка завершена!
-                
-💼 Тип: {deal_type_reserver}
-💵 Сумма: {amount} USDT
-💱 Курс: {rate} ₽
-💰 Итого: {total:.2f} ₽
-👤 Партнёр: {owner_name}"""
+                message = f"""🎯 ТРАНЗАКЦИЯ ЗАВЕРШЕНА!
+
+⚡ Операция: {deal_type_reserver}
+💎 Объём: {amount} USDT
+📊 Курс: {rate} ₽
+💫 Итоговая сумма: {total:.2f} ₽
+👽 Партнёр: {owner_name}
+
+✨ Миссия выполнена успешно!"""
                 
                 url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
                 data = {'chat_id': reserver_telegram, 'text': message}

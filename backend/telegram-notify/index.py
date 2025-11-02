@@ -53,13 +53,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     phone = body_data.get('phone', '')
     message = body_data.get('message', '')
     
-    telegram_message = f"""🔔 Новое сообщение с сайта Legal Crypto Change
+    telegram_message = f"""📡 ВХОДЯЩАЯ ПЕРЕДАЧА ОТ ЗЕМЛИ
 
-👤 Имя: {name}
-📧 Email: {email}
-📱 Телефон: {phone}
+👤 Отправитель: {name}
+📧 Канал связи: {email}
+🌐 Контакт: {phone}
 
-💬 Сообщение:
+💬 Содержание сигнала:
 {message}"""
     
     url = f'https://api.telegram.org/bot{bot_token}/sendMessage'

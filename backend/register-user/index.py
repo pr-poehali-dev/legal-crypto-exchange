@@ -172,14 +172,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         chat_id = os.environ.get('TELEGRAM_CHAT_ID')
         
         if bot_token and chat_id:
-            telegram_message = f"""🎉 Новая регистрация на Legal Crypto Change!
+            telegram_message = f"""🚀 НОВЫЙ УЧАСТНИК КОСМОСА!
 
-👤 Имя: {first_name} {last_name}
-📧 Email: {email}
-📱 Телефон: {phone}
-🆔 ID: {user_id}
+👽 Позывной: {first_name} {last_name}
+📡 Email: {email}
+🌐 Связь: {phone}
+🆔 Идентификатор: {user_id}
 
-✅ Пользователь готов к работе с платформой"""
+✨ Система активирована и готова к работе"""
             
             url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
             data = {

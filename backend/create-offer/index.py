@@ -118,16 +118,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         if bot_token and chat_id:
             offer_type_text = 'Покупка' if offer_type == 'buy' else 'Продажа'
-            message = f"""📝 Новое объявление!
+            message = f"""🛸 НОВОЕ ПРЕДЛОЖЕНИЕ В СИСТЕМЕ!
 
-👤 Пользователь: {username}
-🏙️ Город: {city}
-📝 Тип: {offer_type_text}
-💰 Сумма: {float(amount)} USDT
-💱 Курс: {float(rate)} ₽
-⏰ Временной промежуток: {time_start} - {time_end}
-📅 Слотов создано: {slots_created}
-💵 Итого: {float(amount) * float(rate):,.2f} ₽"""
+👽 Инициатор: {username}
+🌍 Локация: {city}
+⚡ Тип операции: {offer_type_text}
+💎 Объём: {float(amount)} USDT
+📊 Курс: {float(rate)} ₽
+⏱ Временное окно: {time_start} - {time_end}
+🔢 Активных слотов: {slots_created}
+💫 Итоговая сумма: {float(amount) * float(rate):,.2f} ₽"""
             
             try:
                 telegram_api_url = f'https://api.telegram.org/bot{bot_token}/sendMessage'

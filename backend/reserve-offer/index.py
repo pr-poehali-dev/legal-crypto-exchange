@@ -172,17 +172,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 offer_type_text = 'Покупка' if offer_type == 'buy' else 'Продажа'
                 
                 if telegram_id:
-                    contact_info = f"\n📞 Телефон: {buyer_phone}" if is_anonymous else ""
-                    owner_message = f"""🔔 Ваше объявление зарезервировано!
+                    contact_info = f"\n🌐 Контакт: {buyer_phone}" if is_anonymous else ""
+                    owner_message = f"""🚀 НОВАЯ БРОНЬ В СИСТЕМЕ!
 
-Пользователь {display_name} хочет связаться по объявлению:{contact_info}
-📝 Тип: {offer_type_text}
-💰 Сумма: {amount} USDT
-💱 Курс: {rate} ₽
-📍 Офис: {meeting_office}
-⏰ Время встречи: {slot_time}
+👤 Партнёр: {display_name}{contact_info}
+⚡ Тип сделки: {offer_type_text}
+💎 Объём: {amount} USDT ({total_amount:.2f} ₽)
+📊 Курс: {rate} ₽
+📍 Точка встречи: {meeting_office}
+⏰ Временной слот: {slot_time}
 
-Пожалуйста, приходите в офис в указанное время."""
+✨ Система ожидает вашего прибытия в указанное время."""
                     
                     try:
                         requests.post(
@@ -199,17 +199,17 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 bot_token_deals = os.environ.get('TELEGRAM_BOT_TOKEN_DEALS')
                 chat_id = os.environ.get('TELEGRAM_CHAT_ID')
                 if bot_token_deals and chat_id:
-                    contact_details = f"\n📞 Телефон клиента: {buyer_phone}" if is_anonymous else ""
-                    admin_message = f"""📅 Новая встреча!
+                    contact_details = f"\n🌐 Контакт: {buyer_phone}" if is_anonymous else ""
+                    admin_message = f"""🛸 ИНИЦИИРОВАНА НОВАЯ ТРАНЗАКЦИЯ
 
-👤 Владелец: {owner_username}
-👤 Клиент: {display_name}{contact_details}
-📝 Тип: {offer_type_text}
-💰 Сумма: {amount} USDT
-💱 Курс: {rate} ₽
-📍 Офис: {meeting_office}
-⏰ Время встречи: {slot_time}
-💵 Итого: {float(amount) * float(rate):,.2f} ₽"""
+🎯 Инициатор: {owner_username}
+👽 Партнёр: {display_name}{contact_details}
+⚡ Операция: {offer_type_text}
+💎 Объём: {amount} USDT
+📊 Курс: {rate} ₽
+📡 Станция: {meeting_office}
+⏱ Временной слот: {slot_time}
+💫 Итоговая сумма: {float(amount) * float(rate):,.2f} ₽"""
                     
                     try:
                         telegram_api_url = f'https://api.telegram.org/bot{bot_token_deals}/sendMessage'

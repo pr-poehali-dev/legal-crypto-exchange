@@ -114,15 +114,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         chat_id = os.environ.get('TELEGRAM_CHAT_ID')
         
         if bot_token and chat_id:
-            message = f"""📝 Новое анонимное объявление!
+            message = f"""🌌 АНОНИМНЫЙ ЗАПРОС В СИСТЕМЕ!
 
-👤 Имя: {safe_name}
-📞 Телефон: {safe_phone}
-📝 Тип: Покупка
-💰 Сумма: {offer_req.amount} USDT
-💱 Курс: {offer_req.rate} ₽
-⏰ Время встречи: {offer_req.meeting_time}
-💵 Итого: {offer_req.amount * offer_req.rate:,.2f} ₽"""
+👤 Позывной: {safe_name}
+🌐 Контакт: {safe_phone}
+⚡ Операция: Покупка
+💎 Объём: {offer_req.amount} USDT
+📊 Курс: {offer_req.rate} ₽
+⏱ Временной слот: {offer_req.meeting_time}
+💫 Итоговая сумма: {offer_req.amount * offer_req.rate:,.2f} ₽"""
             
             try:
                 telegram_api_url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
