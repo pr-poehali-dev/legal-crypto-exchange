@@ -297,9 +297,9 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                                   : 'bg-orange-500/5 border-orange-500/20'
                               }`}>
                                 <div className="flex flex-col gap-2">
-                                  <div className="flex items-start justify-between gap-2">
+                                  <div className="flex items-start gap-2">
                                     <div className="flex-1 min-w-0">
-                                      <p className={`font-medium ${
+                                      <p className={`font-medium break-words ${
                                         reservation.status === 'confirmed' 
                                           ? 'text-green-600' 
                                           : reservation.status === 'rejected'
@@ -308,14 +308,16 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                                       }`}>{reservation.buyer_name}</p>
                                       {reservation.buyer_phone && (
                                         <p className="text-muted-foreground flex items-center gap-1 mt-1">
-                                          <Icon name="Phone" size={12} />
-                                          <span className="truncate">{reservation.buyer_phone}</span>
+                                          <Icon name="Phone" size={12} className="shrink-0" />
+                                          <span className="break-all">{reservation.buyer_phone}</span>
                                         </p>
                                       )}
                                     </div>
+                                  </div>
+                                  <div className="flex items-center justify-between gap-2">
                                     {reservation.status === 'pending' && (
                                       <div className="text-xs font-medium text-orange-600 whitespace-nowrap">
-                                        {(() => {
+                                        ⏰ {(() => {
                                           const seconds = timeLeftMap[reservation.id] || 0;
                                           const minutes = Math.floor(seconds / 60);
                                           const secs = seconds % 60;
@@ -324,12 +326,12 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                                       </div>
                                     )}
                                     {reservation.status === 'confirmed' && (
-                                      <Badge className="bg-green-500/20 text-green-600 border-green-500/30 shrink-0">
+                                      <Badge className="bg-green-500/20 text-green-600 border-green-500/30">
                                         Подтверждено
                                       </Badge>
                                     )}
                                     {reservation.status === 'rejected' && (
-                                      <Badge className="bg-red-500/20 text-red-600 border-red-500/30 shrink-0">
+                                      <Badge className="bg-red-500/20 text-red-600 border-red-500/30">
                                         Отклонено
                                       </Badge>
                                     )}
