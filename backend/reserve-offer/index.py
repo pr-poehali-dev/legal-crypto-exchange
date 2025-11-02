@@ -92,31 +92,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             conn.autocommit = True
             with conn.cursor() as cur:
                 cur.execute(f"""
-                    SELECT is_reserved 
-                    FROM t_p53513159_legal_crypto_exchang.offer_time_slots
-                    WHERE offer_id = {offer_id} AND slot_time = '{slot_time}'
-                """)
-                
-                slot_result = cur.fetchone()
-                if not slot_result:
-                    return {
-                        'statusCode': 404,
-                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                        'isBase64Encoded': False,
-                        'body': json.dumps({'success': False, 'error': 'Time slot not found'})
-                    }
-                
-                if slot_result[0]:
-                    return {
-                        'statusCode': 400,
-                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                        'isBase64Encoded': False,
-                        'body': json.dumps({'success': False, 'error': 'Time slot already reserved'})
-                    }
-                
-                cur.execute(f"""
                     SELECT o.user_id, o.amount, o.rate, o.offer_type, 
-                           u.telegram_id, u.username as owner_username
+                           u.telegram_id, u.username as owner_username, o.is_anonymous
                     FROM t_p53513159_legal_crypto_exchang.offers o
                     JOIN t_p53513159_legal_crypto_exchang.users u ON o.user_id = u.id
                     WHERE o.id = {offer_id}
@@ -132,7 +109,31 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                         'body': json.dumps({'success': False, 'error': 'Offer not found or not active'})
                     }
                 
-                owner_id, amount, rate, offer_type, telegram_id, owner_username = result
+                owner_id, amount, rate, offer_type, telegram_id, owner_username, offer_is_anonymous = result
+                
+                if not offer_is_anonymous:
+                    cur.execute(f"""
+                        SELECT is_reserved 
+                        FROM t_p53513159_legal_crypto_exchang.offer_time_slots
+                        WHERE offer_id = {offer_id} AND slot_time = '{slot_time}'
+                    """)
+                    
+                    slot_result = cur.fetchone()
+                    if not slot_result:
+                        return {
+                            'statusCode': 404,
+                            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                            'isBase64Encoded': False,
+                            'body': json.dumps({'success': False, 'error': 'Time slot not found'})
+                        }
+                    
+                    if slot_result[0]:
+                        return {
+                            'statusCode': 400,
+                            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                            'isBase64Encoded': False,
+                            'body': json.dumps({'success': False, 'error': 'Time slot already reserved'})
+                        }
                 
                 if not is_anonymous and owner_id == user_id:
                     return {
