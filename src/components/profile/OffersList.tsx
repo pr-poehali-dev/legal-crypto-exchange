@@ -296,33 +296,25 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                                   ? 'bg-red-500/5 border-red-500/20'
                                   : 'bg-orange-500/5 border-orange-500/20'
                               }`}>
-                                <div className="flex items-start justify-between gap-2">
-                                  <div className="flex-1">
-                                    <p className={`font-medium ${
-                                      reservation.status === 'confirmed' 
-                                        ? 'text-green-600' 
-                                        : reservation.status === 'rejected'
-                                        ? 'text-red-600'
-                                        : 'text-orange-600'
-                                    }`}>{reservation.buyer_name}</p>
-                                    {reservation.buyer_phone && (
-                                      <p className="text-muted-foreground flex items-center gap-1 mt-1">
-                                        <Icon name="Phone" size={12} />
-                                        {reservation.buyer_phone}
-                                      </p>
-                                    )}
-                                    <p className="text-muted-foreground flex items-center gap-1 mt-1">
-                                      <Icon name="Clock" size={12} />
-                                      {reservation.meeting_time}
-                                    </p>
-                                    <p className="text-muted-foreground flex items-center gap-1 mt-1">
-                                      <Icon name="MapPin" size={12} />
-                                      {reservation.meeting_office}
-                                    </p>
-                                  </div>
-                                  {reservation.status === 'pending' && (
-                                    <div className="flex flex-col gap-1">
-                                      <div className="text-xs font-medium text-orange-600 text-center mb-1">
+                                <div className="flex flex-col gap-2">
+                                  <div className="flex items-start justify-between gap-2">
+                                    <div className="flex-1 min-w-0">
+                                      <p className={`font-medium ${
+                                        reservation.status === 'confirmed' 
+                                          ? 'text-green-600' 
+                                          : reservation.status === 'rejected'
+                                          ? 'text-red-600'
+                                          : 'text-orange-600'
+                                      }`}>{reservation.buyer_name}</p>
+                                      {reservation.buyer_phone && (
+                                        <p className="text-muted-foreground flex items-center gap-1 mt-1">
+                                          <Icon name="Phone" size={12} />
+                                          <span className="truncate">{reservation.buyer_phone}</span>
+                                        </p>
+                                      )}
+                                    </div>
+                                    {reservation.status === 'pending' && (
+                                      <div className="text-xs font-medium text-orange-600 whitespace-nowrap">
                                         {(() => {
                                           const seconds = timeLeftMap[reservation.id] || 0;
                                           const minutes = Math.floor(seconds / 60);
@@ -330,10 +322,34 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                                           return `${minutes}:${String(secs).padStart(2, '0')}`;
                                         })()}
                                       </div>
+                                    )}
+                                    {reservation.status === 'confirmed' && (
+                                      <Badge className="bg-green-500/20 text-green-600 border-green-500/30 shrink-0">
+                                        Подтверждено
+                                      </Badge>
+                                    )}
+                                    {reservation.status === 'rejected' && (
+                                      <Badge className="bg-red-500/20 text-red-600 border-red-500/30 shrink-0">
+                                        Отклонено
+                                      </Badge>
+                                    )}
+                                  </div>
+                                  <div className="space-y-1">
+                                    <p className="text-muted-foreground flex items-center gap-1">
+                                      <Icon name="Clock" size={12} className="shrink-0" />
+                                      <span className="truncate">{reservation.meeting_time}</span>
+                                    </p>
+                                    <p className="text-muted-foreground flex items-center gap-1">
+                                      <Icon name="MapPin" size={12} className="shrink-0" />
+                                      <span className="truncate">{reservation.meeting_office}</span>
+                                    </p>
+                                  </div>
+                                  {reservation.status === 'pending' && (
+                                    <div className="flex gap-2 pt-1">
                                       <Button
                                         size="sm"
                                         onClick={() => onManageReservation(reservation.id, 'accept')}
-                                        className="bg-green-500 hover:bg-green-600 text-white h-7 text-xs px-2"
+                                        className="bg-green-500 hover:bg-green-600 text-white h-8 text-xs flex-1"
                                       >
                                         <Icon name="Check" size={14} className="mr-1" />
                                         Подтвердить
@@ -342,22 +358,12 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                                         size="sm"
                                         variant="outline"
                                         onClick={() => onManageReservation(reservation.id, 'reject')}
-                                        className="border-red-500 text-red-500 hover:bg-red-500/10 h-7 text-xs px-2"
+                                        className="border-red-500 text-red-500 hover:bg-red-500/10 h-8 text-xs flex-1"
                                       >
                                         <Icon name="X" size={14} className="mr-1" />
                                         Отказать
                                       </Button>
                                     </div>
-                                  )}
-                                  {reservation.status === 'confirmed' && (
-                                    <Badge className="bg-green-500/20 text-green-600 border-green-500/30">
-                                      Подтверждено
-                                    </Badge>
-                                  )}
-                                  {reservation.status === 'rejected' && (
-                                    <Badge className="bg-red-500/20 text-red-600 border-red-500/30">
-                                      Отклонено
-                                    </Badge>
                                   )}
                                 </div>
                               </div>
