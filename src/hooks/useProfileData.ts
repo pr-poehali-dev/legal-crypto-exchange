@@ -44,52 +44,44 @@ export const useProfileData = () => {
   const notificationAudio = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    
     const playNotificationSound = () => {
-      const oscillator1 = audioContext.createOscillator();
-      const oscillator2 = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator1.connect(gainNode);
-      oscillator2.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      oscillator1.frequency.value = 800;
-      oscillator2.frequency.value = 1000;
-      oscillator1.type = 'sine';
-      oscillator2.type = 'sine';
-      
-      gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-      gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-      
-      oscillator1.start(audioContext.currentTime);
-      oscillator2.start(audioContext.currentTime);
-      oscillator1.stop(audioContext.currentTime + 0.5);
-      oscillator2.stop(audioContext.currentTime + 0.5);
-      
-      setTimeout(() => {
-        const osc1 = audioContext.createOscillator();
-        const osc2 = audioContext.createOscillator();
-        const gain = audioContext.createGain();
+      try {
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
         
-        osc1.connect(gain);
-        osc2.connect(gain);
-        gain.connect(audioContext.destination);
+        if (audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
         
-        osc1.frequency.value = 1000;
-        osc2.frequency.value = 1200;
-        osc1.type = 'sine';
-        osc2.type = 'sine';
+        const playBeep = (freq1: number, freq2: number, delay: number = 0) => {
+          setTimeout(() => {
+            const osc1 = audioContext.createOscillator();
+            const osc2 = audioContext.createOscillator();
+            const gain = audioContext.createGain();
+            
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(audioContext.destination);
+            
+            osc1.frequency.value = freq1;
+            osc2.frequency.value = freq2;
+            osc1.type = 'sine';
+            osc2.type = 'sine';
+            
+            gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+            
+            osc1.start(audioContext.currentTime);
+            osc2.start(audioContext.currentTime);
+            osc1.stop(audioContext.currentTime + 0.4);
+            osc2.stop(audioContext.currentTime + 0.4);
+          }, delay);
+        };
         
-        gain.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-        
-        osc1.start(audioContext.currentTime);
-        osc2.start(audioContext.currentTime);
-        osc1.stop(audioContext.currentTime + 0.5);
-        osc2.stop(audioContext.currentTime + 0.5);
-      }, 200);
+        playBeep(800, 1000, 0);
+        playBeep(1000, 1200, 250);
+      } catch (e) {
+        console.error('Audio error:', e);
+      }
     };
     
     notificationAudio.current = { play: () => Promise.resolve(playNotificationSound()) } as any;
@@ -184,14 +176,15 @@ export const useProfileData = () => {
             const currentCount = offer.reservations.filter(r => r.status === 'pending').length;
             const prevCount = prevReservationsCount.current[offer.id] || 0;
             
-            if (currentCount > prevCount && prevCount > 0) {
+            if (currentCount > prevCount) {
               const latestReservation = offer.reservations.find(r => r.status === 'pending');
               if (latestReservation) {
+                console.log('🔔 Новая бронь!', latestReservation);
                 setNewReservationNotification({
                   offerId: offer.id,
                   buyerName: latestReservation.buyer_name
                 });
-                notificationAudio.current?.play().catch(() => {});
+                notificationAudio.current?.play().catch((e) => console.error('Sound error:', e));
                 
                 if ('vibrate' in navigator) {
                   navigator.vibrate([200, 100, 200, 100, 400]);
