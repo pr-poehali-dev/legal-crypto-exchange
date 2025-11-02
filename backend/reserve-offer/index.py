@@ -36,7 +36,19 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     body_str = event.get('body', '{}')
     if not body_str or body_str == '':
         body_str = '{}'
-    body_data = json.loads(body_str)
+    
+    try:
+        body_data = json.loads(body_str)
+    except json.JSONDecodeError as e:
+        print(f"JSON decode error: {e}, body: {body_str}")
+        return {
+            'statusCode': 400,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
+            'body': json.dumps({'success': False, 'error': 'Invalid JSON in request body'})
+        }
+    
+    print(f"Received body_data: {body_data}")
     
     offer_id = body_data.get('offer_id')
     slot_time = body_data.get('slot_time')
@@ -46,6 +58,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     buyer_phone = body_data.get('buyer_phone')
     meeting_office = body_data.get('meeting_office')
     is_anonymous = body_data.get('is_anonymous', False)
+    
+    print(f"Parsed values - offer_id: {offer_id}, slot_time: {slot_time}, is_anonymous: {is_anonymous}, buyer_name: {buyer_name}, buyer_phone: {buyer_phone}, meeting_office: {meeting_office}")
     
     if not offer_id or not slot_time:
         return {
