@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import Icon from '@/components/ui/icon';
 import { useToast } from '@/hooks/use-toast';
+import { RegisteredBookingForm } from './registered/RegisteredBookingForm';
+import { RegisteredSuccessScreen } from './registered/RegisteredSuccessScreen';
 
 interface RegisteredResponseFormProps {
   offerId: number;
@@ -192,178 +188,30 @@ const RegisteredResponseForm = ({
   };
 
   if (step === 2) {
-    return (
-      <div className="flex flex-col items-center justify-center py-12 space-y-6">
-        <div className="relative">
-          <div className="w-24 h-24 rounded-full bg-secondary/20 flex items-center justify-center animate-pulse">
-            <Icon name="Clock" size={48} className="text-secondary" />
-          </div>
-          <div className="absolute inset-0 rounded-full border-4 border-secondary/30 border-t-secondary animate-spin" />
-        </div>
-        
-        <div className="text-center space-y-2">
-          <h3 className="text-2xl font-bold text-secondary">Ожидайте подтверждения</h3>
-          <p className="text-muted-foreground max-w-sm">
-            Ваша заявка успешно отправлена. Владелец объявления получил уведомление и свяжется с вами в ближайшее время.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Icon name="CheckCircle2" size={16} className="text-success" />
-          <span>Заявка отправлена</span>
-        </div>
-      </div>
-    );
+    return <RegisteredSuccessScreen />;
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="space-y-2">
-        <Label>Текущий курс</Label>
-        <div className="p-3 bg-muted rounded-lg">
-          <p className="text-sm font-medium">
-            1 USDT = {currentRate.toFixed(2)} ₽
-          </p>
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label>Сумма обмена</Label>
-          <span className="text-xs text-muted-foreground">
-            Макс: {offerAmount} USDT ({(offerAmount * currentRate).toFixed(2)} ₽)
-          </span>
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1.5">
-            <Label htmlFor="rub-amount" className="text-xs text-muted-foreground">В рублях (₽)</Label>
-            <Input
-              id="rub-amount"
-              type="number"
-              step="0.01"
-              min="0"
-              max={(offerAmount * currentRate).toFixed(2)}
-              placeholder="0.00"
-              value={rubAmount}
-              onChange={(e) => handleRubChange(e.target.value)}
-              disabled={isSubmitting}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="usdt-amount" className="text-xs text-muted-foreground">В USDT</Label>
-            <Input
-              id="usdt-amount"
-              type="number"
-              step="0.01"
-              min="0"
-              max={offerAmount}
-              placeholder="0.00"
-              value={usdtAmount}
-              onChange={(e) => handleUsdtChange(e.target.value)}
-              disabled={isSubmitting}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="space-y-3">
-        <Label>Адрес для встречи</Label>
-        {firstOfferOffice && (
-          <div className="space-y-2">
-            <div className="flex items-start gap-2">
-              <Checkbox
-                id="use-offer-office"
-                checked={useOfferOffice}
-                onCheckedChange={(checked) => setUseOfferOffice(checked === true)}
-                disabled={isSubmitting}
-              />
-              <Label htmlFor="use-offer-office" className="text-sm leading-relaxed cursor-pointer font-normal">
-                {offerCity}, {firstOfferOffice}
-              </Label>
-            </div>
-          </div>
-        )}
-        <div className="space-y-2">
-          <div className="flex items-start gap-2">
-            <Checkbox
-              id="use-custom-office"
-              checked={!useOfferOffice}
-              onCheckedChange={(checked) => setUseOfferOffice(checked !== true)}
-              disabled={isSubmitting}
-            />
-            <Label htmlFor="use-custom-office" className="text-sm leading-relaxed cursor-pointer font-normal">
-              Укажите свой адрес
-            </Label>
-          </div>
-          {!useOfferOffice && (
-            <Select value={customOffice} onValueChange={setCustomOffice} disabled={isSubmitting}>
-              <SelectTrigger className="mt-2">
-                <SelectValue placeholder="Выберите адрес" />
-              </SelectTrigger>
-              <SelectContent>
-                {cityOffices.map((office, idx) => (
-                  <SelectItem key={idx} value={office}>{office}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        </div>
-      </div>
-
-      <div className="space-y-2">
-        <Label>Выберите время встречи</Label>
-        {availableSlots.length > 0 ? (
-          <>
-            <Select value={selectedTimeSlot} onValueChange={setSelectedTimeSlot} disabled={isSubmitting}>
-              <SelectTrigger>
-                <SelectValue placeholder="Выберите доступное время" />
-              </SelectTrigger>
-              <SelectContent className="max-h-[200px]">
-                {availableSlots.map((slot) => (
-                  <SelectItem key={slot} value={slot}>
-                    <div className="flex items-center gap-2">
-                      <Icon name="Clock" size={16} />
-                      {slot}
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-muted-foreground">
-              <Icon name="Info" size={12} className="inline mr-1" />
-              Доступно {availableSlots.length} временных слотов
-            </p>
-          </>
-        ) : (
-          <div className="p-3 bg-muted rounded-lg text-sm text-muted-foreground">
-            <Icon name="AlertCircle" size={16} className="inline mr-2" />
-            Нет доступных временных слотов
-          </div>
-        )}
-        <p className="text-xs text-muted-foreground mt-1">
-          <Icon name="Info" size={12} className="inline mr-1" />
-          Обратите внимание: курс обмена актуален в течение трех часов и может измениться
-        </p>
-      </div>
-
-      <Button type="submit" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? (
-          <>
-            <Icon name="Loader2" className="mr-2 animate-spin" />
-            Отправка...
-          </>
-        ) : (
-          <>
-            <Icon name="Handshake" className="mr-2" />
-            Откликнуться
-          </>
-        )}
-      </Button>
-
-      <p className="text-xs text-muted-foreground text-center">
-        * Мы получим ваш отклик и свяжемся с вами для подтверждения встречи.
-      </p>
-    </form>
+    <RegisteredBookingForm
+      currentRate={currentRate}
+      offerAmount={offerAmount}
+      rubAmount={rubAmount}
+      usdtAmount={usdtAmount}
+      onRubChange={handleRubChange}
+      onUsdtChange={handleUsdtChange}
+      firstOfferOffice={firstOfferOffice}
+      offerCity={offerCity}
+      useOfferOffice={useOfferOffice}
+      onUseOfferOfficeChange={setUseOfferOffice}
+      customOffice={customOffice}
+      onCustomOfficeChange={setCustomOffice}
+      cityOffices={cityOffices}
+      selectedTimeSlot={selectedTimeSlot}
+      onTimeSlotChange={setSelectedTimeSlot}
+      availableSlots={availableSlots}
+      isSubmitting={isSubmitting}
+      onSubmit={handleSubmit}
+    />
   );
 };
 
