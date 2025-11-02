@@ -190,14 +190,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
 ⏳ Зайдите в профиль и подтвердите или отклоните заявку."""
                     
                     try:
-                        requests.post(
-                            'https://functions.poehali.dev/09e16699-07ea-42a0-a07b-6faa27662d58',
+                        response = requests.post(
+                            'https://functions.poehali.dev/bc217044-2303-41d4-9dfe-440055bdac02',
                             json={
                                 'telegram_id': telegram_id,
                                 'message': owner_message
                             },
                             timeout=5
                         )
+                        print(f"Telegram notification response: {response.status_code}, {response.text}")
                     except Exception as e:
                         print(f"Failed to send owner notification: {e}")
                 

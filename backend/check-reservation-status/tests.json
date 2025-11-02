@@ -1,0 +1,14 @@
+{
+  "tests": [
+    {
+      "name": "Check reservation status",
+      "method": "GET",
+      "path": "/?reservation_id=1",
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}

@@ -40,6 +40,8 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
   const [meetingTime, setMeetingTime] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [occupiedTimes, setOccupiedTimes] = useState<Set<string>>(new Set());
+  const [reservationId, setReservationId] = useState<number | null>(null);
+  const [reservationStatus, setReservationStatus] = useState<'pending' | 'confirmed' | 'rejected' | null>(null);
 
   useEffect(() => {
     const now = new Date();
@@ -200,15 +202,9 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
       const data = await response.json();
 
       if (data.success) {
+        setReservationId(data.reservation_id);
+        setReservationStatus('pending');
         setStep(3);
-        setTimeout(() => {
-          setName('');
-          setPhone('');
-          setEmail('');
-          setMeetingTime('');
-          setStep(1);
-          onSuccess?.();
-        }, 3000);
       } else {
         console.error('Reserve offer error:', data);
         toast({
@@ -252,7 +248,21 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
   }
 
   if (step === 3) {
-    return <Step3Success />;
+    return (
+      <Step3Success 
+        reservationId={reservationId}
+        reservationStatus={reservationStatus}
+        onStatusChange={setReservationStatus}
+        onClose={() => {
+          setStep(1);
+          setName('');
+          setPhone('');
+          setEmail('');
+          setIsSubmitting(false);
+          onSuccess?.();
+        }}
+      />
+    );
   }
 
   return (
