@@ -66,12 +66,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         new_status = 'confirmed' if action == 'accept' else 'rejected'
         
-        cur.execute("""
+        cur.execute(f"""
             UPDATE t_p53513159_legal_crypto_exchang.reservations
-            SET status = %s
-            WHERE id = %s
+            SET status = '{new_status}'
+            WHERE id = {reservation_id}
             RETURNING offer_id, buyer_name, meeting_time, meeting_office
-        """, (new_status, reservation_id))
+        """)
         
         result = cur.fetchone()
         
@@ -87,12 +87,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         offer_id, buyer_name, meeting_time, meeting_office = result
         
-        cur.execute("""
+        cur.execute(f"""
             SELECT o.amount, o.rate, o.offer_type, u.telegram_id, u.username
             FROM t_p53513159_legal_crypto_exchang.offers o
             JOIN t_p53513159_legal_crypto_exchang.users u ON o.reserved_by = u.id
-            WHERE o.id = %s
-        """, (offer_id,))
+            WHERE o.id = {offer_id}
+        """)
         
         offer_data = cur.fetchone()
         
