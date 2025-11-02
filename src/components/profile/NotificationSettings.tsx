@@ -107,7 +107,7 @@ const NotificationSettings = ({ userId }: NotificationSettingsProps) => {
     });
   };
 
-  const testNotification = () => {
+  const testNotification = async () => {
     if (permission !== 'granted') {
       toast({
         title: '⚠️ Включите уведомления',
@@ -118,31 +118,35 @@ const NotificationSettings = ({ userId }: NotificationSettingsProps) => {
     }
 
     try {
-      // Звук
-      if (soundEnabled) {
-        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-        
-        if (audioContext.state === 'suspended') {
-          audioContext.resume();
-        }
-
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioContext.destination);
-        
-        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
-        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-        
-        oscillator.start(audioContext.currentTime);
-        oscillator.stop(audioContext.currentTime + 0.3);
-      }
-
       // Вибрация
       if (vibrationEnabled && 'vibrate' in navigator) {
         navigator.vibrate([200, 100, 200, 100, 400]);
+      }
+
+      // Звук (только если поддерживается)
+      if (soundEnabled && typeof AudioContext !== 'undefined') {
+        try {
+          const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+          
+          if (audioContext.state === 'suspended') {
+            await audioContext.resume();
+          }
+
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          
+          oscillator.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+          
+          oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+          gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+          gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+          
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + 0.3);
+        } catch (soundError) {
+          console.log('Sound not available on this device');
+        }
       }
 
       // Уведомление
@@ -153,14 +157,16 @@ const NotificationSettings = ({ userId }: NotificationSettingsProps) => {
 
       toast({
         title: '✅ Тест выполнен',
-        description: 'Проверьте звук, вибрацию и всплывающее окно',
+        description: 'Проверьте уведомление на вашем устройстве',
         duration: 3000,
       });
     } catch (error) {
       console.error('Test notification error:', error);
       toast({
-        title: '❌ Ошибка теста',
-        description: 'Не удалось отправить тестовое уведомление',
+        title: '❌ Ошибка',
+        description: String(error).includes('Notification') 
+          ? 'Браузер заблокировал уведомления' 
+          : 'Попробуйте ещё раз',
         variant: 'destructive',
       });
     }
