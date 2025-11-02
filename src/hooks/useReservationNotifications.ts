@@ -108,7 +108,7 @@ export const useReservationNotifications = () => {
 
   useEffect(() => {
     checkNewReservations();
-    const interval = setInterval(checkNewReservations, 5000);
+    const interval = setInterval(checkNewReservations, 2000);
     return () => clearInterval(interval);
   }, []);
 
