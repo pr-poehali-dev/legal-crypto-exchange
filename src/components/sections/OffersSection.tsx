@@ -55,7 +55,6 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
   }, []);
 
   useEffect(() => {
-    cleanupExpiredOffers();
     loadOffers();
     fetchCurrentRate();
     
