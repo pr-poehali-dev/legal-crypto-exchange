@@ -26,7 +26,10 @@ const ReservationNotificationDialog = ({
     notification, 
     offersCount: offers.length, 
     foundOffer: !!offer,
-    reservation 
+    offer,
+    reservation,
+    timeSlot: reservation?.time_slot,
+    meetingTime: offer?.meeting_time
   });
   
   const handleAccept = () => {
