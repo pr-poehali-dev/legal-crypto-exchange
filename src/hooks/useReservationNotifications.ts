@@ -71,8 +71,6 @@ export const useReservationNotifications = () => {
       if (response.ok) {
         const data = await response.json();
         const myOffers = data.offers?.filter((o: any) => o.relation_type === 'created') || [];
-        
-        console.log('📡 Loaded offers with reservations:', myOffers);
         setOffers(myOffers);
 
         myOffers.forEach((offer: any) => {

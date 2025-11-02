@@ -22,15 +22,7 @@ const ReservationNotificationDialog = ({
   const reservation = offer?.reservations?.find(r => r.buyer_name === notification?.buyerName);
   const totalRub = offer ? Math.round(offer.amount * offer.rate) : 0;
   
-  console.log('🔍 Notification dialog:', { 
-    notification, 
-    offersCount: offers.length, 
-    foundOffer: !!offer,
-    offer,
-    reservation,
-    timeSlot: reservation?.time_slot,
-    meetingTime: offer?.meeting_time
-  });
+
   
   const handleAccept = () => {
     if (notification) {
@@ -99,7 +91,7 @@ const ReservationNotificationDialog = ({
             <div className="flex justify-between items-center pt-2 border-t border-accent/20">
               <span className="text-sm text-muted-foreground">Время встречи:</span>
               <span className="text-base font-semibold text-accent">
-                {reservation?.time_slot ? formatMeetingTime(reservation.time_slot) : 'Не указано'}
+                {reservation?.meeting_time ? formatMeetingTime(reservation.meeting_time) : 'Не указано'}
               </span>
             </div>
           </div>
