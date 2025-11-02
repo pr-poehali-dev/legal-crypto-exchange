@@ -19,6 +19,12 @@ export const RegisteredSuccessScreen = ({ reservationId, userId, onCancel }: Reg
       try {
         const url = `https://functions.poehali.dev/ad8e0859-d6b1-4dde-8da7-2b137a4c9abb?user_id=${userId}`;
         const response = await fetch(url);
+        
+        if (response.status === 502 || response.status === 429) {
+          console.warn('Rate limit or server error, will retry later');
+          return;
+        }
+        
         const data = await response.json();
         
         if (data.success && data.offers) {
@@ -41,7 +47,7 @@ export const RegisteredSuccessScreen = ({ reservationId, userId, onCancel }: Reg
       }
     };
 
-    const intervalId = setInterval(checkStatus, 10000);
+    const intervalId = setInterval(checkStatus, 15000);
     checkStatus();
 
     return () => clearInterval(intervalId);

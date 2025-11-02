@@ -69,6 +69,11 @@ export const useReservationNotifications = () => {
     try {
       const response = await fetch(`https://functions.poehali.dev/ad8e0859-d6b1-4dde-8da7-2b137a4c9abb?user_id=${userId}`);
 
+      if (response.status === 502 || response.status === 429) {
+        console.warn('Rate limit or server error, skipping check');
+        return;
+      }
+
       if (response.ok) {
         const data = await response.json();
         const myOffers = data.offers?.filter((o: any) => o.relation_type === 'created') || [];
@@ -123,7 +128,7 @@ export const useReservationNotifications = () => {
 
   useEffect(() => {
     checkNewReservations();
-    const interval = setInterval(checkNewReservations, 2000);
+    const interval = setInterval(checkNewReservations, 15000);
     return () => clearInterval(interval);
   }, []);
 
