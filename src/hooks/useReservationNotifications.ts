@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 interface ReservationNotification {
   offerId: number;
   buyerName: string;
+  reservationId: number;
 }
 
 export const useReservationNotifications = () => {
@@ -80,13 +81,14 @@ export const useReservationNotifications = () => {
           if (currentCount > prevCount && prevCount >= 0) {
             const latestReservation = offer.reservations?.find((r: any) => r.status === 'pending');
             const buyerName = latestReservation?.buyer_name || 'Неизвестный';
+            const reservationId = latestReservation?.id;
             
-            console.log('🔔 Новая бронь!', { offerId: offer.id, buyerName, offer, currentCount, prevCount });
+            console.log('🔔 Новая бронь!', { offerId: offer.id, buyerName, reservationId, offer, currentCount, prevCount });
             
             playNotificationSound();
             vibrate();
             
-            setNotification({ offerId: offer.id, buyerName });
+            setNotification({ offerId: offer.id, buyerName, reservationId });
             
             toast({
               title: '🎉 Новая бронь!',

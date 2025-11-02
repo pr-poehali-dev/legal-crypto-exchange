@@ -4,7 +4,7 @@ import Icon from '@/components/ui/icon';
 import { Offer } from '@/hooks/useProfileData';
 
 interface ReservationNotificationDialogProps {
-  notification: {offerId: number, buyerName: string} | null;
+  notification: {offerId: number, buyerName: string, reservationId: number} | null;
   offers: Offer[];
   onClose: () => void;
   onAccept: (reservationId: number) => void;
@@ -26,31 +26,15 @@ const ReservationNotificationDialog = ({
   
   const handleAccept = () => {
     if (notification) {
-      const offer = offers.find(o => o.id === notification.offerId);
-      const reservation = offer?.reservations?.find(r => r.buyer_name === notification.buyerName);
-      console.log('handleAccept - offer:', offer);
-      console.log('handleAccept - reservation:', reservation);
-      if (reservation) {
-        console.log('Calling onAccept with reservation.id:', reservation.id);
-        onAccept(reservation.id);
-      } else {
-        console.error('Reservation not found!');
-      }
+      console.log('handleAccept - reservationId:', notification.reservationId);
+      onAccept(notification.reservationId);
     }
   };
 
   const handleReject = () => {
     if (notification) {
-      const offer = offers.find(o => o.id === notification.offerId);
-      const reservation = offer?.reservations?.find(r => r.buyer_name === notification.buyerName);
-      console.log('handleReject - offer:', offer);
-      console.log('handleReject - reservation:', reservation);
-      if (reservation) {
-        console.log('Calling onReject with reservation.id:', reservation.id);
-        onReject(reservation.id);
-      } else {
-        console.error('Reservation not found!');
-      }
+      console.log('handleReject - reservationId:', notification.reservationId);
+      onReject(notification.reservationId);
     }
   };
 
