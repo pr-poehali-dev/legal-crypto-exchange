@@ -5,7 +5,6 @@ import ProfileStats from '@/components/profile/ProfileStats';
 import CreateOfferDialog from '@/components/profile/CreateOfferDialog';
 import OffersList from '@/components/profile/OffersList';
 import TelegramSettings from '@/components/profile/TelegramSettings';
-import ReservationNotificationDialog from '@/components/profile/ReservationNotificationDialog';
 import { useProfileData } from '@/hooks/useProfileData';
 import { useOfferForm } from '@/hooks/useOfferForm';
 import { useOfferActions } from '@/hooks/useOfferActions';
@@ -16,8 +15,6 @@ const Profile = () => {
     user,
     deals,
     offers,
-    newReservationNotification,
-    setNewReservationNotification,
     loadDeals,
     loadOffers,
     loadUserData
@@ -137,14 +134,6 @@ const Profile = () => {
           />
         </div>
       </div>
-
-      <ReservationNotificationDialog
-        notification={newReservationNotification}
-        offers={offers}
-        onClose={() => setNewReservationNotification(null)}
-        onAccept={(reservationId) => handleManageReservation(reservationId, 'accept')}
-        onReject={(reservationId) => handleManageReservation(reservationId, 'reject')}
-      />
     </div>
   );
 };
