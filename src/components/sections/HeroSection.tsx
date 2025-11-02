@@ -49,7 +49,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-background via-background to-background">
+    <section className="relative min-h-[85vh] sm:min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-b from-background via-background to-background pt-16 sm:pt-0">
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 -left-32 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
