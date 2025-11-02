@@ -22,12 +22,19 @@ const AppContent = () => {
   
   const handleAccept = async (reservationId: number) => {
     try {
-      const userId = localStorage.getItem('userId');
+      const savedUser = localStorage.getItem('user');
+      if (!savedUser) return;
+      
+      const userData = JSON.parse(savedUser);
+      const userId = userData.id;
+      
+      console.log('Accepting reservation:', { reservationId, userId });
+      
       const response = await fetch('https://functions.poehali.dev/353673c7-c605-4d46-bb98-56554c376426', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-User-Id': userId || '',
+          'X-User-Id': String(userId),
         },
         body: JSON.stringify({
           reservation_id: reservationId,
@@ -35,9 +42,14 @@ const AppContent = () => {
         }),
       });
 
+      const data = await response.json();
+      console.log('Accept response:', data);
+
       if (response.ok) {
         setNotification(null);
         navigate('/profile');
+      } else {
+        console.error('Accept failed:', data);
       }
     } catch (error) {
       console.error('Accept error:', error);
@@ -46,12 +58,19 @@ const AppContent = () => {
 
   const handleReject = async (reservationId: number) => {
     try {
-      const userId = localStorage.getItem('userId');
+      const savedUser = localStorage.getItem('user');
+      if (!savedUser) return;
+      
+      const userData = JSON.parse(savedUser);
+      const userId = userData.id;
+      
+      console.log('Rejecting reservation:', { reservationId, userId });
+      
       const response = await fetch('https://functions.poehali.dev/353673c7-c605-4d46-bb98-56554c376426', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-User-Id': userId || '',
+          'X-User-Id': String(userId),
         },
         body: JSON.stringify({
           reservation_id: reservationId,
@@ -59,8 +78,13 @@ const AppContent = () => {
         }),
       });
 
+      const data = await response.json();
+      console.log('Reject response:', data);
+
       if (response.ok) {
         setNotification(null);
+      } else {
+        console.error('Reject failed:', data);
       }
     } catch (error) {
       console.error('Reject error:', error);
