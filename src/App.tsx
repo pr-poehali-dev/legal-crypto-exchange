@@ -23,9 +23,14 @@ const AppContent = () => {
   const { notification, setNotification, offers } = useReservationNotifications();
   
   const handleAccept = async (reservationId: number) => {
+    console.log('🚀 handleAccept CALLED with reservationId:', reservationId);
     try {
       const savedUser = localStorage.getItem('user');
-      if (!savedUser) return;
+      console.log('savedUser:', savedUser);
+      if (!savedUser) {
+        console.error('No saved user found!');
+        return;
+      }
       
       const userData = JSON.parse(savedUser);
       const userId = userData.id;
