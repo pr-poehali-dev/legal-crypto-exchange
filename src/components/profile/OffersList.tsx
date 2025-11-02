@@ -345,6 +345,11 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                                       <Icon name="MapPin" size={12} className="shrink-0" />
                                       <span className="truncate">{reservation.meeting_office}</span>
                                     </p>
+                                    {reservation.status === 'pending' && (
+                                      <p className="text-xs text-muted-foreground/70 italic pt-1">
+                                        Вы можете выбрать другого продавца, если время Вам не подходит
+                                      </p>
+                                    )}
                                   </div>
                                   {reservation.status === 'pending' && (
                                     <div className="flex gap-2 pt-1">
