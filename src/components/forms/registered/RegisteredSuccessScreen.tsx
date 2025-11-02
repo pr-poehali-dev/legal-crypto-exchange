@@ -41,7 +41,7 @@ export const RegisteredSuccessScreen = ({ reservationId, userId, onCancel }: Reg
       }
     };
 
-    const intervalId = setInterval(checkStatus, 3000);
+    const intervalId = setInterval(checkStatus, 10000);
     checkStatus();
 
     return () => clearInterval(intervalId);
