@@ -112,6 +112,7 @@ const Profile = () => {
           <ProfileStats
             username={user.username}
             phone={user.phone}
+            email={user.email}
             deals={deals}
             offers={offers}
             userId={user.id}

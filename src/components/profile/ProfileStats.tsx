@@ -28,6 +28,7 @@ interface Offer {
 interface ProfileStatsProps {
   username: string;
   phone: string;
+  email?: string;
   deals: Deal[];
   offers: Offer[];
   userId: number;
@@ -44,7 +45,7 @@ interface Statistics {
   activeOffers: number;
 }
 
-const ProfileStats = ({ username, phone, deals, offers, userId }: ProfileStatsProps) => {
+const ProfileStats = ({ username, phone, email, deals, offers, userId }: ProfileStatsProps) => {
   const [period, setPeriod] = useState('all_time');
   const [statistics, setStatistics] = useState<Statistics | null>(null);
   const [loading, setLoading] = useState(false);
@@ -120,6 +121,12 @@ const ProfileStats = ({ username, phone, deals, offers, userId }: ProfileStatsPr
               <p className="text-xs sm:text-sm text-muted-foreground">Телефон</p>
               <p className="text-base sm:text-lg font-semibold">{phone}</p>
             </div>
+            {email && (
+              <div>
+                <p className="text-xs sm:text-sm text-muted-foreground">Почта</p>
+                <p className="text-base sm:text-lg font-semibold break-words">{email}</p>
+              </div>
+            )}
           </CardContent>
         </Card>
 
