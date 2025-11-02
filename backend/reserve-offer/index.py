@@ -151,8 +151,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 cur.execute(f"""
                     INSERT INTO t_p53513159_legal_crypto_exchang.reservations 
-                    (offer_id, buyer_name, buyer_phone, buyer_user_id, meeting_office, meeting_time) 
-                    VALUES ({offer_id}, {buyer_name_sql}, {buyer_phone_sql}, {user_id_sql}, {escape_sql(meeting_office)}, '{slot_time}')
+                    (offer_id, buyer_name, buyer_phone, buyer_user_id, meeting_office, meeting_time, status) 
+                    VALUES ({offer_id}, {buyer_name_sql}, {buyer_phone_sql}, {user_id_sql}, {escape_sql(meeting_office)}, '{slot_time}', 'pending')
                 """)
                 
                 total_amount = float(amount) * float(rate)

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { RegisteredBookingForm } from './registered/RegisteredBookingForm';
 import { RegisteredSuccessScreen } from './registered/RegisteredSuccessScreen';
+import funcUrls from '../../../backend/func2url.json';
 
 interface RegisteredResponseFormProps {
   offerId: number;
@@ -133,7 +134,10 @@ const RegisteredResponseForm = ({
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-      const response = await fetch('https://functions.poehali.dev/9c031941-05ab-46ce-9781-3bd0b4c6974f', {
+      const reserveUrl = funcUrls['reserve-offer'];
+      if (!reserveUrl) throw new Error('reserve-offer URL not found');
+
+      const response = await fetch(reserveUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -1,11 +1,13 @@
 import { useToast } from '@/hooks/use-toast';
+import funcUrls from '../../backend/func2url.json';
 
 export const useOfferActions = (userId: number | null, onSuccess: () => void) => {
   const { toast } = useToast();
 
   const handleUpdateOfferStatus = async (offerId: number, status: string) => {
     try {
-      const response = await fetch('https://functions.poehali.dev/716426cb-1d05-4858-a5f1-4d46123b5470', {
+      const url = funcUrls['update-offer-status'];
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ offer_id: offerId, status }),
@@ -99,7 +101,8 @@ export const useOfferActions = (userId: number | null, onSuccess: () => void) =>
 
   const handleManageReservation = async (reservationId: number, action: 'accept' | 'reject') => {
     try {
-      const response = await fetch('https://functions.poehali.dev/3c06a0b0-ad02-4e4f-9b1d-0fb79e641df5', {
+      const url = funcUrls['manage-reservation-response'];
+      const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ reservation_id: reservationId, action }),
