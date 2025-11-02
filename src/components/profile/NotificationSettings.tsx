@@ -108,41 +108,59 @@ const NotificationSettings = ({ userId }: NotificationSettingsProps) => {
   };
 
   const testNotification = () => {
-    if (permission === 'granted') {
-      new Notification('🔔 Тестовое уведомление', {
-        body: 'Так будут выглядеть уведомления о новых бронях',
-        icon: '/favicon.ico',
-        vibrate: vibrationEnabled ? [200, 100, 200, 100, 400] : undefined,
-      });
-
-      if (soundEnabled) {
-        try {
-          const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-          const oscillator = audioContext.createOscillator();
-          const gainNode = audioContext.createGain();
-          
-          oscillator.connect(gainNode);
-          gainNode.connect(audioContext.destination);
-          
-          oscillator.frequency.value = 800;
-          gainNode.gain.value = 0.3;
-          
-          oscillator.start();
-          oscillator.stop(audioContext.currentTime + 0.2);
-        } catch (error) {
-          console.error('Sound test error:', error);
-        }
-      }
-
-      toast({
-        title: '✅ Тест успешен',
-        description: 'Уведомление отправлено',
-        duration: 2000,
-      });
-    } else {
+    if (permission !== 'granted') {
       toast({
         title: '⚠️ Включите уведомления',
         description: 'Сначала разрешите уведомления в браузере',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    try {
+      // Звук
+      if (soundEnabled) {
+        const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+        
+        if (audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
+
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.3);
+      }
+
+      // Вибрация
+      if (vibrationEnabled && 'vibrate' in navigator) {
+        navigator.vibrate([200, 100, 200, 100, 400]);
+      }
+
+      // Уведомление
+      new Notification('🔔 Тестовое уведомление', {
+        body: 'Так будут выглядеть уведомления о новых бронях',
+        icon: '/favicon.ico',
+      });
+
+      toast({
+        title: '✅ Тест выполнен',
+        description: 'Проверьте звук, вибрацию и всплывающее окно',
+        duration: 3000,
+      });
+    } catch (error) {
+      console.error('Test notification error:', error);
+      toast({
+        title: '❌ Ошибка теста',
+        description: 'Не удалось отправить тестовое уведомление',
         variant: 'destructive',
       });
     }
