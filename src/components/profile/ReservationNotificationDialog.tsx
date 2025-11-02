@@ -18,7 +18,13 @@ const ReservationNotificationDialog = ({
   onAccept, 
   onReject 
 }: ReservationNotificationDialogProps) => {
+  console.log('Notification:', notification);
+  console.log('Offers:', offers);
+  console.log('Looking for offerId:', notification?.offerId);
+  
   const offer = notification ? offers.find(o => o.id === notification.offerId) : null;
+  console.log('Found offer:', offer);
+  
   const totalRub = offer ? Math.round(offer.amount * offer.rate) : 0;
   
   const handleAccept = () => {
