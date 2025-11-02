@@ -92,6 +92,8 @@ const RegisteredResponseForm = ({
   };
   const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [reservationId, setReservationId] = useState<number | null>(null);
+  const [reservationStatus, setReservationStatus] = useState<'pending' | 'confirmed' | 'rejected' | null>(null);
 
   useEffect(() => {
     if (availableSlots.length > 0) {
@@ -147,6 +149,9 @@ const RegisteredResponseForm = ({
       const data = await response.json();
 
       if (data.success) {
+        if (data.reservation_id) {
+          setReservationId(data.reservation_id);
+        }
         setStep(2);
       } else {
         console.error('Reserve offer error:', data);
@@ -173,7 +178,7 @@ const RegisteredResponseForm = ({
   };
 
   if (step === 2) {
-    return <RegisteredSuccessScreen onCancel={onSuccess} />;
+    return <RegisteredSuccessScreen reservationId={reservationId} userId={userId} onCancel={onSuccess} />;
   }
 
   return (
