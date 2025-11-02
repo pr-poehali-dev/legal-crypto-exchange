@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useStatisticsUpdater } from "@/hooks/use-statistics-updater";
+import { useReservationNotifications } from "@/hooks/useReservationNotifications";
 import Index from "./pages/Index";
 import Profile from "./pages/Profile";
 import Admin from "./pages/Admin";
@@ -15,6 +16,7 @@ const queryClient = new QueryClient();
 
 const AppContent = () => {
   useStatisticsUpdater();
+  useReservationNotifications();
   
   return (
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
