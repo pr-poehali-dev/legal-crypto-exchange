@@ -5,6 +5,7 @@ import ProfileStats from '@/components/profile/ProfileStats';
 import CreateOfferDialog from '@/components/profile/CreateOfferDialog';
 import OffersList from '@/components/profile/OffersList';
 import TelegramSettings from '@/components/profile/TelegramSettings';
+import NotificationSettings from '@/components/profile/NotificationSettings';
 import { useProfileData } from '@/hooks/useProfileData';
 import { useOfferForm } from '@/hooks/useOfferForm';
 import { useOfferActions } from '@/hooks/useOfferActions';
@@ -115,6 +116,8 @@ const Profile = () => {
             offers={offers}
             userId={user.id}
           />
+
+          <NotificationSettings userId={user.id} />
 
           <TelegramSettings
             userId={user.id}

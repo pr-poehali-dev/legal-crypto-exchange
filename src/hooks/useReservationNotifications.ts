@@ -55,6 +55,9 @@ export const useReservationNotifications = () => {
   };
 
   const playNotificationSound = () => {
+    const soundEnabled = localStorage.getItem('notifications_sound');
+    if (soundEnabled === 'false') return;
+
     try {
       const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
       
@@ -82,6 +85,9 @@ export const useReservationNotifications = () => {
   };
 
   const vibrate = () => {
+    const vibrationEnabled = localStorage.getItem('notifications_vibration');
+    if (vibrationEnabled === 'false') return;
+
     if ('vibrate' in navigator) {
       navigator.vibrate([200, 100, 200, 100, 400]);
     }
