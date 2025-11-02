@@ -194,6 +194,9 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
     try {
       const reserveUrl = func2url['reserve-offer'] || 'https://functions.poehali.dev/9c031941-05ab-46ce-9781-3bd0b4c6974f';
       
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
       const response = await fetch(reserveUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -206,7 +209,14 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
           slot_time: meetingTime,
           is_anonymous: true,
         }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
 
       const data = await response.json();
 
@@ -229,15 +239,19 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
           description: data.error || 'Не удалось зарезервировать объявление',
           variant: 'destructive',
         });
+        setIsSubmitting(false);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Reserve offer fetch error:', error);
+      const errorMessage = error.name === 'AbortError' 
+        ? 'Превышено время ожидания. Попробуйте ещё раз.' 
+        : 'Не удалось зарезервировать объявление. Проверьте подключение к интернету.';
+      
       toast({
         title: 'Ошибка',
-        description: 'Не удалось зарезервировать объявление. Проверьте подключение к интернету.',
+        description: errorMessage,
         variant: 'destructive',
       });
-    } finally {
       setIsSubmitting(false);
     }
   };

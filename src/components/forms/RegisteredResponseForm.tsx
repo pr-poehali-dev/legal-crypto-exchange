@@ -134,6 +134,9 @@ const RegisteredResponseForm = ({
     setIsSubmitting(true);
 
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
       const response = await fetch('https://functions.poehali.dev/9c031941-05ab-46ce-9781-3bd0b4c6974f', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -144,7 +147,14 @@ const RegisteredResponseForm = ({
           meeting_office: finalOffice,
           slot_time: meetingTime,
         }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
 
       const data = await response.json();
 
@@ -164,15 +174,19 @@ const RegisteredResponseForm = ({
           description: data.error || 'Не удалось отправить отклик',
           variant: 'destructive',
         });
+        setIsSubmitting(false);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Reserve offer fetch error:', error);
+      const errorMessage = error.name === 'AbortError' 
+        ? 'Превышено время ожидания. Попробуйте ещё раз.' 
+        : 'Не удалось отправить отклик. Проверьте подключение к интернету.';
+      
       toast({
         title: 'Ошибка',
-        description: 'Не удалось отправить отклик. Проверьте подключение к интернету.',
+        description: errorMessage,
         variant: 'destructive',
       });
-    } finally {
       setIsSubmitting(false);
     }
   };
