@@ -37,8 +37,6 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
-  const [useOfferOffice, setUseOfferOffice] = useState(true);
-  const [customOffice, setCustomOffice] = useState('');
   const [meetingTime, setMeetingTime] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [occupiedTimes, setOccupiedTimes] = useState<Set<string>>(new Set());
@@ -107,11 +105,9 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
   };
 
   const firstOfferOffice = offerOffices && offerOffices.length > 0 ? offerOffices[0] : '';
-  const cityOffices = CITIES_OFFICES[offerCity || 'Москва'] || MOSCOW_OFFICES;
-  const selectedOffice = useOfferOffice ? firstOfferOffice : customOffice;
 
   useEffect(() => {
-    if (!selectedOffice) return;
+    if (!firstOfferOffice) return;
     
     const fetchOccupiedTimes = async () => {
       try {
@@ -122,7 +118,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
           const occupied = new Set<string>();
           data.offers.forEach((offer: any) => {
             if ((offer.status === 'active' || offer.status === 'reserved') && offer.offices) {
-              if (offer.offices.includes(selectedOffice)) {
+              if (offer.offices.includes(firstOfferOffice)) {
                 occupied.add(offer.meeting_time);
               }
             }
@@ -135,24 +131,13 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
     };
     
     fetchOccupiedTimes();
-  }, [selectedOffice]);
+  }, [firstOfferOffice]);
 
   const handleNextStep = () => {
     if (!meetingTime) {
       toast({
         title: 'Ошибка',
         description: 'Выберите время встречи',
-        variant: 'destructive',
-      });
-      return;
-    }
-
-    const finalOffice = useOfferOffice ? firstOfferOffice : customOffice;
-    
-    if (!finalOffice) {
-      toast({
-        title: 'Ошибка',
-        description: 'Укажите адрес для встречи',
         variant: 'destructive',
       });
       return;
@@ -183,8 +168,6 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
       return;
     }
 
-    const finalOffice = useOfferOffice ? firstOfferOffice : customOffice;
-
     setIsSubmitting(true);
 
     try {
@@ -201,7 +184,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
           buyer_name: name,
           buyer_phone: phone,
           buyer_email: email || undefined,
-          meeting_office: finalOffice,
+          meeting_office: firstOfferOffice,
           slot_time: meetingTime,
           is_anonymous: true,
         }),
@@ -222,8 +205,6 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
           setName('');
           setPhone('');
           setEmail('');
-          setUseOfferOffice(true);
-          setCustomOffice('');
           setMeetingTime('');
           setStep(1);
           onSuccess?.();
@@ -262,11 +243,6 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
         onRubChange={handleRubChange}
         onUsdtChange={handleUsdtChange}
         firstOfferOffice={firstOfferOffice}
-        useOfferOffice={useOfferOffice}
-        onUseOfferOfficeChange={setUseOfferOffice}
-        customOffice={customOffice}
-        onCustomOfficeChange={setCustomOffice}
-        cityOffices={cityOffices}
         meetingTime={meetingTime}
         onMeetingTimeChange={setMeetingTime}
         occupiedTimes={occupiedTimes}

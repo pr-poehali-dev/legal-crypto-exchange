@@ -51,8 +51,6 @@ const RegisteredResponseForm = ({
 }: RegisteredResponseFormProps) => {
   const { toast } = useToast();
   const [step, setStep] = useState(1);
-  const [useOfferOffice, setUseOfferOffice] = useState(true);
-  const [customOffice, setCustomOffice] = useState('');
   const [usdtAmount, setUsdtAmount] = useState(offerAmount.toString());
   const [rubAmount, setRubAmount] = useState((offerAmount * currentRate).toString());
 
@@ -116,16 +114,6 @@ const RegisteredResponseForm = ({
       return;
     }
 
-    const finalOffice = useOfferOffice ? firstOfferOffice : customOffice;
-    
-    if (!finalOffice) {
-      toast({
-        title: 'Ошибка',
-        description: 'Укажите адрес для встречи',
-        variant: 'destructive',
-      });
-      return;
-    }
     const meetingTime = selectedTimeSlot;
 
     setIsSubmitting(true);
@@ -144,7 +132,7 @@ const RegisteredResponseForm = ({
           offer_id: offerId,
           user_id: userId,
           username: username,
-          meeting_office: finalOffice,
+          meeting_office: firstOfferOffice,
           slot_time: meetingTime,
         }),
         signal: controller.signal,
@@ -198,11 +186,6 @@ const RegisteredResponseForm = ({
       onUsdtChange={handleUsdtChange}
       firstOfferOffice={firstOfferOffice}
       offerCity={offerCity}
-      useOfferOffice={useOfferOffice}
-      onUseOfferOfficeChange={setUseOfferOffice}
-      customOffice={customOffice}
-      onCustomOfficeChange={setCustomOffice}
-      cityOffices={cityOffices}
       selectedTimeSlot={selectedTimeSlot}
       onTimeSlotChange={setSelectedTimeSlot}
       availableSlots={availableSlots}

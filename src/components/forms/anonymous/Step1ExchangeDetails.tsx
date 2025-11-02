@@ -14,11 +14,6 @@ interface Step1ExchangeDetailsProps {
   onRubChange: (value: string) => void;
   onUsdtChange: (value: string) => void;
   firstOfferOffice: string;
-  useOfferOffice: boolean;
-  onUseOfferOfficeChange: (checked: boolean) => void;
-  customOffice: string;
-  onCustomOfficeChange: (value: string) => void;
-  cityOffices: string[];
   meetingTime: string;
   onMeetingTimeChange: (value: string) => void;
   occupiedTimes: Set<string>;
@@ -33,11 +28,6 @@ export const Step1ExchangeDetails = ({
   onRubChange,
   onUsdtChange,
   firstOfferOffice,
-  useOfferOffice,
-  onUseOfferOfficeChange,
-  customOffice,
-  onCustomOfficeChange,
-  cityOffices,
   meetingTime,
   onMeetingTimeChange,
   occupiedTimes,
@@ -91,40 +81,13 @@ export const Step1ExchangeDetails = ({
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         <Label>Адрес для встречи</Label>
-        {firstOfferOffice && (
-          <div className="space-y-2">
-            <div className="flex items-start gap-2">
-              <Checkbox
-                id="use-offer-office"
-                checked={useOfferOffice}
-                onCheckedChange={(checked) => onUseOfferOfficeChange(checked === true)}
-              />
-              <label htmlFor="use-offer-office" className="text-sm leading-relaxed cursor-pointer">
-                {firstOfferOffice}
-              </label>
-            </div>
-          </div>
-        )}
-        
-        {!useOfferOffice && (
-          <div className="space-y-2">
-            <Label htmlFor="custom-office">Укажите адрес</Label>
-            <Select value={customOffice} onValueChange={onCustomOfficeChange}>
-              <SelectTrigger id="custom-office">
-                <SelectValue placeholder="Выберите адрес" />
-              </SelectTrigger>
-              <SelectContent>
-                {cityOffices.map((office) => (
-                  <SelectItem key={office} value={office}>
-                    {office}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
+        <div className="p-3 bg-muted rounded-lg">
+          <p className="text-sm">
+            {firstOfferOffice}
+          </p>
+        </div>
       </div>
 
       <div className="space-y-2">

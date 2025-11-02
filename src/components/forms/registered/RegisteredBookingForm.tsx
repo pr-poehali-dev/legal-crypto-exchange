@@ -14,11 +14,6 @@ interface RegisteredBookingFormProps {
   onUsdtChange: (value: string) => void;
   firstOfferOffice: string;
   offerCity: string;
-  useOfferOffice: boolean;
-  onUseOfferOfficeChange: (checked: boolean) => void;
-  customOffice: string;
-  onCustomOfficeChange: (value: string) => void;
-  cityOffices: string[];
   selectedTimeSlot: string;
   onTimeSlotChange: (value: string) => void;
   availableSlots: string[];
@@ -35,11 +30,6 @@ export const RegisteredBookingForm = ({
   onUsdtChange,
   firstOfferOffice,
   offerCity,
-  useOfferOffice,
-  onUseOfferOfficeChange,
-  customOffice,
-  onCustomOfficeChange,
-  cityOffices,
   selectedTimeSlot,
   onTimeSlotChange,
   availableSlots,
@@ -96,47 +86,12 @@ export const RegisteredBookingForm = ({
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2">
         <Label>Адрес для встречи</Label>
-        {firstOfferOffice && (
-          <div className="space-y-2">
-            <div className="flex items-start gap-2">
-              <Checkbox
-                id="use-offer-office"
-                checked={useOfferOffice}
-                onCheckedChange={(checked) => onUseOfferOfficeChange(checked === true)}
-                disabled={isSubmitting}
-              />
-              <Label htmlFor="use-offer-office" className="text-sm leading-relaxed cursor-pointer font-normal">
-                {offerCity}, {firstOfferOffice}
-              </Label>
-            </div>
-          </div>
-        )}
-        <div className="space-y-2">
-          <div className="flex items-start gap-2">
-            <Checkbox
-              id="use-custom-office"
-              checked={!useOfferOffice}
-              onCheckedChange={(checked) => onUseOfferOfficeChange(checked !== true)}
-              disabled={isSubmitting}
-            />
-            <Label htmlFor="use-custom-office" className="text-sm leading-relaxed cursor-pointer font-normal">
-              Укажите свой адрес
-            </Label>
-          </div>
-          {!useOfferOffice && (
-            <Select value={customOffice} onValueChange={onCustomOfficeChange} disabled={isSubmitting}>
-              <SelectTrigger className="mt-2">
-                <SelectValue placeholder="Выберите адрес" />
-              </SelectTrigger>
-              <SelectContent>
-                {cityOffices.map((office, idx) => (
-                  <SelectItem key={idx} value={office}>{office}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
+        <div className="p-3 bg-muted rounded-lg">
+          <p className="text-sm">
+            {offerCity}, {firstOfferOffice}
+          </p>
         </div>
       </div>
 
