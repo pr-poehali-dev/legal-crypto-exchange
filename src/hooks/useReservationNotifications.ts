@@ -58,7 +58,11 @@ export const useReservationNotifications = () => {
   };
 
   const checkNewReservations = async () => {
-    const userId = localStorage.getItem('userId');
+    const savedUser = localStorage.getItem('user');
+    if (!savedUser) return;
+    
+    const userData = JSON.parse(savedUser);
+    const userId = userData.id;
     if (!userId) return;
 
     try {

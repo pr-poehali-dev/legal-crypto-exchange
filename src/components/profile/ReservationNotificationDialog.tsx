@@ -19,9 +19,15 @@ const ReservationNotificationDialog = ({
   onReject 
 }: ReservationNotificationDialogProps) => {
   const offer = notification ? offers.find(o => o.id === notification.offerId) : null;
+  const reservation = offer?.reservations?.find(r => r.buyer_name === notification?.buyerName);
   const totalRub = offer ? Math.round(offer.amount * offer.rate) : 0;
   
-  console.log('🔍 Notification dialog:', { notification, offersCount: offers.length, foundOffer: !!offer });
+  console.log('🔍 Notification dialog:', { 
+    notification, 
+    offersCount: offers.length, 
+    foundOffer: !!offer,
+    reservation 
+  });
   
   const handleAccept = () => {
     if (notification) {
@@ -45,26 +51,14 @@ const ReservationNotificationDialog = ({
     onClose();
   };
 
-  const formatMeetingTime = (time: string) => {
-    const date = new Date(time);
+  const formatMeetingTime = (timeSlot: string) => {
+    if (!timeSlot) return 'Не указано';
+    
+    // timeSlot приходит в формате "12:30"
     const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
+    const [hours, minutes] = timeSlot.split(':');
     
-    const isToday = date.toDateString() === today.toDateString();
-    const isTomorrow = date.toDateString() === tomorrow.toDateString();
-    
-    const timeStr = date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-    
-    if (isToday) return `Сегодня в ${timeStr}`;
-    if (isTomorrow) return `Завтра в ${timeStr}`;
-    
-    return date.toLocaleString('ru-RU', { 
-      day: 'numeric', 
-      month: 'short', 
-      hour: '2-digit', 
-      minute: '2-digit' 
-    });
+    return `Сегодня в ${hours}:${minutes}`;
   };
 
   return (
@@ -101,7 +95,9 @@ const ReservationNotificationDialog = ({
             </div>
             <div className="flex justify-between items-center pt-2 border-t border-accent/20">
               <span className="text-sm text-muted-foreground">Время встречи:</span>
-              <span className="text-base font-semibold text-accent">{formatMeetingTime(offer.meeting_time)}</span>
+              <span className="text-base font-semibold text-accent">
+                {reservation?.time_slot ? formatMeetingTime(reservation.time_slot) : 'Не указано'}
+              </span>
             </div>
           </div>
         )}
