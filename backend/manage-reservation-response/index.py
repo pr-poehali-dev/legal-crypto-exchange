@@ -67,7 +67,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         new_status = 'confirmed' if action == 'accept' else 'rejected'
         
         cur.execute(f"""
-            UPDATE t_p53513159_legal_crypto_exchang.reservations
+            UPDATE reservations
             SET status = '{new_status}', {('confirmed_at' if action == 'accept' else 'rejected_at')} = NOW()
             WHERE id = {reservation_id}
             RETURNING offer_id, buyer_name, meeting_time, meeting_office, buyer_user_id
@@ -88,7 +88,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         offer_id, buyer_name, meeting_time, meeting_office, buyer_user_id_from_res = result
         
         cur.execute(f"""
-            SELECT is_anonymous FROM t_p53513159_legal_crypto_exchang.offers WHERE id = {offer_id}
+            SELECT is_anonymous FROM offers WHERE id = {offer_id}
         """)
         offer_result = cur.fetchone()
         is_anonymous_offer = offer_result[0] if offer_result else False
@@ -97,28 +97,28 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if action == 'accept':
                 if buyer_user_id_from_res:
                     cur.execute(f"""
-                        UPDATE t_p53513159_legal_crypto_exchang.offer_time_slots
+                        UPDATE offer_time_slots
                         SET is_reserved = TRUE, reserved_by = {buyer_user_id_from_res}, reserved_at = NOW()
                         WHERE offer_id = {offer_id} AND slot_time = '{meeting_time}'
                     """)
                 else:
                     cur.execute(f"""
-                        UPDATE t_p53513159_legal_crypto_exchang.offer_time_slots
+                        UPDATE offer_time_slots
                         SET is_reserved = TRUE, reserved_at = NOW()
                         WHERE offer_id = {offer_id} AND slot_time = '{meeting_time}'
                     """)
             else:
                 cur.execute(f"""
-                    UPDATE t_p53513159_legal_crypto_exchang.offer_time_slots
+                    UPDATE offer_time_slots
                     SET is_reserved = FALSE, reserved_by = NULL, reserved_at = NULL
                     WHERE offer_id = {offer_id} AND slot_time = '{meeting_time}'
                 """)
         
         cur.execute(f"""
             SELECT o.amount, o.rate, o.offer_type, u.telegram_id, u.username, r.buyer_user_id
-            FROM t_p53513159_legal_crypto_exchang.offers o
-            LEFT JOIN t_p53513159_legal_crypto_exchang.reservations r ON r.id = {reservation_id}
-            LEFT JOIN t_p53513159_legal_crypto_exchang.users u ON r.buyer_user_id = u.id
+            FROM offers o
+            LEFT JOIN reservations r ON r.id = {reservation_id}
+            LEFT JOIN users u ON r.buyer_user_id = u.id
             WHERE o.id = {offer_id}
         """)
         

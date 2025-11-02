@@ -50,8 +50,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         SELECT o.id, o.user_id, o.offer_type, o.amount, o.rate, o.meeting_time, o.created_at, 
                u.username, u.phone, o.is_anonymous, o.anonymous_name, o.anonymous_phone, o.city, o.offices,
                u.first_name, u.last_name, o.time_start, o.time_end
-        FROM t_p53513159_legal_crypto_exchang.offers o 
-        LEFT JOIN t_p53513159_legal_crypto_exchang.users u ON o.user_id = u.id 
+        FROM offers o 
+        LEFT JOIN users u ON o.user_id = u.id 
         WHERE {where_clause}
         ORDER BY o.created_at DESC
     """)
@@ -94,8 +94,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             for office in offices:
                 cur.execute("""
                     SELECT r.meeting_time, r.meeting_office
-                    FROM t_p53513159_legal_crypto_exchang.reservations r
-                    JOIN t_p53513159_legal_crypto_exchang.offers o ON r.offer_id = o.id
+                    FROM reservations r
+                    JOIN offers o ON r.offer_id = o.id
                     WHERE o.city = %s 
                     AND r.meeting_office = %s 
                     AND r.status IN ('pending', 'confirmed')

@@ -131,7 +131,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         cursor = conn.cursor()
         
         # Check if email already exists
-        cursor.execute("SELECT id FROM t_p53513159_legal_crypto_exchang.users WHERE email = %s", (email,))
+        cursor.execute("SELECT id FROM users WHERE email = %s", (email,))
         if cursor.fetchone():
             cursor.close()
             conn.close()
@@ -145,7 +145,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             }
         
         # Check if phone already exists
-        cursor.execute("SELECT id FROM t_p53513159_legal_crypto_exchang.users WHERE phone = %s", (phone,))
+        cursor.execute("SELECT id FROM users WHERE phone = %s", (phone,))
         if cursor.fetchone():
             cursor.close()
             conn.close()
@@ -160,7 +160,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         username = f"{first_name} {last_name}"
         cursor.execute(
-            "INSERT INTO t_p53513159_legal_crypto_exchang.users (name, username, first_name, last_name, email, phone, password_hash) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id",
+            "INSERT INTO users (name, username, first_name, last_name, email, phone, password_hash) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id",
             (username, username, first_name, last_name, email, phone, password_hash)
         )
         user_id = cursor.fetchone()[0]

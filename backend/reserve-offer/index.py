@@ -94,8 +94,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 cur.execute(f"""
                     SELECT o.user_id, o.amount, o.rate, o.offer_type, 
                            u.telegram_id, u.username as owner_username, o.is_anonymous
-                    FROM t_p53513159_legal_crypto_exchang.offers o
-                    JOIN t_p53513159_legal_crypto_exchang.users u ON o.user_id = u.id
+                    FROM offers o
+                    JOIN users u ON o.user_id = u.id
                     WHERE o.id = {offer_id}
                 """)
                 
@@ -114,7 +114,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 if not offer_is_anonymous:
                     cur.execute(f"""
                         SELECT is_reserved 
-                        FROM t_p53513159_legal_crypto_exchang.offer_time_slots
+                        FROM offer_time_slots
                         WHERE offer_id = {offer_id} AND slot_time = '{slot_time}'
                     """)
                     
@@ -150,7 +150,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 user_id_sql = user_id if not is_anonymous else 'NULL'
                 
                 cur.execute(f"""
-                    INSERT INTO t_p53513159_legal_crypto_exchang.reservations 
+                    INSERT INTO reservations 
                     (offer_id, buyer_name, buyer_phone, buyer_user_id, meeting_office, meeting_time, status) 
                     VALUES ({offer_id}, {buyer_name_sql}, {buyer_phone_sql}, {user_id_sql}, {escape_sql(meeting_office)}, '{slot_time}', 'pending')
                 """)

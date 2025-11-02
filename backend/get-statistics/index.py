@@ -44,7 +44,7 @@ def get_user_statistics(conn, user_id: int, period_start: str, period_end: str) 
     cursor.execute(f"""
         SELECT total_deals, completed_deals, total_volume,
                buy_deals, buy_volume, sell_deals, sell_volume, active_offers
-        FROM t_p53513159_legal_crypto_exchang.statistics_cache
+        FROM statistics_cache
         WHERE user_id = {user_id}
         AND period_start = '{period_start}'
         AND period_end = '{period_end}'
@@ -76,7 +76,7 @@ def get_user_statistics(conn, user_id: int, period_start: str, period_end: str) 
             COALESCE(SUM(total) FILTER (WHERE deal_type = 'buy' AND status = 'completed'), 0) as buy_volume,
             COUNT(*) FILTER (WHERE deal_type = 'sell' AND status = 'completed') as sell_deals,
             COALESCE(SUM(total) FILTER (WHERE deal_type = 'sell' AND status = 'completed'), 0) as sell_volume
-        FROM t_p53513159_legal_crypto_exchang.deals
+        FROM deals
         WHERE user_id = {user_id}
         AND created_at::date BETWEEN '{period_start}' AND '{period_end}'
     """)
@@ -85,7 +85,7 @@ def get_user_statistics(conn, user_id: int, period_start: str, period_end: str) 
     
     cursor.execute(f"""
         SELECT COUNT(*)
-        FROM t_p53513159_legal_crypto_exchang.offers
+        FROM offers
         WHERE user_id = {user_id}
         AND status = 'active'
         AND created_at::date BETWEEN '{period_start}' AND '{period_end}'
@@ -114,7 +114,7 @@ def get_global_statistics(conn, period_start: str, period_end: str) -> Dict[str,
         SELECT total_users, blocked_users, total_offers, active_offers,
                total_deals, completed_deals, total_volume,
                buy_deals, buy_volume, sell_deals, sell_volume
-        FROM t_p53513159_legal_crypto_exchang.global_statistics_cache
+        FROM global_statistics_cache
         WHERE period_start = '{period_start}'
         AND period_end = '{period_end}'
         AND updated_at > NOW() - INTERVAL '1 hour'
@@ -143,7 +143,7 @@ def get_global_statistics(conn, period_start: str, period_end: str) -> Dict[str,
         SELECT 
             COUNT(*) as total_users,
             COUNT(*) FILTER (WHERE blocked = true) as blocked_users
-        FROM t_p53513159_legal_crypto_exchang.users
+        FROM users
     """)
     
     user_stats = cursor.fetchone()
@@ -152,7 +152,7 @@ def get_global_statistics(conn, period_start: str, period_end: str) -> Dict[str,
         SELECT 
             COUNT(*) as total_offers,
             COUNT(*) FILTER (WHERE status = 'active') as active_offers
-        FROM t_p53513159_legal_crypto_exchang.offers
+        FROM offers
         WHERE created_at::date BETWEEN '{period_start}' AND '{period_end}'
     """)
     
@@ -167,7 +167,7 @@ def get_global_statistics(conn, period_start: str, period_end: str) -> Dict[str,
             COALESCE(SUM(total) FILTER (WHERE deal_type = 'buy' AND status = 'completed'), 0) as buy_volume,
             COUNT(*) FILTER (WHERE deal_type = 'sell' AND status = 'completed') as sell_deals,
             COALESCE(SUM(total) FILTER (WHERE deal_type = 'sell' AND status = 'completed'), 0) as sell_volume
-        FROM t_p53513159_legal_crypto_exchang.deals
+        FROM deals
         WHERE created_at::date BETWEEN '{period_start}' AND '{period_end}'
     """)
     

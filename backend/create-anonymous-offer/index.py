@@ -70,7 +70,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     try:
         # Get anonymous system user ID
         cursor.execute("""
-            SELECT id FROM t_p53513159_legal_crypto_exchang.users 
+            SELECT id FROM users 
             WHERE email = 'anonymous@system.local'
         """)
         anon_user = cursor.fetchone()
@@ -85,7 +85,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         
         # Insert anonymous buy offer with expires_at (24 hours from now)
         cursor.execute(f"""
-            INSERT INTO t_p53513159_legal_crypto_exchang.offers 
+            INSERT INTO offers 
             (user_id, offer_type, amount, rate, meeting_time, status, 
              is_anonymous, anonymous_name, anonymous_phone, expires_at)
             VALUES ({anon_user_id}, 'buy', {offer_req.amount}, {offer_req.rate}, '{offer_req.meeting_time}', 'active',

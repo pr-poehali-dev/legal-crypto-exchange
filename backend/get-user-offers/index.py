@@ -47,9 +47,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         SELECT o.id, o.offer_type, o.amount, o.rate, o.meeting_time, o.time_start, o.time_end, o.status, o.created_at, 
                o.user_id, owner.username as owner_username, 'created' as relation_type,
                COUNT(r.id) as reservations_count
-        FROM t_p53513159_legal_crypto_exchang.offers o
-        LEFT JOIN t_p53513159_legal_crypto_exchang.users owner ON o.user_id = owner.id
-        LEFT JOIN t_p53513159_legal_crypto_exchang.reservations r ON o.id = r.offer_id
+        FROM offers o
+        LEFT JOIN users owner ON o.user_id = owner.id
+        LEFT JOIN reservations r ON o.id = r.offer_id
         WHERE o.user_id = {user_id} 
         GROUP BY o.id, owner.username
         ORDER BY o.created_at DESC
@@ -62,9 +62,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         SELECT DISTINCT o.id, o.offer_type, o.amount, o.rate, o.meeting_time, o.time_start, o.time_end, o.status, o.created_at, 
                o.user_id, owner.username as owner_username, 'reserved' as relation_type,
                0 as reservations_count, r.status as reservation_status
-        FROM t_p53513159_legal_crypto_exchang.offers o
-        LEFT JOIN t_p53513159_legal_crypto_exchang.users owner ON o.user_id = owner.id
-        INNER JOIN t_p53513159_legal_crypto_exchang.reservations r ON o.id = r.offer_id
+        FROM offers o
+        LEFT JOIN users owner ON o.user_id = owner.id
+        INNER JOIN reservations r ON o.id = r.offer_id
         WHERE r.buyer_user_id = {user_id} 
         ORDER BY o.created_at DESC
     """)
@@ -86,7 +86,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         if relation_type == 'created':
             # Автоматически отклоняем резервации старше 3 минут
             cur.execute(f"""
-                UPDATE t_p53513159_legal_crypto_exchang.reservations
+                UPDATE reservations
                 SET status = 'expired'
                 WHERE offer_id = {offer_id} 
                 AND status = 'pending' 
@@ -98,8 +98,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 SELECT r.id, r.buyer_name, r.buyer_phone, r.meeting_time, r.meeting_office, r.created_at,
                        u.username as buyer_username, r.status,
                        EXTRACT(EPOCH FROM (NOW() - r.created_at)) as seconds_ago
-                FROM t_p53513159_legal_crypto_exchang.reservations r
-                LEFT JOIN t_p53513159_legal_crypto_exchang.users u ON r.buyer_user_id = u.id
+                FROM reservations r
+                LEFT JOIN users u ON r.buyer_user_id = u.id
                 WHERE r.offer_id = {offer_id}
                 ORDER BY r.created_at DESC
             """)
