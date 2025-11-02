@@ -107,11 +107,12 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             if bot_token and telegram_id:
                 status_text = '✅ подтверждена' if action == 'accept' else '❌ отклонена'
                 deal_type_text = 'Покупка' if offer_type == 'buy' else 'Продажа'
+                total_amount = float(amount) * float(rate)
                 
                 telegram_message = f"""🔔 Ваша бронь {status_text}!
                 
 💼 Тип: {deal_type_text}
-💵 Сумма: {amount} USDT
+💵 Сумма: {amount} USDT ({total_amount:.2f} ₽)
 💱 Курс: {rate} ₽
 📍 Офис: {meeting_office}
 🕐 Время: {meeting_time}"""
