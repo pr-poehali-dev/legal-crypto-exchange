@@ -62,25 +62,24 @@ export const useReservationNotifications = () => {
     if (!userId) return;
 
     try {
-      const response = await fetch('https://functions.poehali.dev/cb7a012b-a1c5-4de9-857f-5a8d2c3c4b0a', {
-        headers: { 'X-User-Id': userId },
-      });
+      const response = await fetch(`https://functions.poehali.dev/ad8e0859-d6b1-4dde-8da7-2b137a4c9abb?user_id=${userId}`);
 
       if (response.ok) {
         const data = await response.json();
-        const myOffers = data.offers?.filter((o: any) => o.owner_id === parseInt(userId)) || [];
+        const myOffers = data.offers?.filter((o: any) => o.relation_type === 'created') || [];
         
+        console.log('📡 Loaded offers with reservations:', myOffers);
         setOffers(myOffers);
 
         myOffers.forEach((offer: any) => {
-          const currentCount = offer.reservations?.length || 0;
+          const currentCount = offer.reservations?.filter((r: any) => r.status === 'pending').length || 0;
           const prevCount = prevReservationsCount.current[offer.id] || 0;
 
           if (currentCount > prevCount && prevCount >= 0) {
-            const latestReservation = offer.reservations?.[0];
-            const buyerName = latestReservation?.reserved_by_username || 'Неизвестный';
+            const latestReservation = offer.reservations?.find((r: any) => r.status === 'pending');
+            const buyerName = latestReservation?.buyer_name || 'Неизвестный';
             
-            console.log('🔔 Новая бронь!', { offerId: offer.id, buyerName, currentCount, prevCount });
+            console.log('🔔 Новая бронь!', { offerId: offer.id, buyerName, offer, currentCount, prevCount });
             
             playNotificationSound();
             vibrate();
