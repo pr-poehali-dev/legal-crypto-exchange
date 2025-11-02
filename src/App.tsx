@@ -20,7 +20,14 @@ const AppContent = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   useStatisticsUpdater();
-  const { notification, setNotification, offers } = useReservationNotifications();
+  const { 
+    notification, 
+    setNotification, 
+    offers,
+    showPermissionPrompt,
+    requestNotificationPermission,
+    dismissPermissionPrompt
+  } = useReservationNotifications();
   
   const handleAccept = async (reservationId: number) => {
     console.log('🚀 handleAccept CALLED with reservationId:', reservationId);
@@ -144,6 +151,34 @@ const AppContent = () => {
         onAccept={handleAccept}
         onReject={handleReject}
       />
+      
+      {showPermissionPrompt && (
+        <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:w-96 bg-card border border-border rounded-lg shadow-lg p-4 z-50 animate-in slide-in-from-bottom duration-300">
+          <div className="flex items-start gap-3">
+            <div className="text-2xl">🔔</div>
+            <div className="flex-1">
+              <h4 className="font-semibold text-sm mb-1">Включить уведомления?</h4>
+              <p className="text-xs text-muted-foreground mb-3">
+                Получайте уведомления о новых бронях даже когда сайт закрыт
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={requestNotificationPermission}
+                  className="flex-1 px-3 py-1.5 bg-primary text-primary-foreground text-xs font-medium rounded-md hover:bg-primary/90 transition-colors"
+                >
+                  Включить
+                </button>
+                <button
+                  onClick={dismissPermissionPrompt}
+                  className="px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Позже
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

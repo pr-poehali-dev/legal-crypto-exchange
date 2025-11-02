@@ -13,17 +13,46 @@ export const useReservationNotifications = () => {
   const notificationPermission = useRef<NotificationPermission>('default');
   const [notification, setNotification] = useState<ReservationNotification | null>(null);
   const [offers, setOffers] = useState<any[]>([]);
+  const [showPermissionPrompt, setShowPermissionPrompt] = useState(false);
+  const hasPromptedRef = useRef(false);
 
   useEffect(() => {
-    // Запрашиваем разрешение на уведомления
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission().then(permission => {
-        notificationPermission.current = permission;
-      });
-    } else if ('Notification' in window) {
+    if ('Notification' in window) {
       notificationPermission.current = Notification.permission;
+      
+      const savedUser = localStorage.getItem('user');
+      if (savedUser && Notification.permission === 'default' && !hasPromptedRef.current) {
+        const userData = JSON.parse(savedUser);
+        if (userData.id) {
+          setTimeout(() => {
+            setShowPermissionPrompt(true);
+            hasPromptedRef.current = true;
+          }, 3000);
+        }
+      }
     }
   }, []);
+
+  const requestNotificationPermission = async () => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      try {
+        const permission = await Notification.requestPermission();
+        notificationPermission.current = permission;
+        setShowPermissionPrompt(false);
+        
+        if (permission === 'granted') {
+          toast({
+            title: '✅ Уведомления включены',
+            description: 'Вы будете получать уведомления о новых бронях',
+            duration: 3000,
+          });
+        }
+      } catch (error) {
+        console.error('Notification permission error:', error);
+        setShowPermissionPrompt(false);
+      }
+    }
+  };
 
   const playNotificationSound = () => {
     try {
@@ -132,5 +161,12 @@ export const useReservationNotifications = () => {
     return () => clearInterval(interval);
   }, []);
 
-  return { notification, setNotification, offers };
+  return { 
+    notification, 
+    setNotification, 
+    offers,
+    showPermissionPrompt,
+    requestNotificationPermission,
+    dismissPermissionPrompt: () => setShowPermissionPrompt(false)
+  };
 };
