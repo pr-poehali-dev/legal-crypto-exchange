@@ -79,11 +79,17 @@ export const useReservationNotifications = () => {
           const prevCount = prevReservationsCount.current[offer.id] || 0;
 
           if (currentCount > prevCount && prevCount >= 0) {
+            console.log('📋 offer.reservations:', offer.reservations);
             const latestReservation = offer.reservations?.find((r: any) => r.status === 'pending');
+            console.log('📋 latestReservation:', latestReservation);
             const buyerName = latestReservation?.buyer_name || 'Неизвестный';
             const reservationId = latestReservation?.id;
             
             console.log('🔔 Новая бронь!', { offerId: offer.id, buyerName, reservationId, offer, currentCount, prevCount });
+            
+            if (!reservationId) {
+              console.error('❌ CRITICAL: reservationId is undefined!', { latestReservation, offer });
+            }
             
             playNotificationSound();
             vibrate();
