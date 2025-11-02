@@ -18,6 +18,9 @@ const ReservationNotificationDialog = ({
   onAccept, 
   onReject 
 }: ReservationNotificationDialogProps) => {
+  const offer = notification ? offers.find(o => o.id === notification.offerId) : null;
+  const totalRub = offer ? Math.round(offer.amount * offer.rate) : 0;
+  
   const handleAccept = () => {
     if (notification) {
       const offer = offers.find(o => o.id === notification.offerId);
@@ -40,6 +43,28 @@ const ReservationNotificationDialog = ({
     onClose();
   };
 
+  const formatMeetingTime = (time: string) => {
+    const date = new Date(time);
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    const isToday = date.toDateString() === today.toDateString();
+    const isTomorrow = date.toDateString() === tomorrow.toDateString();
+    
+    const timeStr = date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+    
+    if (isToday) return `Сегодня в ${timeStr}`;
+    if (isTomorrow) return `Завтра в ${timeStr}`;
+    
+    return date.toLocaleString('ru-RU', { 
+      day: 'numeric', 
+      month: 'short', 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+  };
+
   return (
     <Dialog open={!!notification} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md border-accent shadow-xl shadow-accent/20 animate-in zoom-in-95 duration-300">
@@ -57,6 +82,27 @@ const ReservationNotificationDialog = ({
             <span className="font-semibold text-accent">{notification?.buyerName}</span> хочет зарезервировать ваше объявление
           </DialogDescription>
         </DialogHeader>
+        
+        {offer && (
+          <div className="bg-card-dark/50 border border-accent/20 rounded-lg p-4 space-y-3 mt-4">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Сумма в USDT:</span>
+              <span className="text-lg font-bold text-accent">{offer.amount} USDT</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Сумма в рублях:</span>
+              <span className="text-lg font-bold text-foreground">{totalRub.toLocaleString('ru-RU')} ₽</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Курс:</span>
+              <span className="text-base font-semibold text-foreground">{offer.rate} ₽</span>
+            </div>
+            <div className="flex justify-between items-center pt-2 border-t border-accent/20">
+              <span className="text-sm text-muted-foreground">Время встречи:</span>
+              <span className="text-base font-semibold text-accent">{formatMeetingTime(offer.meeting_time)}</span>
+            </div>
+          </div>
+        )}
         <div className="flex gap-3 mt-4">
           <Button
             onClick={handleAccept}
