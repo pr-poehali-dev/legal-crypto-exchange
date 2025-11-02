@@ -1,10 +1,17 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+
+interface ReservationNotification {
+  offerId: number;
+  buyerName: string;
+}
 
 export const useReservationNotifications = () => {
   const { toast } = useToast();
   const prevReservationsCount = useRef<Record<number, number>>({});
   const notificationPermission = useRef<NotificationPermission>('default');
+  const [notification, setNotification] = useState<ReservationNotification | null>(null);
+  const [offers, setOffers] = useState<any[]>([]);
 
   useEffect(() => {
     // Запрашиваем разрешение на уведомления
@@ -62,6 +69,8 @@ export const useReservationNotifications = () => {
       if (response.ok) {
         const data = await response.json();
         const myOffers = data.offers?.filter((o: any) => o.owner_id === parseInt(userId)) || [];
+        
+        setOffers(myOffers);
 
         myOffers.forEach((offer: any) => {
           const currentCount = offer.reservations?.length || 0;
@@ -73,20 +82,17 @@ export const useReservationNotifications = () => {
             
             console.log('🔔 Новая бронь!', { offerId: offer.id, buyerName, currentCount, prevCount });
             
-            // Звук
             playNotificationSound();
-            
-            // Вибрация на телефоне
             vibrate();
             
-            // Toast уведомление
+            setNotification({ offerId: offer.id, buyerName });
+            
             toast({
               title: '🎉 Новая бронь!',
               description: `${buyerName} забронировал ваше объявление`,
               duration: 10000,
             });
 
-            // Системное уведомление (работает даже когда вкладка свернута)
             if ('Notification' in window && notificationPermission.current === 'granted') {
               new Notification('🎉 Новая бронь!', {
                 body: `${buyerName} забронировал ваше объявление`,
@@ -112,5 +118,5 @@ export const useReservationNotifications = () => {
     return () => clearInterval(interval);
   }, []);
 
-  return null;
+  return { notification, setNotification, offers };
 };
