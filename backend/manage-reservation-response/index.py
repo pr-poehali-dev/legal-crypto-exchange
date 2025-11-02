@@ -65,10 +65,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         cur = conn.cursor()
         
         new_status = 'confirmed' if action == 'accept' else 'rejected'
+        timestamp_column = 'confirmed_at' if action == 'accept' else 'rejected_at'
         
         cur.execute(f"""
             UPDATE reservations
-            SET status = '{new_status}', {('confirmed_at' if action == 'accept' else 'rejected_at')} = NOW()
+            SET status = '{new_status}', {timestamp_column} = NOW()
             WHERE id = {reservation_id}
             RETURNING offer_id, buyer_name, meeting_time, meeting_office, buyer_user_id
         """)
