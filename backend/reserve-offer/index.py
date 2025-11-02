@@ -153,7 +153,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     INSERT INTO reservations 
                     (offer_id, buyer_name, buyer_phone, buyer_user_id, meeting_office, meeting_time, status) 
                     VALUES ({offer_id}, {buyer_name_sql}, {buyer_phone_sql}, {user_id_sql}, {escape_sql(meeting_office)}, '{slot_time}', 'pending')
+                    RETURNING id
                 """)
+                
+                reservation_id = cur.fetchone()[0]
                 
                 total_amount = float(amount) * float(rate)
                 
@@ -217,7 +220,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'statusCode': 200,
             'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
             'isBase64Encoded': False,
-            'body': json.dumps({'success': True})
+            'body': json.dumps({'success': True, 'reservation_id': reservation_id})
         }
     
     except Exception as e:

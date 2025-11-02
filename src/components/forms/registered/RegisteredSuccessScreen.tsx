@@ -13,22 +13,27 @@ export const RegisteredSuccessScreen = ({ reservationId, userId, onCancel }: Reg
   const [status, setStatus] = useState<'pending' | 'confirmed' | 'rejected'>('pending');
 
   useEffect(() => {
-    if (!reservationId || !userId) return;
+    if (!reservationId) return;
 
     const checkStatus = async () => {
       try {
-        const url = funcUrls['get-user-deals'];
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id: userId })
-        });
+        const url = `https://functions.poehali.dev/ad8e0859-d6b1-4dde-8da7-2b137a4c9abb?user_id=${userId}`;
+        const response = await fetch(url);
         const data = await response.json();
         
-        if (data.success && data.deals) {
-          const reservation = data.deals.find((d: any) => d.reservation_id === reservationId);
-          if (reservation && reservation.status !== 'pending') {
-            setStatus(reservation.status);
+        if (data.success && data.offers) {
+          for (const offer of data.offers) {
+            if (offer.reservations && offer.reservations.length > 0) {
+              const reservation = offer.reservations.find((r: any) => r.id === reservationId);
+              if (reservation) {
+                console.log('Found reservation:', reservation);
+                if (reservation.status !== 'pending') {
+                  setStatus(reservation.status);
+                  clearInterval(intervalId);
+                  return;
+                }
+              }
+            }
           }
         }
       } catch (error) {
@@ -36,10 +41,10 @@ export const RegisteredSuccessScreen = ({ reservationId, userId, onCancel }: Reg
       }
     };
 
-    const interval = setInterval(checkStatus, 3000);
+    const intervalId = setInterval(checkStatus, 3000);
     checkStatus();
 
-    return () => clearInterval(interval);
+    return () => clearInterval(intervalId);
   }, [reservationId, userId]);
   return (
     <div className="flex flex-col items-center justify-center py-12 space-y-6">
