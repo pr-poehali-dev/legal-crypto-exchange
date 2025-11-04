@@ -62,10 +62,24 @@ export const RegisteredSuccessScreen = ({ reservationId, userId, onCancel }: Reg
   return (
     <div className="flex flex-col items-center justify-center py-12 space-y-6">
       <div className="relative">
-        <div className="w-24 h-24 rounded-full bg-secondary/20 flex items-center justify-center animate-pulse">
-          <Icon name="Clock" size={48} className="text-secondary" />
-        </div>
-        <div className="absolute inset-0 rounded-full border-4 border-secondary/30 border-t-secondary animate-spin" />
+        {status === 'pending' && (
+          <>
+            <div className="w-24 h-24 rounded-full bg-secondary/20 flex items-center justify-center animate-pulse">
+              <Icon name="Clock" size={48} className="text-secondary" />
+            </div>
+            <div className="absolute inset-0 rounded-full border-4 border-secondary/30 border-t-secondary animate-spin" />
+          </>
+        )}
+        {status === 'confirmed' && (
+          <div className="w-24 h-24 rounded-full bg-green-500/20 flex items-center justify-center">
+            <Icon name="CheckCircle2" size={48} className="text-green-500" />
+          </div>
+        )}
+        {status === 'rejected' && (
+          <div className="w-24 h-24 rounded-full bg-red-500/20 flex items-center justify-center">
+            <Icon name="XCircle" size={48} className="text-red-500" />
+          </div>
+        )}
       </div>
       
       <div className="text-center space-y-2">
