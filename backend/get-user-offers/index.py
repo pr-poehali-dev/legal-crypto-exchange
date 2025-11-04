@@ -90,14 +90,14 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 SET status = 'expired'
                 WHERE offer_id = {offer_id} 
                 AND status = 'pending' 
-                AND created_at < NOW() - INTERVAL '3 minutes'
+                AND created_at < CURRENT_TIMESTAMP - INTERVAL '3 minutes'
             """)
             conn.commit()
             
             cur.execute(f"""
                 SELECT r.id, r.buyer_name, r.buyer_phone, r.meeting_time, r.meeting_office, r.created_at,
                        u.username as buyer_username, r.status,
-                       EXTRACT(EPOCH FROM (NOW() - r.created_at)) as seconds_ago,
+                       EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - r.created_at)) as seconds_ago,
                        u.phone as user_phone, u.email as user_email, r.buyer_email
                 FROM reservations r
                 LEFT JOIN users u ON r.buyer_user_id = u.id
