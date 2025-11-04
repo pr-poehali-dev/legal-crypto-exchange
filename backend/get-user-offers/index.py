@@ -97,7 +97,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             cur.execute(f"""
                 SELECT r.id, r.buyer_name, r.buyer_phone, r.meeting_time, r.meeting_office, r.created_at,
                        u.username as buyer_username, r.status,
-                       EXTRACT(EPOCH FROM (NOW() - r.created_at)) as seconds_ago
+                       EXTRACT(EPOCH FROM (NOW() - r.created_at)) as seconds_ago,
+                       u.phone as user_phone, u.email as user_email, r.buyer_email
                 FROM reservations r
                 LEFT JOIN users u ON r.buyer_user_id = u.id
                 WHERE r.offer_id = {offer_id}
@@ -110,10 +111,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 seconds_ago = int(res[8]) if res[8] else 0
                 time_left = max(0, 180 - seconds_ago)  # 3 минуты = 180 секунд
                 
+                # res[9] = user_phone, res[10] = user_email, res[11] = buyer_email
+                buyer_phone = res[9] if res[9] else res[2]  # Телефон из users или из поля buyer_phone
+                buyer_email = res[10] if res[10] else res[11]  # Email из users или из поля buyer_email
+                
                 reservations_list.append({
                     'id': res[0],
                     'buyer_name': res[6] if res[6] else res[1],
-                    'buyer_phone': res[2],
+                    'buyer_phone': buyer_phone,
+                    'buyer_email': buyer_email,
                     'meeting_time': str(res[3]),
                     'meeting_office': res[4],
                     'created_at': res[5].isoformat() if res[5] else None,
