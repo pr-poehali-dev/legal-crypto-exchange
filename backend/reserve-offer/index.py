@@ -125,29 +125,25 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 
                 owner_id, amount, rate, offer_type, telegram_id, owner_username, offer_is_anonymous = result
                 
-                if not offer_is_anonymous:
-                    cur.execute(f"""
-                        SELECT is_reserved 
-                        FROM offer_time_slots
-                        WHERE offer_id = {offer_id} AND slot_time = '{slot_time}'
-                    """)
-                    
-                    slot_result = cur.fetchone()
-                    if not slot_result:
-                        return {
-                            'statusCode': 404,
-                            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                            'isBase64Encoded': False,
-                            'body': json.dumps({'success': False, 'error': 'Time slot not found'})
-                        }
-                    
-                    if slot_result[0]:
-                        return {
-                            'statusCode': 400,
-                            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
-                            'isBase64Encoded': False,
-                            'body': json.dumps({'success': False, 'error': 'Time slot already reserved'})
-                        }
+                # Проверяем, что слот не забронирован через таблицу reservations
+                cur.execute(f"""
+                    SELECT COUNT(*) 
+                    FROM reservations
+                    WHERE offer_id = {offer_id} 
+                    AND meeting_time = '{slot_time}' 
+                    AND meeting_office = {escape_sql(meeting_office)}
+                    AND status IN ('pending', 'confirmed')
+                    AND expires_at > NOW()
+                """)
+                
+                reserved_count = cur.fetchone()[0]
+                if reserved_count > 0:
+                    return {
+                        'statusCode': 400,
+                        'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+                        'isBase64Encoded': False,
+                        'body': json.dumps({'success': False, 'error': 'Time slot already reserved'})
+                    }
                 
                 if not is_anonymous and owner_id == user_id:
                     return {

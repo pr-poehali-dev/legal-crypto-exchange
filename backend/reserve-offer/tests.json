@@ -1,11 +1,11 @@
 {
   "tests": [
     {
-      "name": "Reserve offer successfully (or not found)",
+      "name": "Reserve offer returns 404 for non-existent offer",
       "method": "POST",
       "path": "/",
       "body": {
-        "offer_id": 1,
+        "offer_id": 99999,
         "slot_time": "14:00",
         "user_id": 2,
         "username": "TestUser",
@@ -14,7 +14,7 @@
       "expectedStatus": 404,
       "expectedBody": {
         "success": false,
-        "error": "Time slot not found"
+        "error": "Offer not found or not active"
       },
       "bodyMatcher": "partial"
     },
