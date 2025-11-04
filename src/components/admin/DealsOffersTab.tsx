@@ -140,12 +140,10 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
                       )}
                     </div>
                     <div className="mb-3">
-                      <p className="text-2xl font-bold">
-                        {offer.amount.toLocaleString()} USDT
-                      </p>
-                      <p className="text-lg text-muted-foreground">
-                        {offer.rate.toLocaleString()} ₽ за 1 USDT = <span className="text-accent font-bold">{(offer.amount * offer.rate).toLocaleString()} ₽</span>
-                      </p>
+                      <div className="flex items-center gap-2 text-2xl font-bold mb-1">
+                        <Icon name="Coins" size={24} className="text-secondary shrink-0" />
+                        <span>{offer.amount.toLocaleString()} USDT × {offer.rate.toLocaleString()} ₽ = <span className="text-accent">{(offer.amount * offer.rate).toLocaleString()} ₽</span></span>
+                      </div>
                     </div>
                     <div className="space-y-3">
                       <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
@@ -172,6 +170,14 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
                           <div className="space-y-2">
                             {offer.reservations.map((res, idx) => (
                               <div key={idx} className="bg-background/50 rounded p-3 text-sm border border-border">
+                                {res.amount && (
+                                  <div className="mb-2 pb-2 border-b border-border">
+                                    <div className="flex items-center gap-2 text-sm font-semibold text-secondary">
+                                      <Icon name="Coins" size={14} className="shrink-0" />
+                                      <span>{res.amount} USDT × {offer.rate} ₽ = {(res.amount * offer.rate).toFixed(2)} ₽</span>
+                                    </div>
+                                  </div>
+                                )}
                                 <div className="grid grid-cols-1 md:grid-cols-5 gap-2 mb-2">
                                   <div>
                                     <p className="text-muted-foreground text-xs">Имя</p>
@@ -262,9 +268,10 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
                         Завершено
                       </Badge>
                     </div>
-                    <p className="text-2xl font-bold mb-2">
-                      {deal.amount.toLocaleString()} USDT × {deal.rate.toLocaleString()} ₽ = <span className="text-accent">{deal.total.toLocaleString()} ₽</span>
-                    </p>
+                    <div className="flex items-center gap-2 text-2xl font-bold mb-2">
+                      <Icon name="Coins" size={24} className="text-secondary shrink-0" />
+                      <span>{deal.amount.toLocaleString()} USDT × {deal.rate.toLocaleString()} ₽ = <span className="text-accent">{deal.total.toLocaleString()} ₽</span></span>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                       <div>
                         <p className="text-muted-foreground">Пользователь</p>

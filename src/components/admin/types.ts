@@ -17,6 +17,7 @@ export interface Reservation {
   created_at: string;
   status: string;
   user_id?: number;
+  amount?: number;
 }
 
 export interface Offer {

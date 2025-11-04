@@ -36,9 +36,10 @@ const DealsTab = ({ deals, onCompleteDeal }: DealsTabProps) => {
                     {deal.status === 'completed' ? 'Завершена' : deal.status === 'pending' ? 'В процессе' : 'Отменена'}
                   </Badge>
                 </div>
-                <p className="text-2xl font-bold text-foreground mb-2">
-                  {deal.amount.toLocaleString()} USDT × {deal.rate.toLocaleString()} ₽ = {deal.total.toLocaleString()} ₽
-                </p>
+                <div className="flex items-center gap-2 text-2xl font-bold text-foreground mb-2">
+                  <Icon name="Coins" size={24} className="text-secondary shrink-0" />
+                  <span>{deal.amount.toLocaleString()} USDT × {deal.rate.toLocaleString()} ₽ = {deal.total.toLocaleString()} ₽</span>
+                </div>
                 <div className="space-y-1 text-sm text-muted-foreground">
                   <p><strong>Пользователь:</strong> {deal.username} ({deal.email})</p>
                   <p><strong>Телефон:</strong> {deal.phone}</p>
