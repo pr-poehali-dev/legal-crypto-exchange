@@ -70,12 +70,12 @@ export const useAdminData = () => {
         const userIds = [...new Set(offersData.map((o: any) => o.user_id))];
         const reservationsByUserId: Record<number, any[]> = {};
         
-        // Load reservations for each unique user (with delay to avoid rate limiting)
-        for (const userId of userIds) {
+        // Load reservations for each unique user in parallel with error handling
+        const reservationPromises = userIds.map(async (userId) => {
           try {
-            await new Promise(resolve => setTimeout(resolve, 100)); // 100ms delay between requests
-            
-            const resResponse = await fetch(`https://functions.poehali.dev/ad8e0859-d6b1-4dde-8da7-2b137a4c9abb?user_id=${userId}`);
+            const resResponse = await fetch(`https://functions.poehali.dev/ad8e0859-d6b1-4dde-8da7-2b137a4c9abb?user_id=${userId}`, {
+              signal: AbortSignal.timeout(5000) // 5 second timeout
+            });
             if (resResponse.ok) {
               const resData = await resResponse.json();
               if (resData.success && resData.offers) {
@@ -87,9 +87,12 @@ export const useAdminData = () => {
               }
             }
           } catch (err) {
-            console.warn(`Failed to load reservations for user ${userId}:`, err);
+            // Silently handle errors - show offers even if reservations fail to load
           }
-        }
+        });
+        
+        // Wait for all reservation requests with timeout
+        await Promise.allSettled(reservationPromises);
         
         // Attach reservations to offers
         offersData.forEach((offer: any) => {
