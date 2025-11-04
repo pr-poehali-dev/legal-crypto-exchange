@@ -38,6 +38,47 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     body_data = json.loads(body_str)
     offer_id = body_data.get('offer_id')
     user_id = body_data.get('user_id')
+    clear_all = body_data.get('clear_all', False)
+    
+    dsn = os.environ.get('DATABASE_URL')
+    
+    # Clear all offers mode
+    if clear_all:
+        conn = psycopg2.connect(dsn)
+        cur = conn.cursor()
+        
+        cur.execute('SELECT COUNT(*) FROM reservations')
+        reservations_count = cur.fetchone()[0]
+        
+        cur.execute('SELECT COUNT(*) FROM deals')
+        deals_count = cur.fetchone()[0]
+        
+        cur.execute('SELECT COUNT(*) FROM offers')
+        offers_count = cur.fetchone()[0]
+        
+        cur.execute('DELETE FROM reservations')
+        cur.execute('DELETE FROM deals')
+        cur.execute('DELETE FROM offers')
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+        total_deleted = reservations_count + deals_count + offers_count
+        
+        return {
+            'statusCode': 200,
+            'headers': {'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*'},
+            'isBase64Encoded': False,
+            'body': json.dumps({
+                'success': True,
+                'deleted_count': total_deleted,
+                'reservations': reservations_count,
+                'deals': deals_count,
+                'offers': offers_count,
+                'slots': 0
+            })
+        }
     
     if not offer_id:
         return {
@@ -47,13 +88,11 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({'success': False, 'error': 'Missing offer_id'})
         }
     
-    dsn = os.environ.get('DATABASE_URL')
-    
     conn = psycopg2.connect(dsn)
     cur = conn.cursor()
     
     # Check if offer exists
-    cur.execute('SELECT user_id FROM offers WHERE id = %s', (offer_id,))
+    cur.execute(f'SELECT user_id FROM offers WHERE id = {offer_id}')
     result = cur.fetchone()
     
     if not result:
@@ -78,7 +117,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             'body': json.dumps({'success': False, 'error': 'Not authorized to delete this offer'})
         }
     
-    cur.execute("DELETE FROM offers WHERE id = %s", (offer_id,))
+    cur.execute(f"DELETE FROM offers WHERE id = {offer_id}")
     
     conn.commit()
     cur.close()

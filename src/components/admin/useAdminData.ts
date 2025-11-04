@@ -226,7 +226,7 @@ export const useAdminData = () => {
     if (!confirm('ВНИМАНИЕ! Это удалит ВСЕ объявления из базы. Продолжить?')) return;
 
     try {
-      const response = await fetch('https://functions.poehali.dev/9ba15f07-2b5a-4130-9c77-85a5b1d8f040', {
+      const response = await fetch('https://functions.poehali.dev/d7e2a78c-387a-4964-93af-6f6956d1cdd7', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ clear_all: true })
