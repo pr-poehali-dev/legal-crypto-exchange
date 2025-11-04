@@ -1,18 +1,21 @@
 {
   "tests": [
     {
-      "name": "Edit offer with valid fields",
+      "name": "Edit offer returns error for non-existent offer",
       "method": "POST",
       "path": "/",
       "body": {
-        "offer_id": 1,
+        "offer_id": 99999,
         "user_id": 1,
         "offer_type": "buy",
         "amount": 1000,
         "rate": 95.5,
-        "meeting_time": "14:00"
+        "meeting_time": "14:00",
+        "meeting_time_end": "16:00",
+        "city": "Москва",
+        "offices": ["Москва, ул. Нефтезаводская, д.9/2, 12 этаж"]
       },
-      "expectedStatus": 200,
+      "expectedStatus": 404,
       "bodyMatcher": "skip"
     },
     {

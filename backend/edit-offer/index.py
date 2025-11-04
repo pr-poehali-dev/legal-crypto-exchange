@@ -5,8 +5,8 @@ from typing import Dict, Any
 
 def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     '''
-    Business: Update offer details (amount, rate, meeting_time, offer_type)
-    Args: event with httpMethod, body containing offer_id, amount, rate, meeting_time, offer_type
+    Business: Update offer details including slots, city and offices
+    Args: event with httpMethod, body containing offer_id, amount, rate, meeting_time, meeting_time_end, city, offices
     Returns: HTTP response with success status
     '''
     method: str = event.get('httpMethod', 'GET')
@@ -38,6 +38,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         amount = body.get('amount')
         rate = body.get('rate')
         meeting_time = body.get('meeting_time')
+        meeting_time_end = body.get('meeting_time_end', meeting_time)
+        city = body.get('city', 'Москва')
+        offices = body.get('offices', [])
         
         if not offer_id or not user_id or not offer_type or not amount or not rate or not meeting_time:
             return {
@@ -51,7 +54,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         cur = conn.cursor()
         
         # Check if user owns this offer
-        cur.execute('SELECT user_id FROM offers WHERE id = %s', (offer_id,))
+        cur.execute(f"SELECT user_id FROM offers WHERE id = {offer_id}")
         result = cur.fetchone()
         
         if not result:
@@ -72,11 +75,36 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'Not authorized to edit this offer'})
             }
         
-        cur.execute('''
+        # Generate available slots
+        time_start_parts = meeting_time.split(':')
+        time_end_parts = meeting_time_end.split(':')
+        start_minutes = int(time_start_parts[0]) * 60 + int(time_start_parts[1])
+        end_minutes = int(time_end_parts[0]) * 60 + int(time_end_parts[1])
+        
+        available_slots = []
+        current = start_minutes
+        while current <= end_minutes:
+            hours = current // 60
+            minutes = current % 60
+            available_slots.append(f"{hours:02d}:{minutes:02d}")
+            current += 15
+        
+        offices_json = json.dumps(offices).replace("'", "''")
+        slots_json = json.dumps(available_slots).replace("'", "''")
+        city_escaped = city.replace("'", "''")
+        
+        cur.execute(f'''
             UPDATE offers 
-            SET offer_type = %s, amount = %s, rate = %s, meeting_time = %s
-            WHERE id = %s
-        ''', (offer_type, amount, rate, meeting_time, offer_id))
+            SET offer_type = '{offer_type}', 
+                amount = {amount}, 
+                rate = {rate}, 
+                meeting_time = '{meeting_time}',
+                meeting_time_end = '{meeting_time_end}',
+                city = '{city_escaped}',
+                offices = '{offices_json}',
+                available_slots = '{slots_json}'
+            WHERE id = {offer_id}
+        ''')
         
         conn.commit()
         cur.close()
