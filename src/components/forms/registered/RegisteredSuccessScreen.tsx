@@ -15,6 +15,8 @@ export const RegisteredSuccessScreen = ({ reservationId, userId, onCancel }: Reg
   useEffect(() => {
     if (!reservationId) return;
 
+    let intervalId: NodeJS.Timeout;
+
     const checkStatus = async () => {
       try {
         const url = `https://functions.poehali.dev/ad8e0859-d6b1-4dde-8da7-2b137a4c9abb?user_id=${userId}`;
@@ -26,16 +28,19 @@ export const RegisteredSuccessScreen = ({ reservationId, userId, onCancel }: Reg
         }
         
         const data = await response.json();
+        console.log('Checking reservation status, data:', data);
         
         if (data.success && data.offers) {
           for (const offer of data.offers) {
             if (offer.reservations && offer.reservations.length > 0) {
               const reservation = offer.reservations.find((r: any) => r.id === reservationId);
               if (reservation) {
-                console.log('Found reservation:', reservation);
+                console.log('Found reservation:', reservation, 'status:', reservation.status);
                 if (reservation.status !== 'pending') {
                   setStatus(reservation.status);
-                  clearInterval(intervalId);
+                  if (intervalId) {
+                    clearInterval(intervalId);
+                  }
                   return;
                 }
               }
@@ -47,10 +52,14 @@ export const RegisteredSuccessScreen = ({ reservationId, userId, onCancel }: Reg
       }
     };
 
-    const intervalId = setInterval(checkStatus, 15000);
     checkStatus();
+    intervalId = setInterval(checkStatus, 3000);
 
-    return () => clearInterval(intervalId);
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
   }, [reservationId, userId]);
   return (
     <div className="flex flex-col items-center justify-center py-12 space-y-6">
@@ -109,7 +118,7 @@ export const RegisteredSuccessScreen = ({ reservationId, userId, onCancel }: Reg
         )}
       </div>
 
-      {onCancel && (
+      {onCancel && status !== 'pending' && (
         <Button
           variant="outline"
           onClick={onCancel}
