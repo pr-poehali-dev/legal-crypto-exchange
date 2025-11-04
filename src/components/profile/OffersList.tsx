@@ -306,12 +306,6 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                                           ? 'text-red-600'
                                           : 'text-orange-600'
                                       }`}>{reservation.buyer_name}</p>
-                                      {reservation.buyer_phone && (
-                                        <p className="text-muted-foreground flex items-center gap-1 mt-1">
-                                          <Icon name="Phone" size={12} className="shrink-0" />
-                                          <span className="break-all">{reservation.buyer_phone}</span>
-                                        </p>
-                                      )}
                                     </div>
                                   </div>
                                   <div className="flex items-center justify-between gap-2">

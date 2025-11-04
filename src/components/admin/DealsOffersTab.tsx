@@ -147,23 +147,62 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
                         {offer.rate.toLocaleString()} ₽ за 1 USDT = <span className="text-accent font-bold">{(offer.amount * offer.rate).toLocaleString()} ₽</span>
                       </p>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                      <div>
-                        <p className="text-muted-foreground">Пользователь</p>
-                        <p className="font-semibold">{offer.username}</p>
+                    <div className="space-y-3">
+                      <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
+                        <p className="text-xs font-semibold text-blue-600 mb-2">👤 Создатель объявления</p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
+                          <div>
+                            <p className="text-muted-foreground text-xs">Имя</p>
+                            <p className="font-semibold">{offer.username}</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground text-xs">Телефон</p>
+                            <p className="font-semibold">{offer.phone}</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground text-xs">Email</p>
+                            <p className="font-semibold text-xs break-all">{offer.email || '—'}</p>
+                          </div>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-muted-foreground">Встреча</p>
-                        <p className="font-semibold">{offer.meeting_time}</p>
-                      </div>
-                      <div>
-                        <p className="text-muted-foreground">Телефон</p>
-                        <p className="font-semibold">{offer.phone}</p>
+
+                      {offer.reservations && offer.reservations.length > 0 && (
+                        <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-3">
+                          <p className="text-xs font-semibold text-orange-600 mb-2">📋 Заявки ({offer.reservations.length})</p>
+                          <div className="space-y-2">
+                            {offer.reservations.map((res, idx) => (
+                              <div key={idx} className="bg-background/50 rounded p-2 text-sm border border-border">
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
+                                  <div>
+                                    <p className="text-muted-foreground text-xs">Имя</p>
+                                    <p className="font-semibold">{res.buyer_name}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-muted-foreground text-xs">Телефон</p>
+                                    <p className="font-semibold">{res.buyer_phone || '—'}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-muted-foreground text-xs">Время</p>
+                                    <p className="font-semibold">{res.meeting_time}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-muted-foreground text-xs">Статус</p>
+                                    <Badge variant={res.status === 'confirmed' ? 'default' : res.status === 'rejected' ? 'destructive' : 'secondary'} className="text-xs">
+                                      {res.status === 'confirmed' ? '✅ Принято' : res.status === 'rejected' ? '❌ Отклонено' : '⏰ Ожидание'}
+                                    </Badge>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="text-xs text-muted-foreground">
+                        <p>Встреча: {offer.meeting_time}{offer.meeting_time_end ? ` — ${offer.meeting_time_end}` : ''}</p>
+                        <p>Создано: {new Date(offer.created_at).toLocaleString('ru-RU')}</p>
                       </div>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-2">
-                      Создано: {new Date(offer.created_at).toLocaleString('ru-RU')}
-                    </p>
                   </div>
                   <div className="flex flex-col gap-2 ml-4 min-w-[180px]">
                     {offer.status !== 'completed' && (

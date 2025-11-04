@@ -30,15 +30,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         cur = conn.cursor()
         
         cur.execute(
-            "SELECT o.id, o.offer_type, o.amount, o.rate, o.meeting_time, o.time_start, o.time_end, o.status, o.created_at, u.username, u.phone, o.city, o.offices FROM offers o JOIN users u ON o.user_id = u.id ORDER BY o.created_at DESC"
+            "SELECT o.id, o.offer_type, o.amount, o.rate, o.meeting_time, o.time_start, o.time_end, o.status, o.created_at, u.username, u.phone, o.city, o.offices, u.email, o.user_id FROM offers o JOIN users u ON o.user_id = u.id ORDER BY o.created_at DESC"
         )
         
         rows = cur.fetchall()
         
         offers = []
         for row in rows:
+            offer_id = row[0]
             offers.append({
-                'id': row[0],
+                'id': offer_id,
                 'offer_type': row[1],
                 'amount': float(row[2]),
                 'rate': float(row[3]),
@@ -49,7 +50,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'username': row[9],
                 'phone': row[10],
                 'city': row[11],
-                'offices': row[12] if row[12] else []
+                'offices': row[12] if row[12] else [],
+                'email': row[13],
+                'user_id': row[14],
+                'reservations': []
             })
         
         cur.close()

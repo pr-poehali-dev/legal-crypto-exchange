@@ -7,6 +7,18 @@ export interface User {
   blocked?: boolean;
 }
 
+export interface Reservation {
+  id: number;
+  buyer_name: string;
+  buyer_phone?: string;
+  buyer_email?: string;
+  meeting_time: string;
+  meeting_office: string;
+  created_at: string;
+  status: string;
+  user_id?: number;
+}
+
 export interface Offer {
   id: number;
   user_id: number;
@@ -19,6 +31,10 @@ export interface Offer {
   created_at: string;
   username: string;
   phone: string;
+  email?: string;
+  reservations?: Reservation[];
+  reserved_by?: number;
+  reserved_by_username?: string;
 }
 
 export interface Deal {
