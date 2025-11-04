@@ -84,6 +84,7 @@ export const useOfferForm = (userId: number | null, onSuccess: () => void) => {
             amount: parseFloat(amount),
             rate: parseFloat(rate),
             meeting_time: meetingTime,
+            meeting_time_end: meetingTimeEnd,
             city: city,
             offices: selectedOffices,
           }),

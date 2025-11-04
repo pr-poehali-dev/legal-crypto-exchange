@@ -39,6 +39,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         rate = body.get('rate')
         meeting_time = body.get('meeting_time')
         meeting_time_end = body.get('meeting_time_end', meeting_time)
+        if meeting_time_end == '00:00' or not meeting_time_end:
+            meeting_time_end = meeting_time
         city = body.get('city', 'Москва')
         offices = body.get('offices', [])
         
