@@ -402,7 +402,7 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Icon name={currentUser ? "Handshake" : "Lock"} className="text-primary" />
-              {currentUser ? 'Откликнуться на объявление' : 'Зарезервировать объявление'}
+              Процесс бронирования
             </DialogTitle>
             <DialogDescription>
               Для Вас будет зарезервирован слот для совершения юридически безопасной сделки и с Вами свяжется наш специалист.
