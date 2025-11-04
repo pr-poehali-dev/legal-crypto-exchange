@@ -57,6 +57,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     buyer_name = body_data.get('buyer_name')
     buyer_phone = body_data.get('buyer_phone')
     meeting_office = body_data.get('meeting_office')
+    requested_amount = body_data.get('amount')
     is_anonymous = body_data.get('is_anonymous', False)
     
     print(f"Parsed values - offer_id: {offer_id}, slot_time: {slot_time}, is_anonymous: {is_anonymous}, buyer_name: {buyer_name}, buyer_phone: {buyer_phone}, meeting_office: {meeting_office}")
@@ -158,32 +159,33 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 buyer_name_sql = escape_sql(buyer_name) if is_anonymous else 'NULL'
                 buyer_phone_sql = escape_sql(buyer_phone) if is_anonymous else 'NULL'
                 user_id_sql = user_id if not is_anonymous else 'NULL'
+                amount_sql = requested_amount if requested_amount else amount
                 
                 cur.execute(f"""
                     INSERT INTO reservations 
-                    (offer_id, buyer_name, buyer_phone, buyer_user_id, meeting_office, meeting_time, status) 
-                    VALUES ({offer_id}, {buyer_name_sql}, {buyer_phone_sql}, {user_id_sql}, {escape_sql(meeting_office)}, '{slot_time}', 'pending')
+                    (offer_id, buyer_name, buyer_phone, buyer_user_id, meeting_office, meeting_time, amount, status) 
+                    VALUES ({offer_id}, {buyer_name_sql}, {buyer_phone_sql}, {user_id_sql}, {escape_sql(meeting_office)}, '{slot_time}', {amount_sql}, 'pending')
                     RETURNING id
                 """)
                 
                 reservation_id = cur.fetchone()[0]
                 
-                total_amount = float(amount) * float(rate)
+                display_amount = amount_sql
+                total_amount = float(display_amount) * float(rate)
                 
                 offer_type_text = 'Покупка' if offer_type == 'buy' else 'Продажа'
                 
                 if telegram_id:
-                    contact_info = f"\n🌐 Контакт: {buyer_phone}" if is_anonymous else ""
-                    owner_message = f"""🔔 НОВАЯ ЗАЯВКА НА БРОНЬ!
+                    contact_info = f"\n📱 Телефон: {buyer_phone}" if is_anonymous else ""
+                    owner_message = f"""🔔 НОВАЯ ЗАЯВКА НА СДЕЛКУ!
 
 👤 Партнёр: {display_name}{contact_info}
-⚡ Тип сделки: {offer_type_text}
-💎 Объём: {amount} USDT ({total_amount:.2f} ₽)
-📊 Курс: {rate} ₽
-📍 Точка встречи: {meeting_office}
-⏰ Временной слот: {slot_time}
+⚡ Операция: {offer_type_text}
+💰 Сумма: {display_amount} USDT × {rate} ₽ = {total_amount:.2f} ₽
+📍 Место встречи: {meeting_office}
+🕐 Время: {slot_time}
 
-⏳ Зайдите в профиль и подтвердите или отклоните заявку."""
+⏳ Зайдите в личный кабинет чтобы подтвердить или отклонить заявку."""
                     
                     try:
                         response = requests.post(
@@ -201,17 +203,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 bot_token_deals = os.environ.get('TELEGRAM_BOT_TOKEN_DEALS')
                 chat_id = os.environ.get('TELEGRAM_CHAT_ID')
                 if bot_token_deals and chat_id:
-                    contact_details = f"\n🌐 Контакт: {buyer_phone}" if is_anonymous else ""
-                    admin_message = f"""🔔 НОВАЯ ЗАЯВКА НА БРОНЬ
+                    contact_details = f"\n📱 Контакт: {buyer_phone}" if is_anonymous else ""
+                    admin_message = f"""🔔 НОВАЯ ЗАЯВКА
 
 🎯 Инициатор: {owner_username}
-👽 Партнёр: {display_name}{contact_details}
+👤 Партнёр: {display_name}{contact_details}
 ⚡ Операция: {offer_type_text}
-💎 Объём: {amount} USDT
-📊 Курс: {rate} ₽
-📡 Станция: {meeting_office}
-⏱ Временной слот: {slot_time}
-💫 Итоговая сумма: {float(amount) * float(rate):,.2f} ₽"""
+💰 Сумма: {display_amount} USDT × {rate} ₽ = {float(display_amount) * float(rate):,.2f} ₽
+📍 Место: {meeting_office}
+🕐 Время: {slot_time}"""
                     
                     try:
                         telegram_api_url = f'https://api.telegram.org/bot{bot_token_deals}/sendMessage'

@@ -116,7 +116,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 """)
         
         cur.execute(f"""
-            SELECT o.amount, o.rate, o.offer_type, u.telegram_id, u.username, r.buyer_user_id
+            SELECT COALESCE(r.amount, o.amount) as amount, o.rate, o.offer_type, u.telegram_id, u.username, r.buyer_user_id
             FROM offers o
             LEFT JOIN reservations r ON r.id = {reservation_id}
             LEFT JOIN users u ON r.buyer_user_id = u.id
@@ -156,17 +156,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             
             if bot_token and telegram_id:
                 status_text = '✅ ПОДТВЕРЖДЕНА' if action == 'accept' else '⛔ ОТКЛОНЕНА'
-                status_emoji = '🚀' if action == 'accept' else '🌑'
+                status_emoji = '🚀' if action == 'accept' else '❌'
                 deal_type_text = 'Покупка' if offer_type == 'buy' else 'Продажа'
                 total_amount = float(amount) * float(rate)
                 
-                telegram_message = f"""{status_emoji} СТАТУС БРОНИ: {status_text}
+                telegram_message = f"""{status_emoji} ЗАЯВКА {status_text}
 
 ⚡ Операция: {deal_type_text}
-💎 Объём: {amount} USDT ({total_amount:.2f} ₽)
-📊 Курс: {rate} ₽
-📡 Станция: {meeting_office}
-⏱ Временной слот: {meeting_time}"""
+💰 Сумма: {amount} USDT × {rate} ₽ = {total_amount:.2f} ₽
+📍 Место встречи: {meeting_office}
+🕐 Время: {meeting_time}"""
                 
                 url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
                 data = {

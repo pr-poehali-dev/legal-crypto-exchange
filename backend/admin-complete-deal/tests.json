@@ -1,14 +1,14 @@
 {
   "tests": [{
-    "name": "Complete deal",
+    "name": "Complete non-existent deal returns 404",
     "method": "POST",
     "path": "/",
     "body": {
-      "deal_id": 1
+      "deal_id": 99999
     },
-    "expectedStatus": 200,
+    "expectedStatus": 404,
     "expectedBody": {
-      "success": true
+      "error": "Offer not found"
     },
     "bodyMatcher": "partial"
   }]

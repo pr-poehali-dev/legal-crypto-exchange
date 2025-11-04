@@ -114,8 +114,10 @@ export const useOfferActions = (userId: number | null, onSuccess: () => void) =>
 
       if (data.success) {
         toast({
-          title: 'Успешно!',
-          description: action === 'accept' ? 'Заявка подтверждена' : 'Заявка отклонена',
+          title: action === 'accept' ? 'Заявка подтверждена!' : 'Заявка отклонена',
+          description: action === 'accept' 
+            ? 'Покупатель получил уведомление. Ожидайте встречи в указанное время.' 
+            : 'Покупатель получил уведомление об отклонении.',
         });
         onSuccess();
       } else {

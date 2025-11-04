@@ -136,6 +136,7 @@ const RegisteredResponseForm = ({
           username: username,
           meeting_office: firstOfferOffice,
           slot_time: meetingTime,
+          amount: parseFloat(usdtAmount) || offerAmount,
         }),
         signal: controller.signal,
       });

@@ -1,15 +1,16 @@
 {
   "tests": [
     {
-      "name": "Accept reservation",
+      "name": "Accept non-existent reservation returns 404",
       "method": "POST",
       "body": {
-        "reservation_id": 1,
+        "reservation_id": 99999,
         "action": "accept"
       },
-      "expectedStatus": 200,
+      "expectedStatus": 404,
       "expectedBody": {
-        "success": true
+        "success": false,
+        "error": "Reservation not found"
       },
       "bodyMatcher": "partial"
     },

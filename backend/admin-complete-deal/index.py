@@ -65,7 +65,15 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         cursor = conn.cursor()
         
         cursor.execute("""
-            SELECT o.user_id, o.reserved_by, o.offer_type, o.amount, o.rate, 
+            SELECT o.user_id, o.reserved_by, o.offer_type, 
+                   COALESCE(
+                       (SELECT r.amount FROM reservations r 
+                        WHERE r.offer_id = o.id 
+                        AND r.status = 'confirmed' 
+                        ORDER BY r.confirmed_at DESC LIMIT 1),
+                       o.amount
+                   ) as amount, 
+                   o.rate, 
                    owner.username as owner_name, reserver.username as reserver_name,
                    owner.telegram_id as owner_telegram, reserver.telegram_id as reserver_telegram
             FROM offers o
@@ -123,15 +131,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             deal_type_reserver = 'Покупка' if reserver_deal_type == 'buy' else 'Продажа'
             
             if owner_telegram:
-                message = f"""🎯 ТРАНЗАКЦИЯ ЗАВЕРШЕНА!
+                message = f"""✅ СДЕЛКА ЗАВЕРШЕНА!
 
 ⚡ Операция: {deal_type_owner}
-💎 Объём: {amount} USDT
-📊 Курс: {rate} ₽
-💫 Итоговая сумма: {total:.2f} ₽
-👽 Партнёр: {reserver_name}
+💰 Сумма: {amount} USDT × {rate} ₽ = {total:.2f} ₽
+👤 Партнёр: {reserver_name}
 
-✨ Миссия выполнена успешно!"""
+Спасибо за использование сервиса!"""
                 
                 url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
                 data = {'chat_id': owner_telegram, 'text': message}
@@ -144,15 +150,13 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     pass
             
             if reserver_telegram:
-                message = f"""🎯 ТРАНЗАКЦИЯ ЗАВЕРШЕНА!
+                message = f"""✅ СДЕЛКА ЗАВЕРШЕНА!
 
 ⚡ Операция: {deal_type_reserver}
-💎 Объём: {amount} USDT
-📊 Курс: {rate} ₽
-💫 Итоговая сумма: {total:.2f} ₽
-👽 Партнёр: {owner_name}
+💰 Сумма: {amount} USDT × {rate} ₽ = {total:.2f} ₽
+👤 Партнёр: {owner_name}
 
-✨ Миссия выполнена успешно!"""
+Спасибо за использование сервиса!"""
                 
                 url = f'https://api.telegram.org/bot{bot_token}/sendMessage'
                 data = {'chat_id': reserver_telegram, 'text': message}
