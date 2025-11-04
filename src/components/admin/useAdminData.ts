@@ -64,7 +64,27 @@ export const useAdminData = () => {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       if (data.success) {
-        setOffers(data.offers || []);
+        const offersWithReservations = data.offers || [];
+        
+        // Load reservations for each offer
+        for (const offer of offersWithReservations) {
+          try {
+            const resResponse = await fetch(`https://functions.poehali.dev/ad8e0859-d6b1-4dde-8da7-2b137a4c9abb?user_id=${offer.user_id}`);
+            if (resResponse.ok) {
+              const resData = await resResponse.json();
+              if (resData.success && resData.offers) {
+                const matchingOffer = resData.offers.find((o: any) => o.id === offer.id);
+                if (matchingOffer && matchingOffer.reservations) {
+                  offer.reservations = matchingOffer.reservations;
+                }
+              }
+            }
+          } catch (err) {
+            console.error(`Failed to load reservations for offer ${offer.id}:`, err);
+          }
+        }
+        
+        setOffers(offersWithReservations);
       }
     } catch (error) {
       console.error('Failed to load offers:', error);
