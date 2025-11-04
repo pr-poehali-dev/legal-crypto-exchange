@@ -33,6 +33,16 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
     conn = psycopg2.connect(dsn)
     cur = conn.cursor()
     
+    # Автоматически деактивируем объявления, у которых истекло время
+    cur.execute("""
+        UPDATE offers
+        SET status = 'inactive'
+        WHERE status = 'active' 
+        AND time_end IS NOT NULL 
+        AND time_end < CURRENT_TIME
+    """)
+    conn.commit()
+    
     where_conditions = ["o.status = 'active'"]
     
     if single_offer_id:
