@@ -342,9 +342,9 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                                       <Icon name="Clock" size={12} className="shrink-0" />
                                       <span className="truncate">{reservation.meeting_time}</span>
                                     </p>
-                                    <p className="text-muted-foreground flex items-center gap-1">
-                                      <Icon name="MapPin" size={12} className="shrink-0" />
-                                      <span className="truncate">{reservation.meeting_office}</span>
+                                    <p className="text-muted-foreground flex items-start gap-1">
+                                      <Icon name="MapPin" size={12} className="shrink-0 mt-0.5" />
+                                      <span className="break-words">{reservation.meeting_office}</span>
                                     </p>
                                     {reservation.status === 'pending' && (
                                       <p className="text-xs text-muted-foreground/70 italic pt-1">
