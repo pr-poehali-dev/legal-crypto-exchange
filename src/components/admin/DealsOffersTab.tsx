@@ -171,8 +171,8 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
                           <p className="text-xs font-semibold text-orange-600 mb-2">📋 Заявки ({offer.reservations.length})</p>
                           <div className="space-y-2">
                             {offer.reservations.map((res, idx) => (
-                              <div key={idx} className="bg-background/50 rounded p-2 text-sm border border-border">
-                                <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
+                              <div key={idx} className="bg-background/50 rounded p-3 text-sm border border-border">
+                                <div className="grid grid-cols-1 md:grid-cols-5 gap-2 mb-2">
                                   <div>
                                     <p className="text-muted-foreground text-xs">Имя</p>
                                     <p className="font-semibold">{res.buyer_name}</p>
@@ -180,6 +180,10 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
                                   <div>
                                     <p className="text-muted-foreground text-xs">Телефон</p>
                                     <p className="font-semibold">{res.buyer_phone || '—'}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-muted-foreground text-xs">Email</p>
+                                    <p className="font-semibold text-xs break-all">{res.buyer_email || '—'}</p>
                                   </div>
                                   <div>
                                     <p className="text-muted-foreground text-xs">Время</p>
@@ -192,6 +196,16 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
                                     </Badge>
                                   </div>
                                 </div>
+                                {res.status === 'confirmed' && (
+                                  <Button
+                                    size="sm"
+                                    className="w-full bg-green-600 hover:bg-green-700 text-white"
+                                    onClick={() => onCompleteOffer(offer.id)}
+                                  >
+                                    <Icon name="CheckCircle2" className="mr-2" size={14} />
+                                    Завершить сделку с {res.buyer_name}
+                                  </Button>
+                                )}
                               </div>
                             ))}
                           </div>
@@ -206,24 +220,14 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
                   </div>
                   <div className="flex flex-col gap-2 ml-4 min-w-[180px]">
                     {offer.status !== 'completed' && (
-                      <>
-                        <Button
-                          size="sm"
-                          variant={offer.status === 'active' ? 'outline' : 'default'}
-                          onClick={() => onToggleStatus(offer.id, offer.status)}
-                        >
-                          <Icon name={offer.status === 'active' ? 'PauseCircle' : 'PlayCircle'} className="mr-2" size={16} />
-                          {offer.status === 'active' ? 'Деактивировать' : 'Активировать'}
-                        </Button>
-                        <Button
-                          size="sm"
-                          className="bg-green-600 hover:bg-green-700 text-white"
-                          onClick={() => onCompleteOffer(offer.id)}
-                        >
-                          <Icon name="CheckCircle" className="mr-2" size={16} />
-                          Подтвердить сделку
-                        </Button>
-                      </>
+                      <Button
+                        size="sm"
+                        variant={offer.status === 'active' ? 'outline' : 'default'}
+                        onClick={() => onToggleStatus(offer.id, offer.status)}
+                      >
+                        <Icon name={offer.status === 'active' ? 'PauseCircle' : 'PlayCircle'} className="mr-2" size={16} />
+                        {offer.status === 'active' ? 'Деактивировать' : 'Активировать'}
+                      </Button>
                     )}
                     <Button
                       size="sm"
