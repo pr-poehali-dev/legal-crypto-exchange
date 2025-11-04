@@ -88,7 +88,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 SELECT r.id, r.buyer_name, r.buyer_phone, r.meeting_time, r.meeting_office, r.created_at,
                        u.username as buyer_username, r.status,
                        EXTRACT(EPOCH FROM (CURRENT_TIMESTAMP - r.created_at)) as seconds_ago,
-                       u.phone as user_phone, u.email as user_email
+                       u.phone as user_phone, u.email as user_email, r.amount
                 FROM reservations r
                 LEFT JOIN users u ON r.buyer_user_id = u.id
                 WHERE r.offer_id = {offer_id}
@@ -114,7 +114,8 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                     'meeting_office': res[4],
                     'created_at': res[5].isoformat() if res[5] else None,
                     'status': status,
-                    'time_left_seconds': time_left
+                    'time_left_seconds': time_left,
+                    'amount': float(res[11]) if res[11] else None
                 })
         else:
             # Для зарезервированных объявлений получаем статус резервации

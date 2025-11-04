@@ -14,6 +14,7 @@ interface Reservation {
   created_at: string;
   status?: string;
   time_left_seconds?: number;
+  amount?: number;
 }
 
 interface Offer {
@@ -331,6 +332,12 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                                     )}
                                   </div>
                                   <div className="space-y-1">
+                                    {reservation.amount && (
+                                      <p className="text-muted-foreground flex items-center gap-1">
+                                        <Icon name="Coins" size={12} className="shrink-0" />
+                                        <span className="truncate font-medium">{reservation.amount} USDT × {offer.rate} ₽ = {(reservation.amount * offer.rate).toFixed(2)} ₽</span>
+                                      </p>
+                                    )}
                                     <p className="text-muted-foreground flex items-center gap-1">
                                       <Icon name="Clock" size={12} className="shrink-0" />
                                       <span className="truncate">{reservation.meeting_time}</span>
