@@ -19,7 +19,13 @@ export const RegisteredSuccessScreen = ({ reservationId, userId, onCancel }: Reg
 
     const checkStatus = async () => {
       try {
-        const url = `https://functions.poehali.dev/ad8e0859-d6b1-4dde-8da7-2b137a4c9abb?user_id=${userId}`;
+        const checkUrl = funcUrls['check-reservation-status'];
+        if (!checkUrl) {
+          console.error('check-reservation-status URL not found');
+          return;
+        }
+
+        const url = `${checkUrl}?reservation_id=${reservationId}`;
         const response = await fetch(url);
         
         if (response.status === 502 || response.status === 429) {
@@ -28,27 +34,19 @@ export const RegisteredSuccessScreen = ({ reservationId, userId, onCancel }: Reg
         }
         
         const data = await response.json();
-        console.log('Checking reservation status, data:', data);
+        console.log('✅ Checking reservation status:', { reservationId, data });
         
-        if (data.success && data.offers) {
-          for (const offer of data.offers) {
-            if (offer.reservations && offer.reservations.length > 0) {
-              const reservation = offer.reservations.find((r: any) => r.id === reservationId);
-              if (reservation) {
-                console.log('Found reservation:', reservation, 'status:', reservation.status);
-                if (reservation.status !== 'pending') {
-                  setStatus(reservation.status);
-                  if (intervalId) {
-                    clearInterval(intervalId);
-                  }
-                  return;
-                }
-              }
+        if (data.success && data.status) {
+          console.log('📋 Current status:', data.status);
+          if (data.status !== 'pending') {
+            setStatus(data.status);
+            if (intervalId) {
+              clearInterval(intervalId);
             }
           }
         }
       } catch (error) {
-        console.error('Failed to check status:', error);
+        console.error('❌ Failed to check status:', error);
       }
     };
 
@@ -60,7 +58,7 @@ export const RegisteredSuccessScreen = ({ reservationId, userId, onCancel }: Reg
         clearInterval(intervalId);
       }
     };
-  }, [reservationId, userId]);
+  }, [reservationId]);
   return (
     <div className="flex flex-col items-center justify-center py-12 space-y-6">
       <div className="relative">
