@@ -375,7 +375,7 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {offer.relation_type === 'reserved' ? (
+                    {offer.relation_type === 'reserved' && offer.status !== 'completed' ? (
                       <Button
                         variant="outline"
                         size="sm"
@@ -385,7 +385,7 @@ const OffersList = ({ offers, deals, onUpdateStatus, onEditOffer, onDeleteOffer,
                         <Icon name="X" size={16} className="mr-1" />
                         Отказаться
                       </Button>
-                    ) : offer.reserved_by ? (
+                    ) : offer.reserved_by && offer.status !== 'completed' ? (
                       <Button
                         variant="outline"
                         size="sm"
