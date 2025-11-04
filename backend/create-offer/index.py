@@ -96,7 +96,7 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
             end_datetime += timedelta(days=1)
         
         slots_created = 0
-        while current_time < end_datetime:
+        while current_time <= end_datetime:
             cursor.execute('''
                 INSERT INTO offer_time_slots 
                 (offer_id, slot_time, is_reserved)
