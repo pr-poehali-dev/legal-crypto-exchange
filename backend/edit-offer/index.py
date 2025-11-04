@@ -77,23 +77,9 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 'body': json.dumps({'error': 'Not authorized to edit this offer'})
             }
         
-        # Generate available slots
-        time_start_parts = meeting_time.split(':')
-        time_end_parts = meeting_time_end.split(':')
-        start_minutes = int(time_start_parts[0]) * 60 + int(time_start_parts[1])
-        end_minutes = int(time_end_parts[0]) * 60 + int(time_end_parts[1])
-        
-        available_slots = []
-        current = start_minutes
-        while current <= end_minutes:
-            hours = current // 60
-            minutes = current % 60
-            available_slots.append(f"{hours:02d}:{minutes:02d}")
-            current += 15
-        
-        offices_json = json.dumps(offices).replace("'", "''")
-        slots_json = json.dumps(available_slots).replace("'", "''")
+        # Escape strings for SQL
         city_escaped = city.replace("'", "''")
+        offices_array = "{" + ",".join([f'"{o.replace(chr(34), chr(34)+chr(34))}"' for o in offices]) + "}"
         
         cur.execute(f'''
             UPDATE offers 
@@ -101,10 +87,10 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
                 amount = {amount}, 
                 rate = {rate}, 
                 meeting_time = '{meeting_time}',
-                meeting_time_end = '{meeting_time_end}',
+                time_start = '{meeting_time}',
+                time_end = '{meeting_time_end}',
                 city = '{city_escaped}',
-                offices = '{offices_json}',
-                available_slots = '{slots_json}'
+                offices = '{offices_array}'
             WHERE id = {offer_id}
         ''')
         
