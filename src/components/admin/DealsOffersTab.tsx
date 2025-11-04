@@ -218,14 +218,15 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
                       </div>
                     </div>
                   </div>
-                  <div className="flex flex-col gap-2 ml-4 min-w-[180px]">
+                  <div className="flex flex-col gap-2 ml-4 w-full md:w-auto md:min-w-[160px] md:max-w-[200px]">
                     {offer.status !== 'completed' && (
                       <Button
                         size="sm"
                         variant={offer.status === 'active' ? 'outline' : 'default'}
                         onClick={() => onToggleStatus(offer.id, offer.status)}
+                        className="text-xs whitespace-nowrap"
                       >
-                        <Icon name={offer.status === 'active' ? 'PauseCircle' : 'PlayCircle'} className="mr-2" size={16} />
+                        <Icon name={offer.status === 'active' ? 'PauseCircle' : 'PlayCircle'} className="mr-1" size={14} />
                         {offer.status === 'active' ? 'Деактивировать' : 'Активировать'}
                       </Button>
                     )}
@@ -233,8 +234,9 @@ const DealsOffersTab = ({ offers, deals, onToggleStatus, onDelete, onCompleteDea
                       size="sm"
                       variant="destructive"
                       onClick={() => onDelete(offer.id)}
+                      className="text-xs"
                     >
-                      <Icon name="Trash2" className="mr-2" size={16} />
+                      <Icon name="Trash2" className="mr-1" size={14} />
                       Удалить
                     </Button>
                   </div>
