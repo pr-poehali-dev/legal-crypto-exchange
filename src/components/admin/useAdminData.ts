@@ -64,27 +64,39 @@ export const useAdminData = () => {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       if (data.success) {
-        const offersWithReservations = data.offers || [];
+        const offersData = data.offers || [];
         
-        // Load reservations for each offer
-        for (const offer of offersWithReservations) {
+        // Group offers by user_id to minimize requests
+        const userIds = [...new Set(offersData.map((o: any) => o.user_id))];
+        const reservationsByUserId: Record<number, any[]> = {};
+        
+        // Load reservations for each unique user (with delay to avoid rate limiting)
+        for (const userId of userIds) {
           try {
-            const resResponse = await fetch(`https://functions.poehali.dev/ad8e0859-d6b1-4dde-8da7-2b137a4c9abb?user_id=${offer.user_id}`);
+            await new Promise(resolve => setTimeout(resolve, 100)); // 100ms delay between requests
+            
+            const resResponse = await fetch(`https://functions.poehali.dev/ad8e0859-d6b1-4dde-8da7-2b137a4c9abb?user_id=${userId}`);
             if (resResponse.ok) {
               const resData = await resResponse.json();
               if (resData.success && resData.offers) {
-                const matchingOffer = resData.offers.find((o: any) => o.id === offer.id);
-                if (matchingOffer && matchingOffer.reservations) {
-                  offer.reservations = matchingOffer.reservations;
-                }
+                resData.offers.forEach((offer: any) => {
+                  if (offer.reservations && offer.reservations.length > 0) {
+                    reservationsByUserId[offer.id] = offer.reservations;
+                  }
+                });
               }
             }
           } catch (err) {
-            console.error(`Failed to load reservations for offer ${offer.id}:`, err);
+            console.warn(`Failed to load reservations for user ${userId}:`, err);
           }
         }
         
-        setOffers(offersWithReservations);
+        // Attach reservations to offers
+        offersData.forEach((offer: any) => {
+          offer.reservations = reservationsByUserId[offer.id] || [];
+        });
+        
+        setOffers(offersData);
       }
     } catch (error) {
       console.error('Failed to load offers:', error);
