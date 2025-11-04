@@ -11,6 +11,7 @@ interface AnonymousResponseFormProps {
   offerCity?: string;
   offerAmount?: number;
   currentRate?: number;
+  availableSlots?: string[];
   onSuccess?: () => void;
 }
 
@@ -31,7 +32,7 @@ const CITIES_OFFICES: Record<string, string[]> = {
   ],
 };
 
-const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Москва', offerAmount = 0, currentRate = 100, onSuccess }: AnonymousResponseFormProps) => {
+const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Москва', offerAmount = 0, currentRate = 100, availableSlots = [], onSuccess }: AnonymousResponseFormProps) => {
   const { toast } = useToast();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [name, setName] = useState('');
@@ -39,33 +40,16 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
   const [email, setEmail] = useState('');
   const [meetingTime, setMeetingTime] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [occupiedTimes, setOccupiedTimes] = useState<Set<string>>(new Set());
   const [reservationId, setReservationId] = useState<number | null>(null);
   const [reservationStatus, setReservationStatus] = useState<'pending' | 'confirmed' | 'rejected' | null>(null);
 
   useEffect(() => {
-    const now = new Date();
-    let currentHour = now.getHours();
-    const currentMinute = now.getMinutes();
-    
-    const intervals = [0, 15, 30, 45];
-    let nextMinute = intervals.find(m => m > currentMinute);
-    
-    if (nextMinute === undefined) {
-      currentHour = currentHour + 1;
-      nextMinute = 0;
+    // Set first available slot as default
+    if (availableSlots.length > 0) {
+      setMeetingTime(availableSlots[0]);
     }
-    
-    if (currentHour < 9) {
-      currentHour = 9;
-      nextMinute = 0;
-    } else if (currentHour > 21 || (currentHour === 21 && nextMinute > 0)) {
-      currentHour = 9;
-      nextMinute = 0;
-    }
-    
-    setMeetingTime(`${String(currentHour).padStart(2, '0')}:${String(nextMinute).padStart(2, '0')}`);
-  }, []);
+  }, [availableSlots]);
+  
   const [usdtAmount, setUsdtAmount] = useState(offerAmount.toString());
   const [rubAmount, setRubAmount] = useState((offerAmount * currentRate).toString());
 
@@ -107,33 +91,6 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
   };
 
   const firstOfferOffice = offerOffices && offerOffices.length > 0 ? offerOffices[0] : '';
-
-  useEffect(() => {
-    if (!firstOfferOffice) return;
-    
-    const fetchOccupiedTimes = async () => {
-      try {
-        const response = await fetch(func2url['get-all-offers'] || 'https://functions.poehali.dev/24cbcabc-c4e4-496b-a820-0315a576e32e');
-        const data = await response.json();
-        
-        if (data.success && data.offers) {
-          const occupied = new Set<string>();
-          data.offers.forEach((offer: any) => {
-            if ((offer.status === 'active' || offer.status === 'reserved') && offer.offices) {
-              if (offer.offices.includes(firstOfferOffice)) {
-                occupied.add(offer.meeting_time);
-              }
-            }
-          });
-          setOccupiedTimes(occupied);
-        }
-      } catch (error) {
-        console.error('Failed to load occupied times:', error);
-      }
-    };
-    
-    fetchOccupiedTimes();
-  }, [firstOfferOffice]);
 
   const handleNextStep = () => {
     if (!meetingTime) {
@@ -241,7 +198,7 @@ const AnonymousResponseForm = ({ offerId, offerOffices = [], offerCity = 'Мос
         firstOfferOffice={firstOfferOffice}
         meetingTime={meetingTime}
         onMeetingTimeChange={setMeetingTime}
-        occupiedTimes={occupiedTimes}
+        availableSlots={availableSlots}
         onNextStep={handleNextStep}
       />
     );

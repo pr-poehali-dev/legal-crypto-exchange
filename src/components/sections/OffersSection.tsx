@@ -172,7 +172,15 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
 
   const handleContact = async (offer: Offer) => {
     setSelectedOffer(offer);
-    await loadAvailableSlots(offer.id);
+    
+    // Load available slots only if the offer has a time range
+    if (offer.meeting_time_end) {
+      await loadAvailableSlots(offer.id);
+    } else {
+      // Single time slot - set it as the only available slot
+      setAvailableSlots([offer.meeting_time]);
+    }
+    
     setResponseDialogOpen(true);
   };
 
@@ -436,6 +444,7 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
                 offerCity={selectedOffer.city}
                 offerAmount={selectedOffer.amount}
                 currentRate={selectedOffer.rate}
+                availableSlots={availableSlots}
                 onSuccess={() => {
                   setResponseDialogOpen(false);
                   setSelectedOffer(null);

@@ -16,7 +16,7 @@ interface Step1ExchangeDetailsProps {
   firstOfferOffice: string;
   meetingTime: string;
   onMeetingTimeChange: (value: string) => void;
-  occupiedTimes: Set<string>;
+  availableSlots: string[];
   onNextStep: () => void;
 }
 
@@ -30,7 +30,7 @@ export const Step1ExchangeDetails = ({
   firstOfferOffice,
   meetingTime,
   onMeetingTimeChange,
-  occupiedTimes,
+  availableSlots,
   onNextStep,
 }: Step1ExchangeDetailsProps) => {
   return (
@@ -97,48 +97,22 @@ export const Step1ExchangeDetails = ({
             <SelectValue placeholder="Выберите время" />
           </SelectTrigger>
           <SelectContent>
-            <TooltipProvider>
-              {Array.from({ length: 13 }, (_, i) => i + 9).flatMap((hour) => 
-                ['00', '15', '30', '45'].map((minute) => {
-                  if (hour > 21) return null;
-                  if (hour === 21 && minute !== '00') return null;
-                  
-                  const now = new Date();
-                  const currentHour = now.getHours();
-                  const currentMinute = now.getMinutes();
-                  const slotHour = hour;
-                  const slotMinute = parseInt(minute);
-                  
-                  if (slotHour < currentHour) return null;
-                  if (slotHour === currentHour && slotMinute <= currentMinute) return null;
-                  
-                  const time = `${hour.toString().padStart(2, '0')}:${minute}`;
-                  const isOccupied = occupiedTimes.has(time);
-                  
-                  return (
-                    <Tooltip key={time} delayDuration={200}>
-                      <TooltipTrigger asChild>
-                        <SelectItem value={time} disabled={isOccupied}>
-                          {time} {isOccupied && '(Забронировано)'}
-                        </SelectItem>
-                      </TooltipTrigger>
-                      {isOccupied && (
-                        <TooltipContent side="left" className="max-w-xs">
-                          <div className="text-xs">
-                            <p className="font-semibold">Это время уже занято для выбранного офиса</p>
-                          </div>
-                        </TooltipContent>
-                      )}
-                    </Tooltip>
-                  );
-                })
-              ).filter(Boolean)}
-            </TooltipProvider>
+            {availableSlots.length > 0 ? (
+              availableSlots.map((slot) => (
+                <SelectItem key={slot} value={slot}>
+                  {slot}
+                </SelectItem>
+              ))
+            ) : (
+              <div className="px-2 py-3 text-center text-sm text-muted-foreground">
+                Нет доступных слотов
+              </div>
+            )}
           </SelectContent>
         </Select>
         <p className="text-xs text-muted-foreground mt-1">
           <Icon name="Info" size={12} className="inline mr-1" />
-          Обратите внимание: курс обмена актуален в течение трех часов и может измениться
+          Доступны только свободные временные слоты
         </p>
       </div>
 
