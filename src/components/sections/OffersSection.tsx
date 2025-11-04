@@ -229,22 +229,13 @@ const OffersSection = ({ activeTab, setActiveTab }: OffersSectionProps) => {
               <p className="text-xs text-muted-foreground mb-1.5 uppercase tracking-wide">Встреча</p>
               <p className="text-sm font-medium break-words flex items-center gap-1">
                 <Icon name="Clock" size={16} />
-                {isOwnOffer(offer) ? (
-                  `Сегодня ${offer.meeting_time_end 
-                    ? `${offer.meeting_time} — ${offer.meeting_time_end}`
-                    : offer.meeting_time
-                  }`
-                ) : (
-                  offer.meeting_time_end 
-                    ? 'Сегодня — несколько временных слотов'
-                    : `Сегодня ${offer.meeting_time}`
-                )}
+                Сегодня {offer.meeting_time_end 
+                  ? `${offer.meeting_time} — ${offer.meeting_time_end}`
+                  : offer.meeting_time
+                }
               </p>
               <p className="text-xs text-muted-foreground/70 italic mt-1.5">
-                {isOwnOffer(offer) 
-                  ? 'Ваше объявление' 
-                  : 'Точное время обсуждается при создании сделки'
-                }
+                Вы можете выбрать другого продавца, если время Вам не подходит
               </p>
             </div>
           </div>
