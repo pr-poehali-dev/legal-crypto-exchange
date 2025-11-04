@@ -84,16 +84,6 @@ def handler(event: Dict[str, Any], context: Any) -> Dict[str, Any]:
         reservation_status = None
         
         if relation_type == 'created':
-            # Автоматически отклоняем резервации старше 3 минут
-            cur.execute(f"""
-                UPDATE reservations
-                SET status = 'expired'
-                WHERE offer_id = {offer_id} 
-                AND status = 'pending' 
-                AND created_at < CURRENT_TIMESTAMP - INTERVAL '3 minutes'
-            """)
-            conn.commit()
-            
             cur.execute(f"""
                 SELECT r.id, r.buyer_name, r.buyer_phone, r.meeting_time, r.meeting_office, r.created_at,
                        u.username as buyer_username, r.status,
