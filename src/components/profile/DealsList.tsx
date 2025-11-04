@@ -103,18 +103,14 @@ const DealsList = ({ deals, isLoading, formatDate }: DealsListProps) => {
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-6">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Сумма</p>
-                      <p className="font-bold">{deal.amount.toLocaleString('ru-RU')} USDT</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Курс</p>
-                      <p className="font-bold">{deal.rate.toFixed(2)} ₽</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Итого</p>
-                      <p className="font-bold text-secondary">{deal.total.toLocaleString('ru-RU')} ₽</p>
+                  <div className="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-6">
+                    <div className="flex items-center gap-2 text-sm">
+                      <Icon name="Coins" size={16} className="text-muted-foreground shrink-0" />
+                      <span className="font-semibold">{deal.amount.toLocaleString('ru-RU')} USDT</span>
+                      <span className="text-muted-foreground">×</span>
+                      <span className="font-semibold">{deal.rate.toFixed(2)} ₽</span>
+                      <span className="text-muted-foreground">=</span>
+                      <span className="font-bold text-secondary">{deal.total.toLocaleString('ru-RU')} ₽</span>
                     </div>
                     <div>
                       {getStatusBadge(deal.status)}
